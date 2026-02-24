@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1024">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoSwasthya Sathi v3 — Solar-Clean</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -76,8 +76,8 @@
 
     html,
     body {
-      width: 1024px;
-      height: 600px;
+      width: 100%;
+      height: 100vh;
       overflow: hidden;
       background: var(--bg);
       font-family: var(--sans);
@@ -1832,6 +1832,79 @@
       border-color: var(--danger);
       color: var(--danger);
     }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE DESIGN (MOBILE & TABLET)
+    ═══════════════════════════════════════════ */
+    @media (max-width: 800px) {
+
+      html,
+      body {
+        height: auto;
+        overflow-y: auto;
+      }
+
+      #core {
+        height: auto;
+        flex-direction: column;
+        min-height: calc(100vh - 52px - 34px);
+      }
+
+      #map-zone {
+        width: 100%;
+        height: 50vh;
+        min-height: 400px;
+        border-right: none;
+        border-bottom: 1.5px solid var(--border);
+      }
+
+      #sidebar {
+        width: 100%;
+        flex: none;
+      }
+
+      #dashboard-panel,
+      #mosathi-panel {
+        overflow-y: visible;
+        padding-bottom: 30px;
+      }
+
+      #brand {
+        flex-wrap: wrap;
+        border-right: none;
+      }
+
+      #rm-body {
+        flex-direction: column;
+        overflow-y: auto;
+      }
+
+      .rm-state-col {
+        height: 400px;
+        flex: none;
+      }
+
+      #map-zc {
+        bottom: 80px;
+      }
+
+      #timeline-zone {
+        padding-bottom: 14px;
+      }
+
+      #sitrep-panel {
+        max-height: 85%;
+        padding-bottom: 30px;
+      }
+
+      #canopy {
+        overflow-x: auto;
+      }
+
+      .c-spacer {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -1903,9 +1976,9 @@
 
     <!-- Segmented language control (3 hardcoded) -->
     <div id="lang-seg">
-      <div class="lang-seg-btn active" onclick="selectLang(this)">ଓଡ଼ିଆ</div>
-      <div class="lang-seg-btn" onclick="selectLang(this)">मराठी</div>
-      <div class="lang-seg-btn" onclick="selectLang(this)">English</div>
+      <div class="lang-seg-btn active" data-lang="OD" onclick="selectLang(this)">ଓଡ଼ିଆ</div>
+      <div class="lang-seg-btn" data-lang="MH" onclick="selectLang(this)">मराठी</div>
+      <div class="lang-seg-btn" data-lang="EN" onclick="selectLang(this)">English</div>
     </div>
 
     <div class="c-spacer"></div>
@@ -2190,7 +2263,9 @@
         <div class="intent-label">Quick Actions</div>
 
         <div class="intent-card" onclick="runIntent('disease-history')">
-          <span class="ic-icon">📈</span>
+          <span class="ic-icon"><svg width="24" height="24">
+              <use href="#icon-trending" />
+            </svg></span>
           <div class="ic-body">
             <div class="ic-title">Disease History: Khordha (2021–2023)</div>
             <div class="ic-sub">Sets timeline → 2023 · Renders fever polygons</div>
@@ -2199,7 +2274,9 @@
         </div>
 
         <div class="intent-card" onclick="runIntent('nearest-hospitals')">
-          <span class="ic-icon">🏥</span>
+          <span class="ic-icon"><svg width="24" height="24">
+              <use href="#icon-hospital" />
+            </svg></span>
           <div class="ic-body">
             <div class="ic-title">Show Nearest Operational Hospitals</div>
             <div class="ic-sub">Activates Infrastructure layer · Highlights PHC tiles</div>
@@ -2208,7 +2285,9 @@
         </div>
 
         <div class="intent-card" onclick="runIntent('water-status')">
-          <span class="ic-icon">💧</span>
+          <span class="ic-icon"><svg width="24" height="24">
+              <use href="#icon-water" />
+            </svg></span>
           <div class="ic-body">
             <div class="ic-title">Water Point Status — Today</div>
             <div class="ic-sub">Isolates water layer · Shows borewell alerts</div>
@@ -2226,7 +2305,9 @@
       <!-- Speak button — always visible -->
       <div id="speak-section">
         <button id="speak-btn" onclick="openVoice()">
-          <span class="sb-mic">🎙</span>
+          <span class="sb-mic"><svg width="24" height="24">
+              <use href="#icon-mic" />
+            </svg></span>
           <div class="sb-texts">
             <span class="sb-odia">ମୋ ସାଥୀ ସହ କଥା ହୁଅ</span>
             <span class="sb-en">Talk to MoSathi · Press & Speak</span>
@@ -2636,7 +2717,137 @@
     function selectLang(el) {
       document.querySelectorAll('.lang-seg-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
+      const lang = el.dataset.lang;
+      const t = translations[lang];
+      if (!t) return;
+
+      try {
+        document.querySelector('.brand-name-en').textContent = t.brandName;
+        document.querySelector('.rc-label').textContent = t.district;
+        document.querySelector('.conn-label').textContent = t.online;
+
+        document.getElementById('tab-dash').textContent = t.dashTab;
+        document.getElementById('tab-mosathi').textContent = t.botTab;
+
+        // Update toggles
+        document.getElementById('kt-disease').childNodes[2].nodeValue = t.disease;
+        document.getElementById('kt-water').childNodes[2].nodeValue = t.water;
+        document.getElementById('kt-infra').childNodes[2].nodeValue = t.infra;
+
+        // Update cards
+        let snapL = document.getElementById('snap-label');
+        if (snapL) snapL.textContent = `${t.snap} — ${currentDistrict.name}`;
+
+        document.getElementById('sc1-p').textContent = t.healthAlerts;
+        document.getElementById('sc1-p').nextElementSibling.textContent = t.healthSub;
+
+        document.getElementById('sc2-p').textContent = t.phcOp;
+        document.getElementById('sc2-p').nextElementSibling.textContent = t.phcSub;
+
+        document.getElementById('sc3-p').textContent = t.waterPts;
+        document.getElementById('sc3-p').nextElementSibling.textContent = t.waterSub;
+
+        document.getElementById('vax-t1').textContent = t.vaxDrive;
+        document.querySelector('.pc-t2').textContent = t.vaxSub;
+
+        document.querySelector('.sb-odia').textContent = t.speak;
+        document.querySelector('.sb-en').textContent = t.speakSub;
+
+        const tickerItems = document.querySelectorAll('.t-item');
+        if (tickerItems.length >= 6) {
+          tickerItems[0].childNodes[2].nodeValue = t.feverTick;
+          tickerItems[1].childNodes[2].nodeValue = t.waterTick;
+          tickerItems[2].childNodes[2].nodeValue = t.vaxTick;
+          tickerItems[3].childNodes[2].nodeValue = t.roadTick;
+          tickerItems[4].childNodes[2].nodeValue = t.phcTick;
+          tickerItems[5].childNodes[2].nodeValue = t.ashaTick;
+        }
+      } catch (e) { console.error('Translation error', e); }
     }
+
+    const translations = {
+      'EN': {
+        brandName: 'Community Health Kiosk',
+        district: 'District',
+        online: 'Cloud Active',
+        dashTab: '📊 Dashboard',
+        botTab: '💬 MoSathi Chat',
+        disease: 'Disease Trends',
+        water: 'Water Security',
+        infra: 'Infrastructure',
+        snap: 'Local Snapshot',
+        healthAlerts: 'Active Health Alerts',
+        healthSub: 'Tap for Report',
+        phcOp: 'PHCs Operational',
+        phcSub: 'Tap for Details',
+        waterPts: 'Water Points Active',
+        waterSub: 'Live Status',
+        vaxDrive: 'Vaccination Drive',
+        vaxSub: 'Coverage Target',
+        speak: 'Talk to MoSathi',
+        speakSub: 'Press & Speak',
+        feverTick: 'Fever cluster — Balianta Block — 23 confirmed cases',
+        waterTick: 'Borewell #7 restored — Tangi — Supply resumed 08:30',
+        vaxTick: 'Vaccination camp — Khordha Block — Feb 27, 09:00–16:00',
+        roadTick: 'NH-16 road block near Bhubaneswar — Diversion via SH-12',
+        phcTick: 'New PHC operational — Bolagarh — Emergency: 104',
+        ashaTick: 'ASHA worker training — Jatni — Feb 25–26, 08:00'
+      },
+      'OD': {
+        brandName: 'କମ୍ୟୁନିଟି ହେଲଥ କିଓସ୍କ',
+        district: 'ଜିଲ୍ଲା',
+        online: 'କ୍ଲାଉଡ୍ ସକ୍ରିୟ',
+        dashTab: '📊 ଡ୍ୟାସବୋର୍ଡ',
+        botTab: '💬 ମୋ ସାଥୀ ଚାଟ୍',
+        disease: 'ରୋଗ ଧାରା',
+        water: 'ଜଳ ନିରାପତ୍ତା',
+        infra: 'ଭିତ୍ତିଭୂମି',
+        snap: 'ସ୍ଥାନୀୟ ସ୍ନାପସଟ୍',
+        healthAlerts: 'ସ୍ୱାସ୍ଥ୍ୟ ସତର୍କତା',
+        healthSub: 'ରିପୋର୍ଟ ପାଇଁ ଟ୍ୟାପ୍ କରନ୍ତୁ',
+        phcOp: 'PHC ସଚଳ ଅଛି',
+        phcSub: 'ବିବରଣୀ ପାଇଁ ଟ୍ୟାପ୍ କରନ୍ତୁ',
+        waterPts: 'ଜଳ ବିନ୍ଦୁ',
+        waterSub: 'ଲାଇଭ୍ ସ୍ଥିତି',
+        vaxDrive: 'ଟୀକାକରଣ ଡ୍ରାଇଭ',
+        vaxSub: 'କଭରେଜ୍ ଲକ୍ଷ୍ୟ',
+        speak: 'ମୋ ସାଥୀ ସହ କଥା ହୁଅ',
+        speakSub: 'ଦବାନ୍ତୁ ଏବଂ କୁହନ୍ତୁ',
+        feverTick: 'ଜ୍ୱର ସଂକ୍ରମଣ — ବାଲିଅନ୍ତା ବ୍ଲକ — 23 ଟି ମାମଲା',
+        waterTick: 'ବୋରୱେଲ୍ #7 ମରାମତି ହୋଇଛି — ଟାଙ୍ଗୀ',
+        vaxTick: 'ଟିକାକରଣ ଶିବିର — ଖୋର୍ଦ୍ଧା ବ୍ଲକ',
+        roadTick: 'ଭୁବନେଶ୍ୱର ନିକଟରେ NH-16 ରାସ୍ତା ଅବରୋଧ',
+        phcTick: 'ନୂତନ PHC କାର୍ଯ୍ୟକ୍ଷମ — ବୋଲାଗଡ — ଜରୁରୀକାଳୀନ: 104',
+        ashaTick: 'ଆଶା କର୍ମୀ ତାଲିମ — ଜଟଣୀ'
+      },
+      'MH': {
+        brandName: 'समुदाय आरोग्य किओस्क',
+        district: 'जिल्हा',
+        online: 'क्लाउड सक्रिय',
+        dashTab: '📊 डॅशबोर्ड',
+        botTab: '💬 मोसाथी चॅट',
+        disease: 'रोगाचा कल',
+        water: 'पाणी सुरक्षा',
+        infra: 'पायाभूत सुविधा',
+        snap: 'स्थानिक स्नॅपशॉट',
+        healthAlerts: 'सक्रिय आरोग्य सूचना',
+        healthSub: 'अहवालासाठी टॅप करा',
+        phcOp: 'PHC कार्यरत आहेत',
+        phcSub: 'तपशीलांसाठी टॅप करा',
+        waterPts: 'पाण्याचे बिंदू सक्रिय',
+        waterSub: 'थेट स्थिती',
+        vaxDrive: 'लसीकरण मोहीम',
+        vaxSub: 'कव्हरेज लक्ष्य',
+        speak: 'मोसाथीशी बोला',
+        speakSub: 'दाबा आणि बोला',
+        feverTick: 'तापाचा प्रादुर्भाव - 23 प्रकरणांची नोंद',
+        waterTick: 'बोअरवेल 7 दुरुस्त केले',
+        vaxTick: 'लसीकरण शिबिर - 27 फेब्रुवारी',
+        roadTick: 'रस्ता अडवला - मार्ग वळवला',
+        phcTick: 'नवीन PHC कार्यरत - आणीबाणी: 104',
+        ashaTick: 'आशा स्वयंसेविकांचे प्रशिक्षण'
+      }
+    };
 
     // ═══════════════════════════════════════════
     // TAB SWITCHING
@@ -2753,28 +2964,28 @@
     // ═══════════════════════════════════════════
     const sitrepData = {
       fever: {
-        icon: '🦠', title: 'Fever Outbreak — Balianta Block',
+        icon: '<svg width="28" height="28"><use href="#icon-alert"/></svg>', title: 'Fever Outbreak — Balianta Block',
         loc: () => `${currentDistrict.name} · ${currentDistrict.state} · Updated Today 08:45`,
         body: '23 confirmed cases of seasonal fever reported in Balianta Block. Khordha District PHC has been notified. Mobile health teams deployed. Residents advised to use ORS, maintain hygiene, and visit nearest PHC if symptoms persist beyond 48 hours.',
         s: [['23', 'Cases'], ['4', 'Wards'], ['2', 'Teams']], cls: ['d', 'w', 'g'],
         cta: '📞 Call PHC Balianta — 104'
       },
       flu: {
-        icon: '🤒', title: 'Swine Flu Alert — Cuttack Block',
+        icon: '<svg width="28" height="28"><use href="#icon-alert"/></svg>', title: 'Swine Flu Alert — Cuttack Block',
         loc: () => `${currentDistrict.name} · ${currentDistrict.state} · Updated Yesterday`,
         body: 'Elevated H1N1 activity detected in Cuttack block. 8 confirmed cases, 3 hospitalized. District surveillance teams conducting contact tracing. Antiviral medication available at designated PHCs.',
         s: [['8', 'Cases'], ['3', 'Hospitalized'], ['1', 'PHC Alert']], cls: ['d', 'd', 'w'],
         cta: '📞 Call Surveillance Unit — 1800-11-1234'
       },
       water: {
-        icon: '💧', title: 'Water Infrastructure — Active Status',
+        icon: '<svg width="28" height="28"><use href="#icon-water"/></svg>', title: 'Water Infrastructure — Active Status',
         loc: () => `${currentDistrict.name} · ${currentDistrict.state}`,
         body: '24 of 27 borewell and supply points active. Borewell #7 in Tangi restored at 08:30. 3 borewells in Balianta block under scheduled maintenance — alternate tanker supply arranged. No contamination reports filed.',
         s: [['24', 'Active'], ['3', 'Maintenance'], ['0', 'Contaminated']], cls: ['g', 'w', 'g'],
         cta: '📋 Report Water Issue — 1916'
       },
       phc: {
-        icon: '🏥', title: 'PHC Operational Status',
+        icon: '<svg width="28" height="28"><use href="#icon-hospital"/></svg>', title: 'PHC Operational Status',
         loc: () => `${currentDistrict.name} · ${currentDistrict.state}`,
         body: () => `${currentDistrict.phc} of ${currentDistrict.phc + 2} PHCs are fully operational across ${currentDistrict.name}. 2 PHCs running on reduced hours. Emergency helpline 104 active 24/7. Nearest PHC: 2.1 km from this kiosk.`,
         s: () => [[currentDistrict.phc + '', 'Active'], [2, 'Reduced Hours'], ['104', 'Emergency']], cls: ['g', 'w', 'g'],
@@ -2784,7 +2995,7 @@
 
     function openSitrep(type) {
       const d = sitrepData[type] || sitrepData.fever;
-      document.getElementById('srp-icon').textContent = d.icon;
+      document.getElementById('srp-icon').innerHTML = d.icon;
       document.getElementById('srp-title').textContent = d.title;
       document.getElementById('srp-loc').textContent = typeof d.loc === 'function' ? d.loc() : d.loc;
       document.getElementById('srp-body').textContent = typeof d.body === 'function' ? d.body() : d.body;
