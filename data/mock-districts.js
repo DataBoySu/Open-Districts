@@ -1,0 +1,212 @@
+// ─── MOCK DISTRICTS & STATES — OpenDistricts V4 ───────────────────────────────
+// Schema source: docs/V4-transition-schema.md
+
+// ── STATES ───────────────────────────────────────────────────────────────────
+
+export const MOCK_STATES = [
+    {
+        id: "OD",
+        name: "Odisha",
+        nameLocal: "ଓଡ଼ିଶା",
+        geoJsonUrl: "/data/geo/OD/state-outline.geojson",
+        districts: ["khordha", "cuttack", "puri", "ganjam", "balangir"],
+        activeAlertCount: 34
+    },
+    {
+        id: "MH",
+        name: "Maharashtra",
+        nameLocal: "महाराष्ट्र",
+        geoJsonUrl: "/data/geo/MH/state-outline.geojson",
+        districts: ["pune", "mumbai", "nagpur", "nashik", "aurangabad"],
+        activeAlertCount: 21
+    },
+    {
+        id: "TN",
+        name: "Tamil Nadu",
+        nameLocal: "தமிழ் நாடு",
+        geoJsonUrl: "/data/geo/TN/state-outline.geojson",
+        districts: ["chennai", "coimbatore", "madurai", "tiruchirappalli", "salem"],
+        activeAlertCount: 15
+    },
+    {
+        id: "KA",
+        name: "Karnataka",
+        nameLocal: "ಕರ್ನಾಟಕ",
+        geoJsonUrl: "/data/geo/KA/state-outline.geojson",
+        districts: ["bengaluru-urban", "mysuru", "dharwad", "belagavi", "tumakuru"],
+        activeAlertCount: 9
+    },
+    {
+        id: "WB",
+        name: "West Bengal",
+        nameLocal: "পশ্চিমবঙ্গ",
+        geoJsonUrl: "/data/geo/WB/state-outline.geojson",
+        districts: ["kolkata", "howrah", "darjeeling", "purba-medinipur", "murshidabad"],
+        activeAlertCount: 18
+    },
+    {
+        id: "GJ",
+        name: "Gujarat",
+        nameLocal: "ગુજરાત",
+        geoJsonUrl: "/data/geo/GJ/state-outline.geojson",
+        districts: ["ahmedabad", "surat", "vadodara", "rajkot", "bhavnagar"],
+        activeAlertCount: 6
+    },
+    {
+        id: "UP",
+        name: "Uttar Pradesh",
+        nameLocal: "उत्तर प्रदेश",
+        geoJsonUrl: "/data/geo/UP/state-outline.geojson",
+        districts: ["lucknow", "kanpur", "agra", "varanasi", "prayagraj"],
+        activeAlertCount: 41
+    },
+    {
+        id: "RJ",
+        name: "Rajasthan",
+        nameLocal: "राजस्थान",
+        geoJsonUrl: "/data/geo/RJ/state-outline.geojson",
+        districts: ["jaipur", "jodhpur", "udaipur", "kota", "bikaner"],
+        activeAlertCount: 12
+    },
+    {
+        id: "MP",
+        name: "Madhya Pradesh",
+        nameLocal: "मध्य प्रदेश",
+        geoJsonUrl: "/data/geo/MP/state-outline.geojson",
+        districts: ["bhopal", "indore", "gwalior", "jabalpur", "ujjain"],
+        activeAlertCount: 17
+    }
+];
+
+// ── DISTRICTS ─────────────────────────────────────────────────────────────────
+
+export const MOCK_DISTRICTS = [
+
+    // Odisha
+    {
+        id: "khordha",
+        stateId: "OD",
+        name: "Khordha",
+        nameLocal: "ଖୋର୍ଦ୍ଧା",
+        geoJsonUrl: "/data/geo/OD/khordha.geojson",
+        boundingBox: { north: 20.35, south: 20.01, east: 85.98, west: 85.52 },
+        population: 2246341,
+        activeAlertCount: 7
+    },
+    {
+        id: "cuttack",
+        stateId: "OD",
+        name: "Cuttack",
+        nameLocal: "କଟକ",
+        geoJsonUrl: "/data/geo/OD/cuttack.geojson",
+        boundingBox: { north: 20.62, south: 20.30, east: 86.15, west: 85.72 },
+        population: 2618708,
+        activeAlertCount: 5
+    },
+    {
+        id: "puri",
+        stateId: "OD",
+        name: "Puri",
+        nameLocal: "ପୁରୀ",
+        geoJsonUrl: "/data/geo/OD/puri.geojson",
+        boundingBox: { north: 20.12, south: 19.70, east: 86.10, west: 85.68 },
+        population: 1498604,
+        activeAlertCount: 3
+    },
+    {
+        id: "ganjam",
+        stateId: "OD",
+        name: "Ganjam",
+        nameLocal: "ଗଞ୍ଜାମ",
+        geoJsonUrl: "/data/geo/OD/ganjam.geojson",
+        boundingBox: { north: 20.18, south: 19.28, east: 85.35, west: 84.28 },
+        population: 3529031,
+        activeAlertCount: 6
+    },
+    {
+        id: "balangir",
+        stateId: "OD",
+        name: "Balangir",
+        nameLocal: "ବଲାଙ୍ଗୀର",
+        geoJsonUrl: "/data/geo/OD/balangir.geojson",
+        boundingBox: { north: 20.95, south: 20.22, east: 83.72, west: 82.73 },
+        population: 1652593,
+        activeAlertCount: 4
+    },
+
+    // Maharashtra
+    {
+        id: "pune",
+        stateId: "MH",
+        name: "Pune",
+        nameLocal: "पुणे",
+        geoJsonUrl: "/data/geo/MH/pune.geojson",
+        boundingBox: { north: 19.42, south: 18.18, east: 74.60, west: 73.50 },
+        population: 9429408,
+        activeAlertCount: 5
+    },
+    {
+        id: "mumbai",
+        stateId: "MH",
+        name: "Mumbai",
+        nameLocal: "मुंबई",
+        geoJsonUrl: "/data/geo/MH/mumbai.geojson",
+        boundingBox: { north: 19.27, south: 18.89, east: 72.98, west: 72.77 },
+        population: 12442373,
+        activeAlertCount: 9
+    },
+    {
+        id: "nagpur",
+        stateId: "MH",
+        name: "Nagpur",
+        nameLocal: "नागपूर",
+        geoJsonUrl: "/data/geo/MH/nagpur.geojson",
+        boundingBox: { north: 21.45, south: 20.75, east: 79.35, west: 78.80 },
+        population: 4653570,
+        activeAlertCount: 3
+    },
+    {
+        id: "nashik",
+        stateId: "MH",
+        name: "Nashik",
+        nameLocal: "नाशिक",
+        geoJsonUrl: "/data/geo/MH/nashik.geojson",
+        boundingBox: { north: 20.85, south: 19.72, east: 74.45, west: 73.52 },
+        population: 6107187,
+        activeAlertCount: 4
+    },
+    {
+        id: "aurangabad",
+        stateId: "MH",
+        name: "Aurangabad",
+        nameLocal: "औरंगाबाद",
+        geoJsonUrl: "/data/geo/MH/aurangabad.geojson",
+        boundingBox: { north: 20.12, south: 18.85, east: 75.82, west: 74.58 },
+        population: 3701282,
+        activeAlertCount: 6
+    }
+];
+
+// ── SUB-DISTRICT REGIONS (for GeoJSON regionId binding) ───────────────────────
+// Used by geo-service to map regionId slugs to display names
+
+export const MOCK_REGIONS = {
+    "khordha": [
+        { id: "balianta-block", name: "Balianta Block" },
+        { id: "tangi-block", name: "Tangi Block" },
+        { id: "bolagarh-block", name: "Bolagarh Block" },
+        { id: "jatni-block", name: "Jatni Block" },
+        { id: "khordha-block", name: "Khordha Block" },
+        { id: "cuttack-block", name: "Cuttack Block" }
+    ],
+    "cuttack": [
+        { id: "cuttack-sadar", name: "Cuttack Sadar" },
+        { id: "athagarh", name: "Athagarh" },
+        { id: "banki", name: "Banki" }
+    ],
+    "puri": [
+        { id: "puri-sadar", name: "Puri Sadar" },
+        { id: "brahmagiri", name: "Brahmagiri" },
+        { id: "konark", name: "Konark" }
+    ]
+};

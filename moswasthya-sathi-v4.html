@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenDistricts V4</title>
+    <meta name="description"
+        content="OpenDistricts — Community health and civic intelligence kiosk. Left = Time. Center = Territory. Right = Intelligence.">
+
+    <!-- Fonts: Syne (display) + DM Mono (data) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WLs=" crossorigin=""></script>
+
+    <link rel="stylesheet" href="./css/v4.css">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+       TOP BAR — 44px, all system controls, fixed L→R order
+  ═══════════════════════════════════════════════════════════════════════ -->
+    <header id="topbar">
+
+        <!-- 1. Logo -->
+        <span id="tb-logo">OpenDistricts</span>
+
+        <!-- 2. Separator -->
+        <div class="tb-sep" aria-hidden="true"></div>
+
+        <!-- 3. District label stack (read-only, not a selector trigger) -->
+        <div id="tb-district-label">
+            <div class="tb-district-meta" id="tb-district-meta">CURRENT DISTRICT</div>
+            <div class="tb-district-name" id="tb-district-name">Khordha</div>
+        </div>
+
+        <!-- 4. Change Area button (ONLY trigger for hierarchy selector) -->
+        <button id="tb-change-area" class="tb-btn" aria-label="Change district">CHANGE AREA</button>
+
+        <!-- 5. Spacer -->
+        <div class="tb-spacer" aria-hidden="true"></div>
+
+        <!-- 6. Language selector (dynamic — rendered by JS from DataService) -->
+        <div id="tb-lang" role="group" aria-label="Language selector"></div>
+
+        <!-- 7. Mode toggle: DISTRICT | LIVE -->
+        <div id="tb-mode" role="group" aria-label="Map mode">
+            <button class="mode-pill active" id="mode-district" data-mode="district">DISTRICT</button>
+            <button class="mode-pill" id="mode-live" data-mode="live">LIVE</button>
+        </div>
+
+        <!-- 8. Guided AI button -->
+        <button id="tb-ai-btn" class="tb-btn primary" aria-label="Open Guided AI panel">GUIDED AI</button>
+
+        <!-- 9. Sync dot -->
+        <div id="sync-dot-wrap" aria-live="polite">
+            <div id="sync-dot"></div>
+            <span id="sync-label">LIVE</span>
+        </div>
+
+    </header>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+       MAP CONTAINER — always 100vw, never resizes
+  ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="map" class="district-view">
+
+        <!-- Leaflet renders here -->
+
+        <!-- Environmental overlays — Live Mode only, CSS-activated -->
+        <div class="env-rain" aria-hidden="true"></div>
+        <div class="env-haze" aria-hidden="true"></div>
+
+        <!-- Custom zoom controls (standard Leaflet zoom disabled) -->
+        <div id="map-zoom-controls" aria-label="Map zoom">
+            <button id="zoom-in" class="zoom-btn" aria-label="Zoom in">+</button>
+            <button id="zoom-out" class="zoom-btn" aria-label="Zoom out">−</button>
+        </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+       LEFT TIMELINE PANEL — overlay, opens at boot
+  ═══════════════════════════════════════════════════════════════════════ -->
+    <nav id="timeline-panel" aria-label="Weekly event timeline">
+
+        <!-- Panel header -->
+        <div id="tl-header">
+            <div id="tl-header-labels">
+                <div class="tl-header-meta">WEEKLY EVENTS</div>
+                <div class="tl-header-district" id="tl-header-district">Khordha</div>
+            </div>
+            <button id="tl-collapse-btn" class="tl-collapse-btn" aria-label="Collapse timeline"
+                aria-expanded="true">&#8249;</button>
+        </div>
+
+        <!-- Collapse sliver — visible when panel is hidden, tap to re-expand -->
+        <div id="tl-sliver" aria-label="Expand timeline" role="button" tabindex="0"></div>
+
+        <!-- Spine scroll area -->
+        <div id="tl-scroll" role="list" aria-label="Events list">
+            <div class="tl-spine" id="tl-spine">
+                <!-- Timeline cards injected by v4-app.js -->
+            </div>
+        </div>
+
+    </nav>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+       RIGHT AI PANEL — overlay, closed at boot
+  ═══════════════════════════════════════════════════════════════════════ -->
+    <aside id="ai-panel" aria-label="Guided Intelligence panel">
+
+        <!-- Collapse sliver (left side of panel, always visible when open) -->
+        <div id="ai-sliver" aria-label="Collapse AI panel" role="button" tabindex="0">&#8250;</div>
+
+        <!-- Panel header -->
+        <div id="ai-header">
+            <div id="ai-header-left">
+                <div id="ai-active-dot" aria-hidden="true"></div>
+                <span id="ai-header-title">Guided Intelligence</span>
+            </div>
+            <button id="ai-close-btn" class="ai-close-btn" aria-label="Close AI panel">&#10005;</button>
+        </div>
+
+        <!-- Context bar — changes based on general vs event-bound mode -->
+        <div id="ai-context-bar">
+            <span id="ai-context-text"></span>
+        </div>
+
+        <!-- Intent section — scrollable -->
+        <div id="ai-intent-section">
+            <div class="ai-section-label">SELECT A QUERY</div>
+
+            <!-- General district intents -->
+            <div class="ai-intents" id="ai-intents-general">
+                <button class="intent-card" data-intent="disease-history">
+                    <div class="intent-title">Disease History</div>
+                    <div class="intent-sub">Historical spread and severity trends for this district</div>
+                </button>
+                <button class="intent-card" data-intent="nearest-facility">
+                    <div class="intent-title">Nearest Health Facility</div>
+                    <div class="intent-sub">Find operational PHCs within 10km</div>
+                </button>
+                <button class="intent-card" data-intent="water-status">
+                    <div class="intent-title">Water Point Status</div>
+                    <div class="intent-sub">Active borewells and supply coverage today</div>
+                </button>
+                <button class="intent-card" data-intent="safe-travel">
+                    <div class="intent-title">Safe Travel Routes</div>
+                    <div class="intent-sub">Road conditions and mobility advisories</div>
+                </button>
+            </div>
+
+            <!-- Event-bound intents (hidden unless context = event-bound) -->
+            <div class="ai-intents hidden" id="ai-intents-event">
+                <button class="intent-card" data-intent="spreading">
+                    <div class="intent-title">Is This Spreading?</div>
+                    <div class="intent-sub">7-day case trajectory for this event</div>
+                </button>
+                <button class="intent-card" data-intent="nearest-facility">
+                    <div class="intent-title">Nearest Health Facility</div>
+                    <div class="intent-sub">Find operational PHCs within 10km</div>
+                </button>
+                <button class="intent-card" data-intent="historical-compare">
+                    <div class="intent-title">Historical Comparison</div>
+                    <div class="intent-sub">Same event type, same region — past 3 years</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Result area (hidden until intent is selected) -->
+        <div id="ai-result" class="hidden" role="region" aria-label="AI response">
+            <div id="ai-result-source">
+                <span class="result-verified-dot" aria-hidden="true"></span>
+                <span id="ai-result-source-text"></span>
+            </div>
+            <div id="ai-result-body"></div>
+        </div>
+
+    </aside>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+       TIME AXIS — 60px, always visible
+  ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="time-axis" role="region" aria-label="Temporal timeline">
+
+        <!-- Left controls: play / fast-forward -->
+        <div id="ta-controls">
+            <button id="ta-play" class="ta-ctrl-btn" aria-label="Play through time">PLAY</button>
+            <button id="ta-ff" class="ta-ctrl-btn" aria-label="Fast forward">FF</button>
+        </div>
+
+        <!-- Main timeline area: ruler + density ribbon + playhead -->
+        <div id="ta-main">
+            <!-- Ruler layer (28px) — rendered by JS canvas-free approach with divs -->
+            <div id="ta-ruler" aria-hidden="true"></div>
+
+            <!-- Density ribbon (32px) — coloured segments rendered by JS -->
+            <div id="ta-ribbon" role="presentation"></div>
+
+            <!-- Playhead: 2px white line + draggable handle -->
+            <div id="ta-playhead" aria-label="Temporal position" role="slider" tabindex="0" aria-valuemin="0"
+                aria-valuemax="100" aria-valuenow="100">
+                <div id="ta-playhead-line" aria-hidden="true"></div>
+                <div id="ta-playhead-handle" aria-hidden="true"></div>
+            </div>
+        </div>
+
+        <!-- Right meta: LIVE or HISTORICAL badge -->
+        <div id="ta-meta">
+            <div id="ta-live-badge" aria-live="assertive">
+                <span id="ta-live-dot" aria-hidden="true"></span>
+                <span id="ta-live-label">LIVE</span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+       HIERARCHY SELECTOR — full-screen overlay, z-index takeover
+  ═══════════════════════════════════════════════════════════════════════ -->
+    <div id="hierarchy-selector" class="hidden" role="dialog" aria-modal="true" aria-label="Select district">
+
+        <div id="hs-inner">
+
+            <!-- Tier 1: State grid -->
+            <div id="hs-tier1">
+                <div id="hs-header">
+                    <h2 id="hs-title">Select Your District</h2>
+                    <button id="hs-close" class="hs-close-btn" aria-label="Close district selector">&#10005;</button>
+                </div>
+
+                <div id="hs-search-wrap">
+                    <input type="text" id="hs-search" placeholder="Search state..." autocomplete="off"
+                        aria-label="Search state">
+                </div>
+
+                <div id="hs-state-grid" role="list">
+                    <!-- State cells injected by JS -->
+                </div>
+
+                <!-- Decorative India outline — non-interactive -->
+                <div id="hs-india-wrap" aria-hidden="true">
+                    <svg id="hs-india-svg" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Simplified India outline → decorative only -->
+                        <path d="M55,6 L68,4 L82,10 L90,22 L95,35 L100,52 L98,68 L90,80 L95,90 L88,104
+                     L80,115 L74,128 L68,136 L64,130 L58,118 L50,108 L42,95 L38,82 L30,72
+                     L20,60 L18,48 L22,36 L30,24 L42,14 Z" fill="none" stroke="rgba(255,255,255,0.15)"
+                            stroke-width="1.5" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Tier 2: District map (hidden until state selected) -->
+            <div id="hs-tier2" class="hidden">
+                <div id="hs-t2-header">
+                    <button id="hs-back" class="hs-back-btn" aria-label="Back to states">&#8592;</button>
+                    <span id="hs-t2-state-name"></span>
+                    <button id="hs-t2-close" class="hs-close-btn" aria-label="Close">&#10005;</button>
+                </div>
+                <div id="hs-t2-body">
+                    <!-- Left: SVG district map -->
+                    <div id="hs-district-map-wrap">
+                        <svg id="hs-district-svg" viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+                            <!-- District polygons injected by JS -->
+                        </svg>
+                    </div>
+                    <!-- Right: list mirror -->
+                    <div id="hs-district-list" role="list">
+                        <!-- District rows injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- App entry point -->
+    <script type="module" src="./js/v4-app.js"></script>
+
+</body>
+
+</html>
