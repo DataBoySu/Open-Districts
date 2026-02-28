@@ -15,14 +15,33 @@ let _ctx;
 export function init(ctx) {
     _ctx = ctx;
 
-    // GUIDED AI button — symmetric toggle (opens when closed, closes when open)
-    document.getElementById("tb-ai-btn").addEventListener("click", () => {
+    // ai-tab (side tab, always visible) — symmetric toggle
+    const aiTab = document.getElementById("ai-tab");
+    const aiChevron = document.getElementById("ai-tab-chevron");
+
+    const _updateChevron = (isOpen) => {
+        // › = closed (tap to open), ‹ = open (tap to close)
+        aiChevron.textContent = isOpen ? "›" : "‹";
+        aiTab.setAttribute("aria-expanded", String(isOpen));
+    };
+
+    aiTab.addEventListener("click", () => {
         const panel = document.getElementById("ai-panel");
         panel.classList.contains("open") ? _close() : _open();
+        _updateChevron(!document.getElementById("ai-panel").classList.contains("open"));
+    });
+    aiTab.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") aiTab.click();
     });
 
-    // Close button — always closes
-    document.getElementById("ai-close-btn").addEventListener("click", () => _close());
+    // GUIDED AI topbar button — always opens (panel not visible when topbar is accessible)
+    document.getElementById("tb-ai-btn").addEventListener("click", () => _open());
+
+    // Close button in panel header
+    document.getElementById("ai-close-btn").addEventListener("click", () => {
+        _close();
+        _updateChevron(false);
+    });
 
     document.querySelectorAll(".intent-card").forEach(card => {
         card.addEventListener("click", () => _showResult(card.getAttribute("data-intent")));

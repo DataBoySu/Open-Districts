@@ -131,11 +131,11 @@ button:focus-visible {
   transition: transform 200ms ease-out;
   display: flex;
   flex-direction: column;
-  /* overflow:hidden removed — #tl-sliver must protrude at right:-24px */
   overflow: visible;
+  /* must stay visible so side-tab can protrude */
 }
 
-/* Clip overflow only on the internal scrollable area, not the entire panel */
+/* Clip overflow only on inner scroll/header, not panel itself */
 #tl-header,
 #tl-scroll {
   overflow: hidden;
@@ -144,6 +144,51 @@ button:focus-visible {
 #timeline-panel.hidden {
   transform: translateX(-100%);
 }
+
+/* ── Side toggle tab (shared) ────────────────────────────────── */
+/* Trick: positioned at left:100% inside the panel, so it rides  */
+/* the panel's own translateX. When panel = -100%, tab is at 0.  */
+.panel-side-tab {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 56px;
+  background: var(--white);
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--ink-ghost);
+  transition: color 150ms, background 150ms;
+  z-index: 25;
+  padding: 0;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08);
+  line-height: 1;
+}
+
+.panel-side-tab:hover {
+  color: var(--ink);
+  background: var(--bg-2);
+}
+
+/* Timeline tab: at the RIGHT edge of the timeline panel */
+#tl-tab {
+  left: 100%;
+  border-left: none;
+}
+
+/* AI tab: at the LEFT edge of the AI panel */
+.panel-side-tab.ai {
+  left: -28px;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.08);
+}
+
 
 /* RIGHT AI PANEL — OVERLAY */
 #ai-panel {

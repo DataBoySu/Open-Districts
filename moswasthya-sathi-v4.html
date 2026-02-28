@@ -30,10 +30,6 @@
   ═══════════════════════════════════════════════════════════════════════ -->
     <header id="topbar">
 
-        <!-- 0. Timeline toggle (always visible — symmetric open/close) -->
-        <button id="tb-timeline-btn" class="tb-btn" aria-label="Toggle timeline panel" aria-expanded="true">&#9776;
-            TIMELINE</button>
-
         <!-- 1. Logo -->
         <span id="tb-logo">OpenDistricts</span>
 
@@ -98,14 +94,17 @@
   ═══════════════════════════════════════════════════════════════════════ -->
     <nav id="timeline-panel" aria-label="Weekly event timeline">
 
+        <!-- Side toggle tab — protrudes at left:100%; follows the panel's transform -->
+        <button id="tl-tab" class="panel-side-tab" aria-label="Toggle timeline" aria-expanded="true">
+            <span id="tl-tab-chevron">‹</span>
+        </button>
+
         <!-- Panel header -->
         <div id="tl-header">
             <div id="tl-header-labels">
                 <div class="tl-header-meta">WEEKLY EVENTS</div>
                 <div class="tl-header-district" id="tl-header-district">Khordha</div>
             </div>
-            <button id="tl-collapse-btn" class="tl-collapse-btn" aria-label="Collapse timeline"
-                aria-expanded="true">&#8249;</button>
         </div>
 
         <!-- Spine scroll area -->
@@ -123,7 +122,10 @@
   ═══════════════════════════════════════════════════════════════════════ -->
     <aside id="ai-panel" aria-label="Guided Intelligence panel">
 
-
+        <!-- Side toggle tab — protrudes at left:-28px; follows the panel's transform -->
+        <button id="ai-tab" class="panel-side-tab ai" aria-label="Toggle AI panel" aria-expanded="false">
+            <span id="ai-tab-chevron">›</span>
+        </button>
 
         <!-- Panel header -->
         <div id="ai-header">

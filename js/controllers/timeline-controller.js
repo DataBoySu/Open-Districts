@@ -167,34 +167,45 @@ function _sevLabel(s) {
 // ── Collapse ──────────────────────────────────────────────────────
 function _initCollapse() {
     const panel = document.getElementById("timeline-panel");
-    const topBarBtn = document.getElementById("tb-timeline-btn");
-    const inPanelBtn = document.getElementById("tl-collapse-btn");
+    const tab = document.getElementById("tl-tab");
+    const chevron = document.getElementById("tl-tab-chevron");
 
-    const open = () => {
+    const _updateChevron = () => {
+        // ‹ = panel open, › = panel closed
+        chevron.textContent = _ctx.state.manuallyCollapsed ? "›" : "‹";
+        tab.setAttribute("aria-expanded", String(!_ctx.state.manuallyCollapsed));
+    };
+
+    const _expand = () => {
         _ctx.state.manuallyCollapsed = false;
         panel.classList.remove("hidden");
-        topBarBtn?.setAttribute("aria-expanded", "true");
-        inPanelBtn?.setAttribute("aria-expanded", "true");
+        _updateChevron();
         _ctx.emit("timeline:collapseChanged", { collapsed: false });
     };
 
-    const close = () => {
-        _ctx.state.manuallyCollapsed = true;
-        panel.classList.add("hidden");
-        topBarBtn?.setAttribute("aria-expanded", "false");
-        inPanelBtn?.setAttribute("aria-expanded", "false");
-        _ctx.emit("timeline:collapseChanged", { collapsed: true });
+    const toggle = () => {
+        _ctx.state.manuallyCollapsed = !_ctx.state.manuallyCollapsed;
+        panel.classList.toggle("hidden", _ctx.state.manuallyCollapsed);
+        _updateChevron();
+        _ctx.emit("timeline:collapseChanged", { collapsed: _ctx.state.manuallyCollapsed });
     };
 
-    // Top-bar button: always visible — symmetric toggle
-    topBarBtn?.addEventListener("click", () => {
-        _ctx.state.manuallyCollapsed ? open() : close();
-    });
+    tab.addEventListener("click", toggle);
+    tab.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") toggle(); });
 
-    // In-panel header button: acts as close-only (panel visible when this is reachable)
-    inPanelBtn?.addEventListener("click", close);
+    // Auto-expand when a card is clicked
+    _initCardAutoExpand(_expand);
 }
 
+// ── Auto-expand on card tap ───────────────────────────────────────
+function _initCardAutoExpand(expand) {
+    // Watch for delegation on tl-scroll — cards are rendered later
+    document.getElementById("tl-scroll")?.addEventListener("click", e => {
+        if (e.target.closest(".tl-card") && _ctx.state.manuallyCollapsed) {
+            expand();
+        }
+    });
+}
 
 // ── Blank spine tap → clear focus ────────────────────────────────
 function _initSpineTap() {
