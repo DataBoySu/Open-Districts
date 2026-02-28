@@ -94,11 +94,6 @@
   ═══════════════════════════════════════════════════════════════════════ -->
     <nav id="timeline-panel" aria-label="Weekly event timeline">
 
-        <!-- Side toggle tab — protrudes at left:100%; follows the panel's transform -->
-        <button id="tl-tab" class="panel-side-tab" aria-label="Toggle timeline" aria-expanded="true">
-            <span id="tl-tab-chevron">‹</span>
-        </button>
-
         <!-- Panel header -->
         <div id="tl-header">
             <div id="tl-header-labels">
@@ -116,16 +111,15 @@
 
     </nav>
 
+    <!-- Side toggle tab — decoupled from panel to prevent any clipping -->
+    <button id="tl-tab" class="panel-side-tab" aria-label="Toggle timeline" aria-expanded="true">
+        <span id="tl-tab-chevron">‹</span>
+    </button>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
        RIGHT AI PANEL — overlay, closed at boot
   ═══════════════════════════════════════════════════════════════════════ -->
     <aside id="ai-panel" aria-label="Guided Intelligence panel">
-
-        <!-- Side toggle tab — protrudes at left:-28px; follows the panel's transform -->
-        <button id="ai-tab" class="panel-side-tab ai" aria-label="Toggle AI panel" aria-expanded="false">
-            <span id="ai-tab-chevron">›</span>
-        </button>
 
         <!-- Panel header -->
         <div id="ai-header">
@@ -193,6 +187,11 @@
         </div>
 
     </aside>
+
+    <!-- Side toggle tab — decoupled from AI panel -->
+    <button id="ai-tab" class="panel-side-tab ai" aria-label="Toggle AI panel" aria-expanded="false">
+        <span id="ai-tab-chevron">›</span>
+    </button>
 
 
     <!-- ═══════════════════════════════════════════════════════════════════════

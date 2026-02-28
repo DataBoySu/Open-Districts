@@ -111,8 +111,36 @@ function _getMockGeometry(url) {
 
     // Extract district key from URL path
     const parts = url.split("/");
-    const fileName = (parts.pop() ?? "").replace(".geojson", "");
+    const fileName = (parts.pop() ?? "").replace(".geojson", "").replace("404-fallback-trigger", "stress");
     const c = CENTERS[fileName] ?? { lat: 20.0, lng: 85.0, spread: 0.3 };
+
+    if (fileName === "stress") {
+        const features = [];
+        const baseLat = 19.5;
+        const baseLng = 85.0;
+        let count = 0;
+        for (let x = 0; x < 12; x++) {
+            for (let y = 0; y < 12; y++) {
+                count++;
+                const lat = baseLat + x * 0.1;
+                const lng = baseLng + y * 0.1;
+                const coords = [
+                    [lng, lat],
+                    [lng + 0.08, lat],
+                    [lng + 0.08, lat + 0.08],
+                    [lng, lat + 0.08],
+                    [lng, lat]
+                ];
+                features.push({
+                    type: "Feature",
+                    id: `stress-${count}`,
+                    properties: { name: `Stress Region ${count}`, districtId: "stress" },
+                    geometry: { type: "Polygon", coordinates: [coords] }
+                });
+            }
+        }
+        return { type: "FeatureCollection", features };
+    }
 
     // Generate a rough convex polygon around center
     const s = c.spread;

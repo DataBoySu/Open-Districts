@@ -9,7 +9,7 @@ export const MOCK_STATES = [
         name: "Odisha",
         nameLocal: "ଓଡ଼ିଶା",
         geoJsonUrl: "/data/geo/OD/state-outline.geojson",
-        districts: ["khordha", "cuttack", "puri", "ganjam", "balangir"],
+        districts: ["khordha", "cuttack", "puri", "ganjam", "balangir", "stress"],
         activeAlertCount: 34
     },
     {
@@ -132,6 +132,16 @@ export const MOCK_DISTRICTS = [
         boundingBox: { north: 20.95, south: 20.22, east: 83.72, west: 82.73 },
         population: 1652593,
         activeAlertCount: 4
+    },
+    {
+        id: "stress",
+        stateId: "OD",
+        name: "Performance Stress Test",
+        nameLocal: "ପରୀକ୍ଷା",
+        geoJsonUrl: "404-fallback-trigger",
+        boundingBox: { north: 21.0, south: 19.5, east: 86.5, west: 85.0 },
+        population: 9999999,
+        activeAlertCount: 144
     },
 
     // Maharashtra

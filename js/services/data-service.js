@@ -10,6 +10,7 @@
 import { MOCK_EVENTS } from "../../data/mock-events.js";
 import { MOCK_DISTRICTS, MOCK_STATES, MOCK_REGIONS } from "../../data/mock-districts.js";
 import { MOCK_TRANSLATIONS } from "../../data/mock-translations.js";
+import { generateStressEvents } from "../../data/mock-stress.js";
 import { computeTimeSeries, detectResolution } from "./time-processor.js";
 import { loadGeoJSON } from "./geo-service.js";
 
@@ -47,8 +48,9 @@ export const DataService = {
      * @returns {Promise<Event[]>}
      */
     async getEventsForDistrict(districtId, dateRange) {
-        const filtered = MOCK_EVENTS
-            .filter(e => e.districtId === districtId)
+        let baseEvents = districtId === "stress" ? generateStressEvents() : MOCK_EVENTS.filter(e => e.districtId === districtId);
+
+        const filtered = baseEvents
             .filter(e => {
                 if (!dateRange) return true;
                 const t = new Date(e.timestamp).getTime();
