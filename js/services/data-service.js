@@ -93,6 +93,15 @@ export const DataService = {
     },
 
     /**
+     * Get all regions/tehsils for a district
+     * @param {string} districtId
+     * @returns {Promise<Array<{id: string, name: string}>>}
+     */
+    async getRegions(districtId) {
+        return MOCK_REGIONS[districtId] || [];
+    },
+
+    /**
      * Get all states (for Tier 1 hierarchy selector).
      * @returns {Promise<State[]>}
      */
@@ -106,7 +115,19 @@ export const DataService = {
      * @returns {Promise<District|null>}
      */
     async getDistrictById(districtId) {
-        return MOCK_DISTRICTS.find(d => d.id === districtId) ?? null;
+        const found = MOCK_DISTRICTS.find(d => d.id === districtId);
+        if (found) return found;
+
+        // Stub unsupported districts
+        return {
+            id: districtId,
+            stateId: "UNKNOWN",
+            name: districtId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            geoJsonUrl: `mock-geo-${districtId}`,
+            boundingBox: { north: 28, south: 8, east: 97, west: 68 },
+            population: 0,
+            dataPoints: 0
+        };
     },
 
     /**

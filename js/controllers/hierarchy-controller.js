@@ -299,24 +299,31 @@ function _renderSVGMap(districts, stateGeo) {
                 return fuzzyMatch(name, candidates, 2) !== null;
             });
 
+            const districtObj = matchedDistrict || {
+                id: name.toLowerCase().replace(/\s+/g, '-'),
+                name: name,
+                stateId: _tierTwoState.id,
+                dataPoints: 0
+            };
+
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
             path.setAttribute("d", pathStr);
             path.classList.add("hdist-poly");
 
+            if (districtObj.id === _ctx.state.currentDistrictId) path.classList.add("active");
+
+            // District name label
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", centroid[0]);
+            text.setAttribute("y", centroid[1]);
+            text.setAttribute("text-anchor", "middle");
+            text.classList.add("hdist-lbl");
+            if (districtObj.id === _ctx.state.currentDistrictId) text.classList.add("active");
+            text.textContent = districtObj.name;
+            text.setAttribute("pointer-events", "none");
+            svg.appendChild(text);
+
             if (matchedDistrict) {
-                if (matchedDistrict.id === _ctx.state.currentDistrictId) path.classList.add("active");
-
-                // District name label
-                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                text.setAttribute("x", centroid[0]);
-                text.setAttribute("y", centroid[1]);
-                text.setAttribute("text-anchor", "middle");
-                text.classList.add("hdist-lbl");
-                if (matchedDistrict.id === _ctx.state.currentDistrictId) text.classList.add("active");
-                text.textContent = matchedDistrict.name;
-                text.setAttribute("pointer-events", "none");
-                svg.appendChild(text);
-
                 // Data point dot
                 if (matchedDistrict.dataPoints > 0) {
                     const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -327,44 +334,30 @@ function _renderSVGMap(districts, stateGeo) {
                     dot.setAttribute("pointer-events", "none");
                     svg.appendChild(dot);
                 }
-
-                // Double click handler
-                path.addEventListener("click", () => {
-                    if (lastClickedId === matchedDistrict.id) {
-                        clearTimeout(clickTimer);
-                        lastClickedId = null;
-                        _selectDistrict(matchedDistrict);
-                    } else {
-                        lastClickedId = matchedDistrict.id;
-                        svg.querySelectorAll('.hdist-poly').forEach(p => p.classList.remove('active'));
-                        svg.querySelectorAll('.hdist-lbl').forEach(l => l.classList.remove('active'));
-                        path.classList.add('active');
-                        text.classList.add('active');
-                        _showStatsPanel(matchedDistrict);
-                        clearTimeout(clickTimer);
-                        clickTimer = setTimeout(() => { lastClickedId = null; }, 400);
-                    }
-                });
             } else {
-                // Unmatched district: render dimly so the full state map is visible
                 path.classList.add("unsupported");
                 path.style.opacity = "0.35";
-                path.style.cursor = "default";
-
-                // Still show its name as a very dim label
-                if (name && !isNaN(centroid[0]) && !isNaN(centroid[1])) {
-                    const dimLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    dimLabel.setAttribute("x", centroid[0]);
-                    dimLabel.setAttribute("y", centroid[1]);
-                    dimLabel.setAttribute("text-anchor", "middle");
-                    dimLabel.setAttribute("font-size", "7");
-                    dimLabel.setAttribute("font-family", "DM Mono, monospace");
-                    dimLabel.setAttribute("fill", "rgba(255,255,255,0.28)");
-                    dimLabel.setAttribute("pointer-events", "none");
-                    dimLabel.textContent = name;
-                    svg.appendChild(dimLabel);
-                }
+                text.setAttribute("font-size", "7");
+                text.setAttribute("fill", "rgba(255,255,255,0.28)");
             }
+
+            // Double click handler
+            path.addEventListener("click", () => {
+                if (lastClickedId === districtObj.id) {
+                    clearTimeout(clickTimer);
+                    lastClickedId = null;
+                    _selectDistrict(districtObj);
+                } else {
+                    lastClickedId = districtObj.id;
+                    svg.querySelectorAll('.hdist-poly').forEach(p => p.classList.remove('active'));
+                    svg.querySelectorAll('.hdist-lbl').forEach(l => l.classList.remove('active'));
+                    path.classList.add('active');
+                    text.classList.add('active');
+                    _showStatsPanel(districtObj);
+                    clearTimeout(clickTimer);
+                    clickTimer = setTimeout(() => { lastClickedId = null; }, 400);
+                }
+            });
 
             // Append path before text/dots so they layer on top
             svg.insertBefore(path, svg.firstChild);

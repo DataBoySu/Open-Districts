@@ -65,6 +65,58 @@ function _initLeaflet() {
             runArbitration();
         }, _ctx.state.manuallyCollapsed ? 300 : 500);
     });
+
+    _setupMapControls();
+}
+
+let _userMarker;
+
+function _setupMapControls() {
+    const settingsPanel = document.getElementById("settings-panel");
+    const settingsTab = document.getElementById("settings-tab");
+    const lockCheckbox = document.getElementById("lock-map-focus");
+
+    // Toggle Settings Sidebar
+    const toggleSettings = () => {
+        const isHidden = settingsPanel.classList.contains("hidden");
+        if (isHidden) {
+            settingsPanel.classList.remove("hidden");
+            settingsTab.setAttribute("aria-expanded", "true");
+        } else {
+            settingsPanel.classList.add("hidden");
+            settingsTab.setAttribute("aria-expanded", "false");
+        }
+    };
+
+    settingsTab.addEventListener("click", toggleSettings);
+
+    // Lock Focus toggle (default unlocked/off based on HTML change)
+    lockCheckbox.addEventListener("change", (e) => {
+        setLockState(e.target.checked);
+    });
+}
+function setLockState(isLocked) {
+    if (!isLocked) {
+        // Unlock
+        _map.setMaxBounds(null);
+        _map.setMinZoom(2); // Global scale zoom out permitted
+        _map.setMaxZoom(20);
+        if (_maskLayer && _map.hasLayer(_maskLayer)) {
+            _map.removeLayer(_maskLayer);
+        }
+    } else {
+        // Lock to current district boundaries in AppState
+        if (_ctx.state.currentDistrict) {
+            const bounds = L.latLngBounds(boundingBoxToLeaflet(_ctx.state.currentDistrict.boundingBox));
+            const padBounds = bounds.pad(0.05);
+            _map.setMaxBounds(padBounds);
+            _map.setMinZoom(_map.getBoundsZoom(padBounds, false));
+            _map.setMaxZoom(19);
+        }
+        if (_maskLayer && !_map.hasLayer(_maskLayer)) {
+            _map.addLayer(_maskLayer);
+        }
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════
