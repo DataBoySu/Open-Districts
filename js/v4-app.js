@@ -289,8 +289,8 @@ async function _detectStateFromCoords(lat, lng) {
 
             // If matched both Delhi and Haryana (Gurgaon overlap), prefer Haryana since Gurgaon is HR
             if (matches.length > 1) {
-                const hasHR = matches.find(m => m.properties.id === 'HARY' || m.properties.name === 'Haryana');
-                const hasDL = matches.find(m => m.properties.id === 'DELH' || m.properties.name === 'Delhi');
+                const hasHR = matches.find(m => m.properties.id === 'HARY' || m.properties.name === 'Haryana' || m.properties.NAME_1 === 'Haryana');
+                const hasDL = matches.find(m => m.properties.id === 'DELH' || m.properties.name === 'Delhi' || m.properties.NAME_1 === 'NCT of Delhi');
                 if (hasHR && hasDL) {
                     match = hasHR;
                 } else {
@@ -298,7 +298,7 @@ async function _detectStateFromCoords(lat, lng) {
                 }
             }
 
-            const geoName = match.properties.name || "";
+            const geoName = match.properties.name || match.properties.NAME_1 || "";
             const states = await DataService.getAllStates();
             const stateObj = states.find(s => s.name.toLowerCase() === geoName.toLowerCase());
 

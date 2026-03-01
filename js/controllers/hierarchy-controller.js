@@ -125,11 +125,14 @@ async function _renderIndiaMinimap(states) {
     const pathGen = d3.geoPath().projection(projection);
 
     geoData.features.forEach(feature => {
-        const geoName = feature.properties.name || "";
+        const geoName = feature.properties.name || feature.properties.NAME_1 || "";
+        // Some old dataset IDs are named HARY, etc., which fallback to old ID map
+        const fallbackIds = { 'HARY': 'HR', 'MAHA': 'MH', 'DELH': 'DL', 'GUJA': 'GJ', 'UTTA': 'UP', 'KARN': 'KA', 'TAMI': 'TN', 'WEST': 'WB', 'PUNJ': 'PB', 'RAJA': 'RJ', 'MADH': 'MP', 'ORIS': 'OD' };
         const matchedState = states.find(s => s.name.toLowerCase() === geoName.toLowerCase());
 
         // Use the proper state ID if matched, otherwise fallback to the geojson's string
-        const stateId = matchedState ? matchedState.id : (feature.properties.id || geoName.replace(/\s+/g, '-'));
+        const fallbackProp = feature.properties.id ? (fallbackIds[feature.properties.id] || feature.properties.id) : null;
+        const stateId = matchedState ? matchedState.id : (fallbackProp || geoName.replace(/\s+/g, '-'));
 
         const pathStr = pathGen(feature);
         const centroid = pathGen.centroid(feature);

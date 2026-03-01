@@ -204,7 +204,7 @@ export const DataService = {
      * @returns {Promise<GeoJSON.FeatureCollection>}
      */
     async getAllStatesGeoJSON() {
-        return loadGeoJSON(`./data/geo/india-states-simplified.geojson`);
+        return loadGeoJSON(`./data/geo/india-states.geojson`);
     },
 
     // ── Time Series ────────────────────────────────────────────────────────────
