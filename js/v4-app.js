@@ -277,12 +277,41 @@ async function _detectStateFromCoords(lat, lng) {
     try {
         const indiaGeo = await DataService.getAllStatesGeoJSON();
         if (!indiaGeo || !window.d3) return null;
-        // d3.geoContains uses [longitude, latitude] order
+        // turf.booleanPointInPolygon uses [longitude, latitude] order
         const point = [lng, lat];
-        const match = indiaGeo.features.find(f => d3.geoContains(f, point));
-        if (match) {
-            console.log(`[V4] Geolocation matched state: ${match.properties.id}`);
-            return match.properties.id ?? null;
+
+        // India simplified geojson has overlapping polygons (e.g. Delhi inside Haryana).
+        // Filter all matches
+        const matches = indiaGeo.features.filter(f => turf.booleanPointInPolygon(point, f));
+
+        if (matches.length > 0) {
+            let match = matches[0];
+
+            // If matched both Delhi and Haryana (Gurgaon overlap), prefer Haryana since Gurgaon is HR
+            if (matches.length > 1) {
+                const hasHR = matches.find(m => m.properties.id === 'HARY' || m.properties.name === 'Haryana');
+                const hasDL = matches.find(m => m.properties.id === 'DELH' || m.properties.name === 'Delhi');
+                if (hasHR && hasDL) {
+                    match = hasHR;
+                } else {
+                    match = matches[matches.length - 1]; // Pick the last drawn
+                }
+            }
+
+            const geoName = match.properties.name || "";
+            const states = await DataService.getAllStates();
+            const stateObj = states.find(s => s.name.toLowerCase() === geoName.toLowerCase());
+
+            let resolvedId = stateObj ? stateObj.id : null;
+
+            // Hardcode fallback mappings for simplified geojson just in case
+            if (!resolvedId) {
+                const idMap = { 'HARY': 'HR', 'MAHA': 'MH', 'DELH': 'DL', 'GUJA': 'GJ', 'UTTA': 'UP', 'KARN': 'KA', 'TAMI': 'TN', 'WEST': 'WB', 'PUNJ': 'PB', 'RAJA': 'RJ', 'MADH': 'MP', 'ORIS': 'OD' };
+                resolvedId = idMap[match.properties.id] || match.properties.id;
+            }
+
+            console.log(`[V4] Geolocation matched state: ${geoName} -> ID: ${resolvedId}`);
+            return resolvedId;
         }
         return null;
     } catch (e) {

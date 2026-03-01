@@ -93,6 +93,7 @@ export async function openState(stateId) {
     document.getElementById("hs-state-stats-bar").classList.add("hidden");
     document.getElementById("hs-search").value = "";
 
+    _renderIndiaMinimap(_allStates);
     await _loadTierTwo(state);
 }
 
@@ -312,16 +313,28 @@ function _renderSVGMap(districts, stateGeo) {
 
             if (districtObj.id === _ctx.state.currentDistrictId) path.classList.add("active");
 
-            // District name label
+            // Calculate bounds to determine if text fits
+            const bounds = pathGen.bounds(feature);
+            const polyWidth = bounds[1][0] - bounds[0][0];
+            const polyHeight = bounds[1][1] - bounds[0][1];
+
+            // District name label, only draw if it roughly fits
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", centroid[0]);
-            text.setAttribute("y", centroid[1]);
-            text.setAttribute("text-anchor", "middle");
-            text.classList.add("hdist-lbl");
-            if (districtObj.id === _ctx.state.currentDistrictId) text.classList.add("active");
-            text.textContent = districtObj.name;
-            text.setAttribute("pointer-events", "none");
-            svg.appendChild(text);
+            if (polyWidth > 8) {
+                text.setAttribute("x", centroid[0]);
+                text.setAttribute("y", centroid[1]);
+                text.setAttribute("text-anchor", "middle");
+                text.classList.add("hdist-lbl");
+
+                // Scale font to be smaller for small polygons
+                const fontSize = Math.max(3, Math.min(9, polyWidth / 3.5));
+                text.setAttribute("font-size", fontSize + "px");
+
+                if (districtObj.id === _ctx.state.currentDistrictId) text.classList.add("active");
+                text.textContent = districtObj.name;
+                text.setAttribute("pointer-events", "none");
+                svg.appendChild(text);
+            }
 
             if (matchedDistrict) {
                 // Data point dot
