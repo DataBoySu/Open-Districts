@@ -222,8 +222,8 @@ function _showStateStats(state) {
 
     if (hasData) {
         popEl.textContent = Math.floor(100 + (state.name.length * 15)) + " Lakh";
-        alertsEl.textContent = state.activeAlertCount;
-        if (state.activeAlertCount === 0) {
+        alertsEl.textContent = state.dataPoints || 0;
+        if (!state.dataPoints || state.dataPoints === 0) {
             alertsEl.classList.remove("danger-text");
             alertsEl.style.color = "var(--ok)";
         } else {
@@ -232,7 +232,7 @@ function _showStateStats(state) {
         }
     } else {
         popEl.textContent = "Data Not Found";
-        alertsEl.textContent = "Data Not Found";
+        alertsEl.textContent = "No Data";
         alertsEl.classList.remove("danger-text");
         alertsEl.style.color = "rgba(255,255,255,0.4)";
     }
@@ -289,12 +289,17 @@ function _renderSVGMap(districts, stateGeo) {
 
         // Draw ALL features from the GeoJSON to form the complete state map
         stateGeo.features.forEach(feature => {
-            const name = feature.properties.NAME_2 || feature.properties.dtname || "";
+            const name = feature.properties.name || feature.properties.NAME_2 || feature.properties.dtname || "";
             const pathStr = pathGen(feature);
             const centroid = pathGen.centroid(feature);
 
             // Does this geo feature map to one of our active mock districts?
-            const matchedDistrict = districts.find(d => name.toLowerCase().includes(d.name.toLowerCase()));
+            const matchedDistrict = districts.find(d => {
+                const geoLow = name.toLowerCase();
+                const matchName = geoLow.includes(d.name.toLowerCase());
+                const matchAlias = d.aliases && d.aliases.some(alias => geoLow.includes(alias.toLowerCase()));
+                return matchName || matchAlias;
+            });
 
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
             path.setAttribute("d", pathStr);
@@ -303,8 +308,8 @@ function _renderSVGMap(districts, stateGeo) {
             if (matchedDistrict) {
                 if (matchedDistrict.id === _ctx.state.currentDistrictId) path.classList.add("active");
 
-                // District name
-                let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                // District name label
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 text.setAttribute("x", centroid[0]);
                 text.setAttribute("y", centroid[1]);
                 text.setAttribute("text-anchor", "middle");
@@ -314,8 +319,8 @@ function _renderSVGMap(districts, stateGeo) {
                 text.setAttribute("pointer-events", "none");
                 svg.appendChild(text);
 
-                // Alert dot (dynamically offsetting from center)
-                if (matchedDistrict.activeAlertCount > 0) {
+                // Data point dot
+                if (matchedDistrict.dataPoints > 0) {
                     const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                     dot.setAttribute("cx", centroid[0] + 15);
                     dot.setAttribute("cy", centroid[1] - 15);
@@ -325,38 +330,41 @@ function _renderSVGMap(districts, stateGeo) {
                     svg.appendChild(dot);
                 }
 
-                // Double click handler logic
+                // Double click handler
                 path.addEventListener("click", () => {
                     if (lastClickedId === matchedDistrict.id) {
-                        // It's a double click!
                         clearTimeout(clickTimer);
                         lastClickedId = null;
                         _selectDistrict(matchedDistrict);
                     } else {
-                        // It's a single click! Select and open stats
                         lastClickedId = matchedDistrict.id;
-
-                        // Clear visual actives
                         svg.querySelectorAll('.hdist-poly').forEach(p => p.classList.remove('active'));
                         svg.querySelectorAll('.hdist-lbl').forEach(l => l.classList.remove('active'));
-
-                        // Highlight current
                         path.classList.add('active');
                         text.classList.add('active');
-
-                        // Slide in stats panel
                         _showStatsPanel(matchedDistrict);
-
-                        // Reset click tracking after window expires
                         clearTimeout(clickTimer);
-                        clickTimer = setTimeout(() => {
-                            lastClickedId = null;
-                        }, 400); // 400ms double click tolerance
+                        clickTimer = setTimeout(() => { lastClickedId = null; }, 400);
                     }
                 });
             } else {
-                path.style.opacity = "0.5"; // Dim districts we have no mock data for (0.5 so it's still visible)
+                // Unmatched district: render dimly so the full state map is visible
+                path.style.opacity = "0.35";
                 path.style.cursor = "default";
+
+                // Still show its name as a very dim label
+                if (name && !isNaN(centroid[0]) && !isNaN(centroid[1])) {
+                    const dimLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    dimLabel.setAttribute("x", centroid[0]);
+                    dimLabel.setAttribute("y", centroid[1]);
+                    dimLabel.setAttribute("text-anchor", "middle");
+                    dimLabel.setAttribute("font-size", "7");
+                    dimLabel.setAttribute("font-family", "DM Mono, monospace");
+                    dimLabel.setAttribute("fill", "rgba(255,255,255,0.28)");
+                    dimLabel.setAttribute("pointer-events", "none");
+                    dimLabel.textContent = name;
+                    svg.appendChild(dimLabel);
+                }
             }
 
             // Append path before text/dots so they layer on top
@@ -425,7 +433,7 @@ function _renderSVGMap(districts, stateGeo) {
         svg.appendChild(textFallback);
 
         // Alert dot (top-right corner)
-        if (district.activeAlertCount > 0) {
+        if (district.dataPoints > 0) {
             const dotFallback = document.createElementNS("http://www.w3.org/2000/svg", "circle");
             dotFallback.setAttribute("cx", x + w - 7); dotFallback.setAttribute("cy", y + 7);
             dotFallback.setAttribute("r", "4.5");

@@ -1,0 +1,99 @@
+{
+    "districtId": "surat",
+    "stateId": "GJ",
+    "regions": [
+        {
+            "id": "surat-city",
+            "name": "Surat City",
+            "aliases": [
+                "Adajan",
+                "Vesu",
+                "Rander",
+                "Katargam",
+                "Udhna",
+                "Limbayat",
+                "Varachha",
+                "Athwa",
+                "Majura",
+                "Puna",
+                "Ring Road",
+                "Piplod",
+                "Nanpura",
+                "Bhatar",
+                "Althan",
+                "Dindoli"
+            ],
+            "centroid": {
+                "lat": 21.1702,
+                "lng": 72.8311
+            }
+        },
+        {
+            "id": "choryasi",
+            "name": "Choryasi",
+            "aliases": [
+                "Chorasi",
+                "Hazira",
+                "Magdalla",
+                "Dumas",
+                "Bhatpore",
+                "Surat Airport",
+                "Damka",
+                "Mora",
+                "Suwali"
+            ],
+            "centroid": {
+                "lat": 21.1300,
+                "lng": 72.7200
+            }
+        },
+        {
+            "id": "olpad",
+            "name": "Olpad",
+            "aliases": [
+                "Sayan",
+                "Kim",
+                "Kudsad"
+            ],
+            "centroid": {
+                "lat": 21.3327,
+                "lng": 72.7533
+            }
+        },
+        {
+            "id": "bardoli",
+            "name": "Bardoli",
+            "aliases": [
+                "GIDC Bardoli",
+                "Baben"
+            ],
+            "centroid": {
+                "lat": 21.1216,
+                "lng": 73.1147
+            }
+        },
+        {
+            "id": "kamrej",
+            "name": "Kamrej",
+            "aliases": [
+                "Kamrej Char Rasta",
+                "Kholwad"
+            ],
+            "centroid": {
+                "lat": 21.2675,
+                "lng": 72.9641
+            }
+        },
+        {
+            "id": "palsana",
+            "name": "Palsana",
+            "aliases": [
+                "Kadodara"
+            ],
+            "centroid": {
+                "lat": 21.1550,
+                "lng": 73.0030
+            }
+        }
+    ]
+}

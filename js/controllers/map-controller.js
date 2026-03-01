@@ -77,9 +77,14 @@ export async function loadDistrictGeo(district, events) {
     if (_markersLayer) _map.removeLayer(_markersLayer);
     _regionLayerMap.clear();
 
-    // Fit to bounds
-    const bounds = boundingBoxToLeaflet(district.boundingBox);
+    // Fit to bounds and strictly cage the user
+    // Convert array structure to L.LatLngBounds so we can pad it
+    const bounds = L.latLngBounds(boundingBoxToLeaflet(district.boundingBox));
     _map.fitBounds(bounds, { padding: [20, 20] });
+
+    // Prevent zooming out past the district or panning away to other states
+    _map.setMaxBounds(bounds.pad(0.05));
+    _map.setMinZoom(_map.getBoundsZoom(bounds, false) - 0.5);
 
     // Try to load GeoJSON — falls back to mock grid in geo-service
     const geoData = await _ctx.ds.getGeoJSON(district.geoJsonUrl);
@@ -157,12 +162,12 @@ export function syncFocus(focusedEventId, events) {
     const ev = events.find(e => e.id === focusedEventId);
     if (!ev) return;
 
-    // Fly to region
+    // Fly to event
     const targetLayer = ev.regionId ? _regionLayerMap.get(ev.regionId) : null;
-    if (targetLayer?.getBounds) {
+    if (ev.geoPoint) {
+        _map.flyTo([ev.geoPoint.lat, ev.geoPoint.lng], 14, { duration: 0.8 });
+    } else if (targetLayer?.getBounds) {
         _map.fitBounds(targetLayer.getBounds(), { padding: [30, 30] });
-    } else if (ev.geoPoint) {
-        _map.setView([ev.geoPoint.lat, ev.geoPoint.lng], Math.max(_map.getZoom(), 13));
     }
 
     // Style update
