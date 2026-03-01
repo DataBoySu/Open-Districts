@@ -1,0 +1,210 @@
+{
+    "type": "FeatureCollection",
+    "_note": "STUB — replace with real tehsil-level GeoJSON from datta07/INDIAN-SHAPEFILES or geoBoundaries. Feature properties.id must match the regionId slugs in data/region-index/HR_gurugram.json",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "gurugram-sadar",
+                "name": "Gurugram Sadar"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            76.980,
+                            28.490
+                        ],
+                        [
+                            77.100,
+                            28.490
+                        ],
+                        [
+                            77.100,
+                            28.400
+                        ],
+                        [
+                            76.980,
+                            28.400
+                        ],
+                        [
+                            76.980,
+                            28.490
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "badshahpur",
+                "name": "Badshahpur"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            76.980,
+                            28.400
+                        ],
+                        [
+                            77.100,
+                            28.400
+                        ],
+                        [
+                            77.100,
+                            28.340
+                        ],
+                        [
+                            76.980,
+                            28.340
+                        ],
+                        [
+                            76.980,
+                            28.400
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "manesar",
+                "name": "Manesar"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            76.880,
+                            28.400
+                        ],
+                        [
+                            76.980,
+                            28.400
+                        ],
+                        [
+                            76.980,
+                            28.320
+                        ],
+                        [
+                            76.880,
+                            28.320
+                        ],
+                        [
+                            76.880,
+                            28.400
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "pataudi",
+                "name": "Pataudi"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            76.750,
+                            28.350
+                        ],
+                        [
+                            76.880,
+                            28.350
+                        ],
+                        [
+                            76.880,
+                            28.270
+                        ],
+                        [
+                            76.750,
+                            28.270
+                        ],
+                        [
+                            76.750,
+                            28.350
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "farrukhnagar",
+                "name": "Farrukhnagar"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            76.780,
+                            28.460
+                        ],
+                        [
+                            76.900,
+                            28.460
+                        ],
+                        [
+                            76.900,
+                            28.390
+                        ],
+                        [
+                            76.780,
+                            28.390
+                        ],
+                        [
+                            76.780,
+                            28.460
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "sohna",
+                "name": "Sohna"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            77.020,
+                            28.300
+                        ],
+                        [
+                            77.120,
+                            28.300
+                        ],
+                        [
+                            77.120,
+                            28.230
+                        ],
+                        [
+                            77.020,
+                            28.230
+                        ],
+                        [
+                            77.020,
+                            28.300
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}

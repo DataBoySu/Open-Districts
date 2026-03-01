@@ -69,6 +69,32 @@ export async function open() {
     _renderIndiaMinimap(_allStates);
 }
 
+/**
+ * Jump directly to the Tier 2 (district map) for a known stateId.
+ * Used by the boot sequence after geolocation detects the user's state.
+ * @param {string} stateId  e.g. "OD", "MH"
+ */
+export async function openState(stateId) {
+    if (_allStates.length === 0) {
+        _allStates = await _ctx.ds.getAllStates();
+    }
+
+    const state = _allStates.find(s => s.id === stateId);
+    if (!state) {
+        console.warn(`[Hierarchy] openState: unknown state '${stateId}', falling back to India view.`);
+        return open(); // graceful fallback
+    }
+
+    const overlay = document.getElementById("hierarchy-selector");
+    overlay.classList.remove("hidden", "fading");
+
+    // Reset UI state, then immediately go to Tier 2
+    document.getElementById("hs-state-stats-bar").classList.add("hidden");
+    document.getElementById("hs-search").value = "";
+
+    await _loadTierTwo(state);
+}
+
 export function close() {
     const overlay = document.getElementById("hierarchy-selector");
     overlay.classList.add("fading");
@@ -97,23 +123,27 @@ async function _renderIndiaMinimap(states) {
     const pathGen = d3.geoPath().projection(projection);
 
     geoData.features.forEach(feature => {
-        const stateId = feature.properties.id;
-        if (!stateId) return; // Skip unrecognized geometry
+        const geoName = feature.properties.name || "";
+        const matchedState = states.find(s => s.name.toLowerCase() === geoName.toLowerCase());
 
-        const matchedState = states.find(s => s.id === stateId);
-        const stateName = feature.properties.name || stateId;
+        // Use the proper state ID if matched, otherwise fallback to the geojson's string
+        const stateId = matchedState ? matchedState.id : (feature.properties.id || geoName.replace(/\s+/g, '-'));
 
         const pathStr = pathGen(feature);
         const centroid = pathGen.centroid(feature);
+        const bounds = pathGen.bounds(feature);
+        const width = bounds[1][0] - bounds[0][0];
 
         // Path
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", pathStr);
         path.classList.add("india-state-path");
         path.setAttribute("data-state-id", stateId);
-        path.setAttribute("data-state-name", stateName);
+        path.setAttribute("data-state-name", geoName);
 
-        if (!matchedState) {
+        // A state is unsupported if we have no districts for it
+        const isSupported = matchedState && matchedState.districts && matchedState.districts.length > 0;
+        if (!isSupported) {
             path.classList.add("unsupported"); // Mark no-data states
         }
 
@@ -159,14 +189,15 @@ async function _renderIndiaMinimap(states) {
 
         svg.appendChild(path);
 
-        // Label
-        if (stateName && centroid && !isNaN(centroid[0]) && !isNaN(centroid[1])) {
+        // Label — Skip drawing text if the state's projected width is too small (avoids Northeast overlapping)
+        if (geoName && centroid && !isNaN(centroid[0]) && !isNaN(centroid[1]) && width > 25) {
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text.setAttribute("x", centroid[0]);
             text.setAttribute("y", centroid[1]);
             text.id = `lbl-${stateId}`;
             text.classList.add("state-label");
-            text.textContent = stateName; // using full name
+            text.textContent = geoName;
+            text.style.pointerEvents = "none"; // Make sure labels don't intercept hover
             svg.appendChild(text);
         }
     });

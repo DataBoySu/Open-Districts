@@ -87,7 +87,7 @@ export const MOCK_STATES = [
     { id: "DD", name: "Daman and Diu", nameLocal: "दमन और दीव", geoJsonUrl: "/data/geo/DD/state-outline.geojson", districts: [], activeAlertCount: 0 },
     { id: "DL", name: "Delhi", nameLocal: "दिल्ली", geoJsonUrl: "/data/geo/DL/state-outline.geojson", districts: [], activeAlertCount: 0 },
     { id: "GA", name: "Goa", nameLocal: "गोवा", geoJsonUrl: "/data/geo/GA/state-outline.geojson", districts: [], activeAlertCount: 0 },
-    { id: "HR", name: "Haryana", nameLocal: "हरियाणा", geoJsonUrl: "/data/geo/HR/state-outline.geojson", districts: [], activeAlertCount: 0 },
+    { id: "HR", name: "Haryana", nameLocal: "हरियाणा", geoJsonUrl: "/data/geo/HR/state-outline.geojson", districts: ["gurugram"], activeAlertCount: 5 },
     { id: "HP", name: "Himachal Pradesh", nameLocal: "हिमाचल प्रदेश", geoJsonUrl: "/data/geo/HP/state-outline.geojson", districts: [], activeAlertCount: 0 },
     { id: "JK", name: "Jammu and Kashmir", nameLocal: "जम्मू और कश्मीर", geoJsonUrl: "/data/geo/JK/state-outline.geojson", districts: [], activeAlertCount: 0 },
     { id: "JH", name: "Jharkhand", nameLocal: "झारखंड", geoJsonUrl: "/data/geo/JH/state-outline.geojson", districts: [], activeAlertCount: 0 },
@@ -251,6 +251,18 @@ export const MOCK_DISTRICTS = [
         boundingBox: { north: 20.12, south: 18.85, east: 75.82, west: 74.58 },
         population: 3701282,
         activeAlertCount: 6
+    },
+
+    // Haryana
+    {
+        id: "gurugram",
+        stateId: "HR",
+        name: "Gurugram",
+        nameLocal: "गुरुग्राम",
+        geoJsonUrl: "/data/geo/HR/gurugram.geojson",
+        boundingBox: { north: 28.55, south: 28.22, east: 77.20, west: 76.75 },
+        population: 1514432,
+        activeAlertCount: 5
     }
 ];
 
@@ -258,22 +270,27 @@ export const MOCK_DISTRICTS = [
 // Used by geo-service to map regionId slugs to display names
 
 export const MOCK_REGIONS = {
+    // Gurugram tehsils — IDs align with HR/gurugram.geojson feature properties.id
+    "gurugram": [
+        { id: "gurugram-sadar", name: "Gurugram Sadar" },
+        { id: "badshahpur", name: "Badshahpur" },
+        { id: "pataudi", name: "Pataudi" },
+        { id: "manesar", name: "Manesar" },
+        { id: "farrukhnagar", name: "Farrukhnagar" },
+        { id: "sohna", name: "Sohna" }
+    ],
+    // Retained for historical GeoJSON compatibility (OD still in hierarchy selector)
     "khordha": [
         { id: "balianta-block", name: "Balianta Block" },
         { id: "tangi-block", name: "Tangi Block" },
         { id: "bolagarh-block", name: "Bolagarh Block" },
         { id: "jatni-block", name: "Jatni Block" },
-        { id: "khordha-block", name: "Khordha Block" },
-        { id: "cuttack-block", name: "Cuttack Block" }
+        { id: "khordha-block", name: "Khordha Block" }
     ],
     "cuttack": [
-        { id: "cuttack-sadar", name: "Cuttack Sadar" },
-        { id: "athagarh", name: "Athagarh" },
-        { id: "banki", name: "Banki" }
+        { id: "cuttack-sadar", name: "Cuttack Sadar" }
     ],
     "puri": [
-        { id: "puri-sadar", name: "Puri Sadar" },
-        { id: "brahmagiri", name: "Brahmagiri" },
-        { id: "konark", name: "Konark" }
+        { id: "puri-sadar", name: "Puri Sadar" }
     ]
 };

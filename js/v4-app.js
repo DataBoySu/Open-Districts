@@ -21,6 +21,9 @@ import * as TimeCtrl from "./controllers/time-controller.js";
 import * as HierarchyCtrl from "./controllers/hierarchy-controller.js";
 import { formatCardTime } from "./services/time-processor.js";
 
+// ── Local storage key for saved district selection ─────────────────────────────
+const STORAGE_KEY = "opendistricts_savedDistrict";
+
 // ═══════════════════════════════════════════════════════════════════
 // 1. APP STATE — single source of truth
 // ═══════════════════════════════════════════════════════════════════
@@ -67,10 +70,16 @@ function _wireEvents() {
     // Timeline card tap → focus event
     on("timeline:cardTap", ({ eventId }) => setFocusedEvent(eventId));
 
-    // Hierarchy: district selected → reload
+    // Hierarchy: district selected → reload + SAVE to localStorage (Option C)
     on("hierarchy:districtSelected", ({ districtId, stateId }) => {
         AICtrl.close();
         loadDistrict(districtId, stateId);
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ districtId, stateId }));
+            console.log(`[V4] Saved district to localStorage: ${districtId} (${stateId})`);
+        } catch (e) {
+            console.warn("[V4] Could not write to localStorage.", e);
+        }
     });
 
     // Time scrub → check historical boundary
@@ -253,7 +262,72 @@ async function _switchLocale(locale) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 7. BOOT SEQUENCE
+// 8. GEOLOCATION — detect user's state from browser GPS (Option B)
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Given lat/lng, returns the stateId string by checking which state
+ * polygon in the India GeoJSON contains the point.
+ * Uses d3.geoContains (already loaded via window.d3 from CDN).
+ * @param {number} lat
+ * @param {number} lng
+ * @returns {Promise<string|null>}  stateId or null if outside all known polygons
+ */
+async function _detectStateFromCoords(lat, lng) {
+    try {
+        const indiaGeo = await DataService.getAllStatesGeoJSON();
+        if (!indiaGeo || !window.d3) return null;
+        // d3.geoContains uses [longitude, latitude] order
+        const point = [lng, lat];
+        const match = indiaGeo.features.find(f => d3.geoContains(f, point));
+        if (match) {
+            console.log(`[V4] Geolocation matched state: ${match.properties.id}`);
+            return match.properties.id ?? null;
+        }
+        return null;
+    } catch (e) {
+        console.warn("[V4] State detection from coords failed.", e);
+        return null;
+    }
+}
+
+/**
+ * Run geolocation detection and open the hierarchy at the right level.
+ * - Approved → open the user's state district map (Tier 2)
+ * - Denied / failed → open the full India state selector (Tier 1)
+ */
+function _runFirstTimeLocationFlow() {
+    if (!navigator.geolocation) {
+        console.log("[V4] Geolocation not supported. Defaulting to India map.");
+        HierarchyCtrl.open();
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        // ── SUCCESS (user approved) ──────────────────────────────────
+        async (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log(`[V4] Geolocation granted: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+            const stateId = await _detectStateFromCoords(latitude, longitude);
+            if (stateId) {
+                HierarchyCtrl.openState(stateId);
+            } else {
+                // User is outside India or point didn't match — fallback to India map
+                console.log("[V4] Could not match location to a state. Showing India map.");
+                HierarchyCtrl.open();
+            }
+        },
+        // ── ERROR (user denied or timeout) ──────────────────────────
+        (err) => {
+            console.log(`[V4] Geolocation denied/failed (${err.code}). Showing India map.`);
+            HierarchyCtrl.open();
+        },
+        { timeout: 8000, maximumAge: 60000 }
+    );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 9. BOOT SEQUENCE
 // ═══════════════════════════════════════════════════════════════════
 
 async function boot() {
@@ -274,9 +348,27 @@ async function boot() {
     document.getElementById("mode-district")?.addEventListener("click", () => setMode("district"));
     document.getElementById("mode-live")?.addEventListener("click", () => setMode("live"));
 
-    // Load initial district
-    await TimelineCtrl.prefetchRegions("khordha");
-    await loadDistrict("khordha", "OD");
+    // ── OPTION C: Check localStorage for a previously saved district ─────────
+    let savedDistrict = null;
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) savedDistrict = JSON.parse(raw);
+    } catch (e) {
+        console.warn("[V4] Could not read localStorage.", e);
+    }
+
+    if (savedDistrict?.districtId && savedDistrict?.stateId) {
+        // Returning user — restore their last district directly, no prompt needed
+        console.log(`[V4] Restoring saved district: ${savedDistrict.districtId} (${savedDistrict.stateId})`);
+        await TimelineCtrl.prefetchRegions(savedDistrict.districtId);
+        await loadDistrict(savedDistrict.districtId, savedDistrict.stateId);
+    } else {
+        // First-time visitor — load a default to populate the map, then ask for location
+        await TimelineCtrl.prefetchRegions("khordha");
+        await loadDistrict("khordha", "OD");
+        // Small delay so the map renders before the browser permission dialog appears
+        setTimeout(() => _runFirstTimeLocationFlow(), 600);
+    }
 
     await _renderLanguageSelector();
 

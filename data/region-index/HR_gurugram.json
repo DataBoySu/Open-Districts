@@ -1,0 +1,123 @@
+{
+    "districtId": "gurugram",
+    "stateId": "HR",
+    "note": "Feed this file into the scraping agent's system prompt. Agent must map incident locations to one of the IDs below using semantic reasoning. Never invent new IDs.",
+    "regions": [
+        {
+            "id": "gurugram-sadar",
+            "name": "Gurugram Sadar",
+            "aliases": [
+                "Gurgaon Sadar",
+                "Civil Lines",
+                "DLF City",
+                "Golf Course Road",
+                "Sohna Road",
+                "MG Road",
+                "Sector 1-45",
+                "Sector 14",
+                "Sector 29",
+                "Sector 30",
+                "Sector 31",
+                "Sector 44",
+                "Cyber City",
+                "Udyog Vihar",
+                "Old Gurgaon",
+                "Sheetla Mata Road"
+            ],
+            "centroid": {
+                "lat": 28.4595,
+                "lng": 77.0266
+            }
+        },
+        {
+            "id": "badshahpur",
+            "name": "Badshahpur",
+            "aliases": [
+                "Badshahpur block",
+                "Sector 65",
+                "Sector 66",
+                "Sector 67",
+                "Sector 68",
+                "Sector 69",
+                "Sector 70",
+                "Sector 71",
+                "Sector 72",
+                "Southern Peripheral Road",
+                "SPR",
+                "Vatika Chowk",
+                "NH-48 south"
+            ],
+            "centroid": {
+                "lat": 28.3962,
+                "lng": 77.0543
+            }
+        },
+        {
+            "id": "manesar",
+            "name": "Manesar",
+            "aliases": [
+                "IMT Manesar",
+                "NH-48 industrial belt",
+                "Sector 1-10 IMT",
+                "HSIIDC Manesar",
+                "Maruti Suzuki plant area",
+                "Kherki Daula",
+                "Sector 80",
+                "Sector 81",
+                "Sector 82",
+                "Sector 83",
+                "Sector 84"
+            ],
+            "centroid": {
+                "lat": 28.3600,
+                "lng": 76.9470
+            }
+        },
+        {
+            "id": "pataudi",
+            "name": "Pataudi",
+            "aliases": [
+                "Hailymandi",
+                "Farukh Nagar Road",
+                "Jharsa",
+                "Bilaspur",
+                "Pataudi road",
+                "Jhajjar border"
+            ],
+            "centroid": {
+                "lat": 28.3212,
+                "lng": 76.7855
+            }
+        },
+        {
+            "id": "farrukhnagar",
+            "name": "Farrukhnagar",
+            "aliases": [
+                "Farrukhpur",
+                "Jhajjar Road",
+                "Garhi Harsaru",
+                "Kapriwas"
+            ],
+            "centroid": {
+                "lat": 28.4500,
+                "lng": 76.8500
+            }
+        },
+        {
+            "id": "sohna",
+            "name": "Sohna",
+            "aliases": [
+                "Gurgaon-Mewat belt",
+                "Jasana",
+                "Damdama Lake area",
+                "Sohna Road south",
+                "Sohna town",
+                "Bhondsi"
+            ],
+            "centroid": {
+                "lat": 28.2500,
+                "lng": 77.0700
+            }
+        }
+    ]
+}

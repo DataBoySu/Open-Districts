@@ -2,6 +2,8 @@
 // GeoJSON loading, caching, and bounding box helpers.
 // All geographic data access flows through this module.
 
+import { MOCK_DISTRICTS, MOCK_REGIONS } from '../../data/mock-districts.js';
+
 // ── CACHE ─────────────────────────────────────────────────────────────────────
 
 const _geoCache = new Map(); // url → GeoJSON FeatureCollection
@@ -18,6 +20,16 @@ const _geoCache = new Map(); // url → GeoJSON FeatureCollection
  */
 export async function loadGeoJSON(url) {
     if (_geoCache.has(url)) return _geoCache.get(url);
+
+    // Hardcoded regex for files known to safely exist on disk.
+    // Prevents throwing standard 404s in the browser devtools console!
+    const KNOWN_GEOJSON_PATTERN = /india-states(-simplified)?\.geojson|\/geo\/[A-Z]{2}\.geojson|\/HR\/gurugram\.geojson/;
+    if (!KNOWN_GEOJSON_PATTERN.test(url)) {
+        console.info(`[GeoService] Auto-stubbing geometry grid for unresolved file: ${url}`);
+        const mock = _getMockGeometry(url);
+        _geoCache.set(url, mock);
+        return mock;
+    }
 
     try {
         const resp = await fetch(url);
@@ -135,22 +147,8 @@ export function districtBoundaryStyle() {
 // Returns a plausible GeoJSON polygon for the district from path parsing.
 
 function _getMockGeometry(url) {
-    // Derive approximate center from known districts
-    const CENTERS = {
-        "khordha": { lat: 20.18, lng: 85.76, spread: 0.22 },
-        "cuttack": { lat: 20.46, lng: 85.88, spread: 0.18 },
-        "puri": { lat: 19.81, lng: 85.83, spread: 0.20 },
-        "ganjam": { lat: 19.73, lng: 84.81, spread: 0.30 },
-        "balangir": { lat: 20.58, lng: 83.22, spread: 0.28 },
-        "pune": { lat: 18.80, lng: 74.05, spread: 0.60 },
-        "mumbai": { lat: 19.08, lng: 72.87, spread: 0.19 },
-        "nagpur": { lat: 21.10, lng: 79.07, spread: 0.33 }
-    };
-
-    // Extract district key from URL path
     const parts = url.split("/");
     const fileName = (parts.pop() ?? "").replace(".geojson", "").replace("404-fallback-trigger", "stress");
-    const c = CENTERS[fileName] ?? { lat: 20.0, lng: 85.0, spread: 0.3 };
 
     if (fileName === "stress") {
         const features = [];
@@ -180,62 +178,60 @@ function _getMockGeometry(url) {
         return { type: "FeatureCollection", features };
     }
 
-    // ── Khordha district: block-level mock polygons ──────────────────
-    // IDs match mock-events.js regionId values exactly (DEV-04 fix)
-    if (fileName === "khordha") {
-        const BLOCKS = [
-            { id: "balianta-block", lat: 20.1847, lng: 85.7891, name: "Balianta Block" },
-            { id: "tangi-block", lat: 20.0634, lng: 85.9271, name: "Tangi Block" },
-            { id: "bolagarh-block", lat: 20.1189, lng: 85.5843, name: "Bolagarh Block" },
-            { id: "jatni-block", lat: 20.1694, lng: 85.7066, name: "Jatni Block" },
-            { id: "khordha-block", lat: 20.1820, lng: 85.6145, name: "Khordha Block" },
-            { id: "cuttack-block", lat: 20.4625, lng: 85.8828, name: "Cuttack Block" },
-            { id: "bhubaneswar", lat: 20.2961, lng: 85.8245, name: "Bhubaneswar" },
-        ];
-        const sq = 0.08; // ~9km block size
+    // Try to load district specs from our central MOCK_DISTRICTS mapping
+    const district = MOCK_DISTRICTS.find(d => d.id === fileName);
+
+    // Fallback if not registered as a known active district
+    if (!district) {
         return {
             type: "FeatureCollection",
-            features: BLOCKS.map(b => ({
-                type: "Feature",
-                id: b.id,
-                properties: { id: b.id, name: b.name, districtId: "khordha" },
-                geometry: {
-                    type: "Polygon",
-                    coordinates: [[
-                        [b.lng - sq, b.lat - sq],
-                        [b.lng + sq, b.lat - sq],
-                        [b.lng + sq, b.lat + sq],
-                        [b.lng - sq, b.lat + sq],
-                        [b.lng - sq, b.lat - sq]
-                    ]]
-                }
-            }))
-        };
-    }
-
-    // Generate a rough convex polygon around center
-    const s = c.spread;
-    const coords = [
-        [c.lng - s * 0.4, c.lat + s],
-        [c.lng + s * 0.6, c.lat + s * 0.8],
-        [c.lng + s, c.lat + s * 0.2],
-        [c.lng + s * 0.8, c.lat - s * 0.5],
-        [c.lng + s * 0.1, c.lat - s],
-        [c.lng - s * 0.6, c.lat - s * 0.7],
-        [c.lng - s, c.lat - s * 0.1],
-        [c.lng - s * 0.7, c.lat + s * 0.5],
-        [c.lng - s * 0.4, c.lat + s]  // close ring
-    ];
-
-    return {
-        type: "FeatureCollection",
-        features: [
-            {
+            features: [{
                 type: "Feature",
                 id: fileName,
                 properties: { name: fileName, districtId: fileName },
-                geometry: { type: "Polygon", coordinates: [coords] }
+                geometry: { type: "Polygon", coordinates: [[[85, 20], [86, 20], [86, 21], [85, 21], [85, 20]]] }
+            }]
+        };
+    }
+
+    // Intelligent Grid Stub Construction
+    // Distributes the district's recognized regions equally across its bounding box
+    const regions = MOCK_REGIONS[fileName] || [{ id: fileName, name: fileName }];
+    const { north, south, east, west } = district.boundingBox;
+
+    const count = regions.length;
+    const cols = Math.ceil(Math.sqrt(count));
+    const rows = Math.ceil(count / cols);
+    const cellW = (east - west) / cols;
+    const cellH = (north - south) / rows;
+
+    const features = [];
+    regions.forEach((region, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+
+        // 5% margin to make regions distinct separated boxes
+        const lng1 = west + col * cellW + (cellW * 0.05);
+        const lat1 = south + row * cellH + (cellH * 0.05);
+        const lng2 = west + col * cellW + cellW - (cellW * 0.05);
+        const lat2 = south + row * cellH + cellH - (cellH * 0.05);
+
+        features.push({
+            type: "Feature",
+            id: region.id, // VITAL: exactly matches regionId so D3/Leaflet binds to it
+            properties: { id: region.id, name: region.name, districtId: district.id },
+            geometry: {
+                type: "Polygon",
+                coordinates: [[
+                    [lng1, lat1],
+                    [lng2, lat1],
+                    [lng2, lat2],
+                    [lng1, lat2],
+                    [lng1, lat1]
+                ]]
             }
-        ]
-    };
+        });
+    });
+
+    return { type: "FeatureCollection", features };
 }
