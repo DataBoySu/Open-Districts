@@ -218,8 +218,7 @@ function _showStateStats(state) {
     document.getElementById("hs-state-stats-name").textContent = state.name;
     const alertsEl = document.getElementById("hs-state-stats-alerts");
     const popEl = document.getElementById("hs-state-stats-pop");
-
-    const hasData = state.districts && state.districts.length > 0;
+    const hasData = state.dataPoints > 0;
 
     if (hasData) {
         popEl.textContent = Math.floor(100 + (state.name.length * 15)) + " Lakh";

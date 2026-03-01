@@ -147,7 +147,7 @@ export async function loadDistrictGeo(district, events) {
 
     _maskLayer = L.polygon(maskCoordinates, {
         fillColor: '#DDE1E7', // --map-base
-        fillOpacity: 1.0,
+        fillOpacity: 0.8,
         stroke: false,
         interactive: false
     }).addTo(_map);
