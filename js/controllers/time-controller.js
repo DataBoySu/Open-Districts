@@ -121,6 +121,10 @@ function _renderPlayhead() {
     }
 }
 
+// ── SVG Icons ──────────────────────────────────────────────────────
+const ICON_PLAY = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M5 3l14 9-14 9V3z"/></svg>`;
+const ICON_PAUSE = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>`;
+
 // ── Drag ──────────────────────────────────────────────────────────
 function _initDrag() {
     const handle = document.getElementById("ta-playhead-handle");
@@ -181,6 +185,14 @@ function _initButtons() {
         if (_ctx.state.isAutoPlaying && _axis.isFF) { _stopAutoPlay(); } else { _startAutoPlay(100); }
     });
 
+    // Stop button — reset to LIVE
+    document.getElementById("ta-stop").addEventListener("click", () => {
+        _stopAutoPlay();
+        _axis.playheadFrac = 1.0;
+        _renderPlayhead();
+        _ctx.emit("time:scrub", { frac: 1.0 });
+    });
+
     // Stop autoplay on map or ribbon touch
     document.getElementById("map").addEventListener("pointerdown", _stopAutoPlay);
 }
@@ -191,7 +203,10 @@ function _startAutoPlay(intervalMs) {
     _ctx.state.isAutoPlaying = true;
     _axis.isFF = intervalMs < 500;
 
-    document.getElementById("ta-play").classList.add("playing");
+    const playBtn = document.getElementById("ta-play");
+    playBtn.classList.add("playing");
+    playBtn.innerHTML = ICON_PAUSE; // Switch to Pause symbol
+
     if (_axis.isFF) document.getElementById("ta-ff").classList.add("playing");
 
     const total = _ctx.state.timeBuckets?.length ?? 0;
@@ -226,13 +241,23 @@ function _stopAutoPlay() {
     clearInterval(_ctx.state.autoPlayTimer);
     _ctx.state.isAutoPlaying = false;
     _axis.isFF = false;
-    document.getElementById("ta-play")?.classList.remove("playing");
+
+    const playBtn = document.getElementById("ta-play");
+    if (playBtn) {
+        playBtn.classList.remove("playing");
+        playBtn.innerHTML = ICON_PLAY; // Revert to Play symbol
+    }
+
     document.getElementById("ta-ff")?.classList.remove("playing");
 }
 
 // ── Utilities ─────────────────────────────────────────────────────
 function _rulerLabel(isoTs) {
     const d = new Date(isoTs);
+    // Determine if it's sub-daily by checking time fractions explicitly
+    if (d.getUTCHours() !== 0 || d.getUTCMinutes() !== 0) {
+        return d.toISOString().slice(11, 16); // Extract HH:MM
+    }
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
 }

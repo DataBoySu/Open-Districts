@@ -10,7 +10,7 @@ const _rawStates = [
         id: "OD",
         name: "Odisha",
         nameLocal: "ଓଡ଼ିଶା",
-        geoJsonUrl: "./data/geo/OD/state-outline.geojson",
+        geoJsonUrl: "./data/geo/OD/state-outline.geojson?v=2",
         districts: ["khordha", "cuttack", "puri", "ganjam", "balangir", "mayurbhanj", "koraput", "sambalpur", "sundargarh"],
         dataPoints: 34
     },
@@ -18,7 +18,7 @@ const _rawStates = [
         id: "MH",
         name: "Maharashtra",
         nameLocal: "महाराष्ट्र",
-        geoJsonUrl: "./data/geo/MH/state-outline.geojson",
+        geoJsonUrl: "./data/geo/MH/state-outline.geojson?v=2",
         districts: ["pune", "mumbai", "nagpur", "nashik", "aurangabad"],
         dataPoints: 21
     },
@@ -26,7 +26,7 @@ const _rawStates = [
         id: "TN",
         name: "Tamil Nadu",
         nameLocal: "தமிழ் நாடு",
-        geoJsonUrl: "./data/geo/TN/state-outline.geojson",
+        geoJsonUrl: "./data/geo/TN/state-outline.geojson?v=2",
         districts: ["chennai", "coimbatore", "madurai", "tiruchirappalli", "salem"],
         dataPoints: 15
     },
@@ -34,7 +34,7 @@ const _rawStates = [
         id: "KA",
         name: "Karnataka",
         nameLocal: "ಕರ್ನಾಟಕ",
-        geoJsonUrl: "./data/geo/KA/state-outline.geojson",
+        geoJsonUrl: "./data/geo/KA/state-outline.geojson?v=2",
         districts: ["bengaluru-urban", "mysuru", "dharwad", "belagavi", "tumakuru"],
         dataPoints: 9
     },
@@ -42,7 +42,7 @@ const _rawStates = [
         id: "WB",
         name: "West Bengal",
         nameLocal: "পশ্চিমবঙ্গ",
-        geoJsonUrl: "./data/geo/WB/state-outline.geojson",
+        geoJsonUrl: "./data/geo/WB/state-outline.geojson?v=2",
         districts: ["kolkata", "howrah", "darjeeling", "purba-medinipur", "murshidabad"],
         dataPoints: 18
     },
@@ -50,7 +50,7 @@ const _rawStates = [
         id: "GJ",
         name: "Gujarat",
         nameLocal: "ગુજરાત",
-        geoJsonUrl: "./data/geo/GJ/state-outline.geojson",
+        geoJsonUrl: "./data/geo/GJ/state-outline.geojson?v=2",
         districts: ["surat"],
         dataPoints: 15
     },
@@ -58,7 +58,7 @@ const _rawStates = [
         id: "UP",
         name: "Uttar Pradesh",
         nameLocal: "उत्तर प्रदेश",
-        geoJsonUrl: "./data/geo/UP/state-outline.geojson",
+        geoJsonUrl: "./data/geo/UP/state-outline.geojson?v=2",
         districts: ["lucknow", "kanpur", "agra", "varanasi", "prayagraj"],
         dataPoints: 41
     },
@@ -66,7 +66,7 @@ const _rawStates = [
         id: "RJ",
         name: "Rajasthan",
         nameLocal: "राजस्थान",
-        geoJsonUrl: "./data/geo/RJ/state-outline.geojson",
+        geoJsonUrl: "./data/geo/RJ/state-outline.geojson?v=2",
         districts: ["jaipur", "jodhpur", "udaipur", "kota", "bikaner"],
         dataPoints: 12
     },
@@ -74,37 +74,37 @@ const _rawStates = [
         id: "MP",
         name: "Madhya Pradesh",
         nameLocal: "मध्य प्रदेश",
-        geoJsonUrl: "./data/geo/MP/state-outline.geojson",
+        geoJsonUrl: "./data/geo/MP/state-outline.geojson?v=2",
         districts: ["bhopal", "indore", "gwalior", "jabalpur", "ujjain"],
         dataPoints: 17
     },
-    { id: "AN", name: "Andaman and Nicobar", nameLocal: "అండమాన్ మరియు నికోబార్", geoJsonUrl: "./data/geo/AN/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "AP", name: "Andhra Pradesh", nameLocal: "ఆంధ్రప్రదేశ్", geoJsonUrl: "./data/geo/AP/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "AR", name: "Arunachal Pradesh", nameLocal: "అరుణాచల్ ప్రదేశ్", geoJsonUrl: "./data/geo/AR/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "AS", name: "Assam", nameLocal: "అసోం", geoJsonUrl: "./data/geo/AS/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "BR", name: "Bihar", nameLocal: "बिहार", geoJsonUrl: "./data/geo/BR/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "CH", name: "Chandigarh", nameLocal: "चंडीगढ़", geoJsonUrl: "./data/geo/CH/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "CT", name: "Chhattisgarh", nameLocal: "छत्तीसगढ़", geoJsonUrl: "./data/geo/CT/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "DN", name: "Dadra and Nagar Haveli", nameLocal: "दादरा और नगर हवेली", geoJsonUrl: "./data/geo/DN/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "DD", name: "Daman and Diu", nameLocal: "दमन और दीव", geoJsonUrl: "./data/geo/DD/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "DL", name: "Delhi", nameLocal: "दिल्ली", geoJsonUrl: "./data/geo/DL/state-outline.geojson", districts: ["new_delhi"], dataPoints: 0 },
-    { id: "GA", name: "Goa", nameLocal: "गोवा", geoJsonUrl: "./data/geo/GA/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "HR", name: "Haryana", nameLocal: "हरियाणा", geoJsonUrl: "./data/geo/HR/state-outline.geojson", districts: ["gurugram"], dataPoints: 5 },
-    { id: "HP", name: "Himachal Pradesh", nameLocal: "हिमाचल प्रदेश", geoJsonUrl: "./data/geo/HP/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "JK", name: "Jammu and Kashmir", nameLocal: "जम्मू और कश्मीर", geoJsonUrl: "./data/geo/JK/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "JH", name: "Jharkhand", nameLocal: "झारखंड", geoJsonUrl: "./data/geo/JH/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "KL", name: "Kerala", nameLocal: "കേരളം", geoJsonUrl: "./data/geo/KL/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "LD", name: "Lakshadweep", nameLocal: "ലക്ഷദ്വീപ്", geoJsonUrl: "./data/geo/LD/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "MN", name: "Manipur", nameLocal: "मणिपुर", geoJsonUrl: "./data/geo/MN/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "ML", name: "Meghalaya", nameLocal: "मेघालय", geoJsonUrl: "./data/geo/ML/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "MZ", name: "Mizoram", nameLocal: "मिज़ोरम", geoJsonUrl: "./data/geo/MZ/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "NL", name: "Nagaland", nameLocal: "नागालैंड", geoJsonUrl: "./data/geo/NL/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "PY", name: "Puducherry", nameLocal: "पुदुच्चेरी", geoJsonUrl: "./data/geo/PY/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "PB", name: "Punjab", nameLocal: "पंजाब", geoJsonUrl: "./data/geo/PB/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "SK", name: "Sikkim", nameLocal: "सिक्किम", geoJsonUrl: "./data/geo/SK/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "TR", name: "Tripura", nameLocal: "త్రిపుర", geoJsonUrl: "./data/geo/TR/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "TS", name: "Telangana", nameLocal: "తెలంగాణ", geoJsonUrl: "./data/geo/TS/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "UT", name: "Uttaranchal", nameLocal: "उत्तरांचल", geoJsonUrl: "./data/geo/UT/state-outline.geojson", districts: [], dataPoints: 0 }
+    { id: "AN", name: "Andaman and Nicobar", nameLocal: "అండమాన్ మరియు నికోబార్", geoJsonUrl: "./data/geo/AN/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "AP", name: "Andhra Pradesh", nameLocal: "ఆంధ్రప్రదేశ్", geoJsonUrl: "./data/geo/AP/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "AR", name: "Arunachal Pradesh", nameLocal: "అరుణాచల్ ప్రదేశ్", geoJsonUrl: "./data/geo/AR/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "AS", name: "Assam", nameLocal: "అసోం", geoJsonUrl: "./data/geo/AS/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "BR", name: "Bihar", nameLocal: "बिहार", geoJsonUrl: "./data/geo/BR/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "CH", name: "Chandigarh", nameLocal: "चंडीगढ़", geoJsonUrl: "./data/geo/CH/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "CT", name: "Chhattisgarh", nameLocal: "छत्तीसगढ़", geoJsonUrl: "./data/geo/CT/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "DN", name: "Dadra and Nagar Haveli", nameLocal: "दादरा और नगर हवेली", geoJsonUrl: "./data/geo/DN/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "DD", name: "Daman and Diu", nameLocal: "दमन और दीव", geoJsonUrl: "./data/geo/DD/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "DL", name: "Delhi", nameLocal: "दिल्ली", geoJsonUrl: "./data/geo/DL/state-outline.geojson?v=2", districts: ["central", "east", "new_delhi", "north", "north_east", "north_west", "shahdara", "south", "south_east", "south_west", "west"], dataPoints: 0 },
+    { id: "GA", name: "Goa", nameLocal: "गोवा", geoJsonUrl: "./data/geo/GA/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "HR", name: "Haryana", nameLocal: "हरियाणा", geoJsonUrl: "./data/geo/HR/state-outline.geojson?v=2", districts: ["gurugram"], dataPoints: 5 },
+    { id: "HP", name: "Himachal Pradesh", nameLocal: "हिमाचल प्रदेश", geoJsonUrl: "./data/geo/HP/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "JK", name: "Jammu and Kashmir", nameLocal: "जम्मू और कश्मीर", geoJsonUrl: "./data/geo/JK/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "JH", name: "Jharkhand", nameLocal: "झारखंड", geoJsonUrl: "./data/geo/JH/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "KL", name: "Kerala", nameLocal: "കേരളം", geoJsonUrl: "./data/geo/KL/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "LD", name: "Lakshadweep", nameLocal: "ലക്ഷദ്വീപ്", geoJsonUrl: "./data/geo/LD/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "MN", name: "Manipur", nameLocal: "मणिपुर", geoJsonUrl: "./data/geo/MN/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "ML", name: "Meghalaya", nameLocal: "मेघालय", geoJsonUrl: "./data/geo/ML/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "MZ", name: "Mizoram", nameLocal: "मिज़ोरम", geoJsonUrl: "./data/geo/MZ/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "NL", name: "Nagaland", nameLocal: "नागालैंड", geoJsonUrl: "./data/geo/NL/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "PY", name: "Puducherry", nameLocal: "पुदुच्चेरी", geoJsonUrl: "./data/geo/PY/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "PB", name: "Punjab", nameLocal: "पंजाब", geoJsonUrl: "./data/geo/PB/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "SK", name: "Sikkim", nameLocal: "सिक्किम", geoJsonUrl: "./data/geo/SK/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "TR", name: "Tripura", nameLocal: "త్రిపుర", geoJsonUrl: "./data/geo/TR/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "TS", name: "Telangana", nameLocal: "తెలంగాణ", geoJsonUrl: "./data/geo/TS/state-outline.geojson?v=2", districts: [], dataPoints: 0 },
+    { id: "UT", name: "Uttaranchal", nameLocal: "उत्तरांचल", geoJsonUrl: "./data/geo/UT/state-outline.geojson?v=2", districts: [], dataPoints: 0 }
 ];
 
 export const MOCK_STATES = _rawStates.map(state => ({
@@ -123,7 +123,7 @@ const _rawDistricts = [
         name: "Gurugram",
         aliases: ["Gurgaon"],
         nameLocal: "गुरुग्राम",
-        geoJsonUrl: "./data/geo/HR/gurugram.geojson",
+        geoJsonUrl: "./data/geo/HR/gurugram.geojson?v=2",
         boundingBox: { north: 28.55, south: 28.22, east: 77.20, west: 76.75 },
         population: 1514432,
         dataPoints: 5
@@ -135,7 +135,7 @@ const _rawDistricts = [
         stateId: "GJ",
         name: "Surat",
         nameLocal: "સુરત",
-        geoJsonUrl: "./data/geo/GJ/surat.geojson",
+        geoJsonUrl: "./data/geo/GJ/surat.geojson?v=2",
         boundingBox: { north: 21.43, south: 21.05, east: 73.20, west: 72.63 },
         population: 6081322,
         dataPoints: 15
@@ -145,7 +145,7 @@ const _rawDistricts = [
         stateId: "MH",
         name: "Pune",
         nameLocal: "",
-        geoJsonUrl: "./data/geo/MH/pune.geojson",
+        geoJsonUrl: "./data/geo/MH/pune.geojson?v=2",
         boundingBox: { north: 19.42, south: 18.18, east: 74.60, west: 73.50 },
         population: 9429408
     },
@@ -154,9 +154,99 @@ const _rawDistricts = [
         stateId: "DL",
         name: "New Delhi",
         nameLocal: "नई दिल्ली",
-        geoJsonUrl: "./data/geo/DL/new_delhi.geojson",
-        boundingBox: { north: 28.67, south: 28.53, east: 77.28, west: 77.05 },
+        geoJsonUrl: "./data/geo/DL/new_delhi.geojson?v=2",
+        boundingBox: { north: 28.6376, south: 28.5273, east: 77.2566, west: 77.1682 },
         population: 257803
+    },
+    {
+        id: "central",
+        stateId: "DL",
+        name: "Central",
+        nameLocal: "मध्य दिल्ली",
+        geoJsonUrl: "./data/geo/DL/central.geojson?v=2",
+        boundingBox: { north: 28.7884, south: 28.6136, east: 77.2683, west: 76.9534 },
+        population: 582320
+    },
+    {
+        id: "east",
+        stateId: "DL",
+        name: "East",
+        nameLocal: "पूर्वी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/east.geojson?v=2",
+        boundingBox: { north: 28.7111, south: 28.6225, east: 77.3426, west: 77.2292 },
+        population: 1709346
+    },
+    {
+        id: "north",
+        stateId: "DL",
+        name: "North",
+        nameLocal: "उत्तरी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/north.geojson?v=2",
+        boundingBox: { north: 28.8838, south: 28.6845, east: 77.2244, west: 76.9618 },
+        population: 887978
+    },
+    {
+        id: "north_east",
+        stateId: "DL",
+        name: "North East",
+        nameLocal: "उत्तर-पूर्वी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/north_east.geojson?v=2",
+        boundingBox: { north: 28.7711, south: 28.6709, east: 77.298, west: 77.2179 },
+        population: 2241624
+    },
+    {
+        id: "north_west",
+        stateId: "DL",
+        name: "North West",
+        nameLocal: "उत्तर-पश्चिमी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/north_west.geojson?v=2",
+        boundingBox: { north: 28.8183, south: 28.6672, east: 77.1923, west: 76.9421 },
+        population: 3645184
+    },
+    {
+        id: "shahdara",
+        stateId: "DL",
+        name: "Shahdara",
+        nameLocal: "शाहदरा",
+        geoJsonUrl: "./data/geo/DL/shahdara.geojson?v=2",
+        boundingBox: { north: 28.7141, south: 28.6394, east: 77.3329, west: 77.267 },
+        population: 322931
+    },
+    {
+        id: "south",
+        stateId: "DL",
+        name: "South",
+        nameLocal: "दक्षिणी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/south.geojson?v=2",
+        boundingBox: { north: 28.5699, south: 28.4047, east: 77.2715, west: 77.1109 },
+        population: 2731929
+    },
+    {
+        id: "south_east",
+        stateId: "DL",
+        name: "South East",
+        nameLocal: "दक्षिण-पूर्वी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/south_east.geojson?v=2",
+        boundingBox: { north: 28.6082, south: 28.4836, east: 77.3476, west: 77.2059 },
+        population: 637775
+    },
+    {
+        id: "south_west",
+        stateId: "DL",
+        name: "South West",
+        nameLocal: "दक्षिण-पश्चिमी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/south_west.geojson?v=2",
+        boundingBox: { north: 28.6698, south: 28.5007, east: 77.1039, west: 76.8389 },
+        population: 2292958
+    },
+    {
+        id: "west",
+        stateId: "DL",
+        name: "West",
+        nameLocal: "पश्चिमी दिल्ली",
+        geoJsonUrl: "./data/geo/DL/west.geojson?v=2",
+        boundingBox: { north: 28.7021, south: 28.5962, east: 77.1789, west: 76.9534 },
+        population: 2543243
     }
 ];
 
@@ -217,9 +307,54 @@ export const MOCK_REGIONS = {
             name: "Khed"
         }
     ],
-    // New Delhi 2026 regions
+    // Delhi 2026 regions
+    "central": [
+        { id: "civil-lines", name: "Civil Lines" },
+        { id: "darya-ganj", name: "Darya Ganj" },
+        { id: "karol-bagh", name: "Karol Bagh" },
+        { id: "kotwali", name: "Kotwali" },
+        { id: "pahar-ganj", name: "Pahar Ganj" },
+        { id: "sadar-bazar", name: "Sadar Bazar" }
+    ],
+    "east": [
+        { id: "gandhi-nagar", name: "Gandhi Nagar" },
+        { id: "preet-vihar", name: "Preet Vihar" }
+    ],
     "new_delhi": [
-        { id: "new-delhi", name: "New Delhi" },
-        { id: "delhi-cantonment", name: "Delhi Cantonment" }
+        { id: "chanakya-puri", name: "Chanakya Puri" },
+        { id: "connaught-place", name: "Connaught Place" },
+        { id: "delhi-cantonment", name: "Delhi Cantonment" },
+        { id: "parliament-street", name: "Parliament Street" },
+        { id: "vasant-vihar", name: "Vasant Vihar" }
+    ],
+    "north": [
+        { id: "model-town", name: "Model Town" },
+        { id: "narela", name: "Narela" }
+    ],
+    "north_east": [
+        { id: "seelam-pur", name: "Seelam Pur" }
+    ],
+    "north_west": [
+        { id: "saraswati-vihar", name: "Saraswati Vihar" }
+    ],
+    "shahdara": [
+        { id: "seema-puri", name: "Seema Puri" },
+        { id: "shahdara", name: "Shahdara" },
+        { id: "vivek-vihar", name: "Vivek Vihar" }
+    ],
+    "south": [
+        { id: "hauz-khas", name: "Hauz Khas" }
+    ],
+    "south_east": [
+        { id: "defence-colony", name: "Defence Colony" },
+        { id: "kalkaji", name: "Kalkaji" }
+    ],
+    "south_west": [
+        { id: "najafgarh", name: "Najafgarh" }
+    ],
+    "west": [
+        { id: "patel-nagar", name: "Patel Nagar" },
+        { id: "punjabi-bagh", name: "Punjabi Bagh" },
+        { id: "rajouri-garden", name: "Rajouri Garden" }
     ]
 };

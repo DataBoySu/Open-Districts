@@ -831,5 +831,38 @@ export const MOCK_EVENTS = [
     "source": "Press Information Bureau",
     "verified": true,
     "meta": { "evAccidents": 10454 }
+  },
+  {
+    "id": "evt_DL_central_20260227_001",
+    "stateId": "DL",
+    "districtId": "central",
+    "regionId": "kotwali",
+    "category": "infrastructure",
+    "title": "Chandni Chowk Underground Cabling",
+    "summary": "Launch of a ₹160-crore project to shift 52.5 km of overhead electricity wires underground in the historic Chandni Chowk area.",
+    "timestamp": "2026-02-27T11:00:00Z",
+    "expiresAt": null,
+    "geoPoint": { "lat": 28.6506, "lng": 77.2304 },
+    "location": { "block": "Chandni Chowk" },
+    "source": "The Times of India",
+    "verified": true,
+    "meta": { "projectCost": "160Cr" }
+  },
+  {
+    "id": "evt_DL_north_west_20260301_001",
+    "stateId": "DL",
+    "districtId": "north_west",
+    "regionId": "saraswati-vihar",
+    "category": "safety",
+    "title": "Community Policing Initiative Launch",
+    "summary": "New community policing initiative launched in Saraswati Vihar to improve local safety and emergency response times.",
+    "timestamp": "2026-03-01T14:00:00Z",
+    "expiresAt": null,
+    "geoPoint": { "lat": 28.6942, "lng": 77.1349 },
+    "location": { "block": "Saraswati Vihar" },
+    "source": "Delhi Police",
+    "verified": true,
+    "meta": { "blocksCovered": 12 }
   }
 ];
+

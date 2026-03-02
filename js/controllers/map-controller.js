@@ -527,6 +527,38 @@ export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
     runArbitration();
 }
 
+/** Remove all temporal visibility filters and return features to default live appearance */
+export function clearHistoricalSnapshot(events) {
+    if (!_regionsLayer) return;
+
+    // Build the category map for ALL events currently known
+    const categoryMap = _buildCategoryByRegion(events || []);
+
+    // Polygons
+    _regionLayerMap.forEach((layer, regionId) => {
+        const entry = categoryMap[regionId];
+        const cat = (entry && entry.impactScale === "WIDE") ? entry.category : "none";
+
+        layer.setStyle({ ...categoryPolygonStyle(cat, false), opacity: 1, fillOpacity: 0.55 });
+        if (layer._path && cat !== "none") {
+            _applyCatClass(layer._path, cat);
+        } else if (layer._path) {
+            _applyCatClass(layer._path, "none");
+        }
+    });
+
+    // Markers
+    if (_markersLayer) {
+        _markersLayer.eachLayer(layer => {
+            if (layer._path) {
+                layer._path.style.display = "";
+                layer._path.style.opacity = "1";
+            }
+        });
+    }
+
+    runArbitration();
+}
 
 /** Arbitration engine — governs all polygon animation play-state. */
 export function runArbitration() {

@@ -146,6 +146,14 @@ export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
     });
 }
 
+/** Remove all temporal visibility filters and return to default live appearance */
+export function clearHistoricalSnapshot() {
+    const cards = document.querySelectorAll(".tl-card");
+    cards.forEach(card => {
+        card.classList.remove("tl-hidden", "tl-historical-dim", "tl-current");
+    });
+}
+
 
 // ═══════════════════════════════════════════════════════════════════
 // PRIVATE — internal helpers

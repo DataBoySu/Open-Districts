@@ -330,10 +330,17 @@ function _renderSVGMap(districts, stateGeo) {
             const centroid = pathGen.centroid(feature);
 
             // Resilient matching tying 2011 census properties to live metadata aliases using Levenshtein distance
-            const matchedDistrict = districts.find(d => {
+            let allCandidates = [];
+            let candToDist = new Map();
+            districts.forEach(d => {
                 const candidates = [d.name, ...(d.aliases || [])];
-                return fuzzyMatch(name, candidates, 2) !== null;
+                candidates.forEach(c => {
+                    allCandidates.push(c);
+                    candToDist.set(c, d);
+                });
             });
+            const bestMatchString = fuzzyMatch(name, allCandidates, 2);
+            const matchedDistrict = bestMatchString ? candToDist.get(bestMatchString) : null;
 
             const districtObj = matchedDistrict || {
                 id: name.toLowerCase().replace(/\s+/g, '-'),

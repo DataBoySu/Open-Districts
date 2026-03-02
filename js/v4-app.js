@@ -117,6 +117,13 @@ function _wireEvents() {
     on("time:scrub", ({ frac }) => {
         if (!AppState.timeBuckets || AppState.timeBuckets.length === 0) return;
 
+        // Reset to full live mode if scrubbing all the way to the end
+        if (frac > 0.99) {
+            MapCtrl.clearHistoricalSnapshot(AppState.events);
+            TimelineCtrl.clearHistoricalSnapshot();
+            return;
+        }
+
         let bucketIndex = Math.floor(frac * AppState.timeBuckets.length);
         if (bucketIndex >= AppState.timeBuckets.length) bucketIndex = AppState.timeBuckets.length - 1;
 

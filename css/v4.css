@@ -756,6 +756,29 @@ button:focus-visible {
   padding: 8px 10px 8px 12px;
 }
 
+/* Time Machine States */
+.tl-card.tl-hidden {
+  display: none !important;
+}
+
+.tl-card.tl-historical-dim {
+  opacity: 0.4;
+  filter: grayscale(1);
+  transition: opacity 150ms, filter 150ms;
+}
+
+.tl-card.tl-historical-dim:hover {
+  opacity: 0.7;
+  filter: grayscale(0.5);
+}
+
+.tl-card.tl-current {
+  opacity: 1;
+  filter: none;
+  box-shadow: -2px 0 0 var(--primary);
+  /* Highlight current ones slightly */
+}
+
 .tl-card.focused .tl-details {
   display: block;
 }
@@ -1303,15 +1326,16 @@ button:focus-visible {
    SECTION 07 — TIME AXIS
 ═══════════════════════════════════════════════════════════════════ */
 
-/* Left controls zone: 80px */
+/* Left controls zone: 100px */
 #ta-controls {
-  width: 80px;
+  width: 104px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 0 10px;
+  gap: 4px;
+  /* Reduced gap slightly to fit 3 buttons nicely */
+  padding: 0 8px;
   border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
