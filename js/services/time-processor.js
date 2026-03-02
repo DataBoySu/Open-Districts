@@ -85,7 +85,8 @@ export function computeTimeSeries(events, resolution) {
                 endTs: new Date(endMs).toISOString(),
                 eventCount: 0,
                 dominantCategory: "safety",
-                hasData: false
+                hasData: false,
+                resolution: resolution
             };
         }
 
@@ -101,7 +102,8 @@ export function computeTimeSeries(events, resolution) {
             endTs: new Date(endMs).toISOString(),
             eventCount: bucketEvents.length,
             dominantCategory: dominantEvent.category,
-            hasData: true
+            hasData: true,
+            resolution: resolution
         };
     });
 

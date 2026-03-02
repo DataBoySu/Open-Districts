@@ -77,7 +77,8 @@ export const DataService = {
      * @param {Event[]} events 
      */
     async calculateTimeSeriesDirectly(events) {
-        return computeTimeSeries(events);
+        const res = detectResolution(events);
+        return computeTimeSeries(events, res);
     },
 
     /**

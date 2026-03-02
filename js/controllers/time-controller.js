@@ -40,6 +40,7 @@ export function renderTimeAxis(buckets) {
     if (!buckets || buckets.length === 0) return;
 
     const total = buckets.length;
+    let lastDateStr = "";
 
     buckets.forEach((bucket, i) => {
         // Ribbon segment
@@ -58,10 +59,15 @@ export function renderTimeAxis(buckets) {
         ruler.appendChild(tick);
 
         if (isMajor && bucket.startTs) {
+            const d = new Date(bucket.startTs);
+            const currentDateStr = `${d.getUTCDate()}-${d.getUTCMonth()}`;
+            const isSameDate = (currentDateStr === lastDateStr);
+            lastDateStr = currentDateStr;
+
             const label = document.createElement("div");
             label.className = "ta-tick-label";
             label.style.left = `${(i / total) * 100}%`;
-            label.textContent = _rulerLabel(bucket.startTs);
+            label.innerHTML = _rulerLabel(bucket, isSameDate);
             ruler.appendChild(label);
         }
     });
@@ -252,12 +258,19 @@ function _stopAutoPlay() {
 }
 
 // ── Utilities ─────────────────────────────────────────────────────
-function _rulerLabel(isoTs) {
-    const d = new Date(isoTs);
-    // Determine if it's sub-daily by checking time fractions explicitly
-    if (d.getUTCHours() !== 0 || d.getUTCMinutes() !== 0) {
-        return d.toISOString().slice(11, 16); // Extract HH:MM
-    }
+function _rulerLabel(bucket, isSameDate) {
+    const d = new Date(bucket.startTs);
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
+    const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
+
+    const dateHtml = isSameDate
+        ? `<div class="ta-date" style="visibility: hidden;">${dateStr}</div>`
+        : `<div class="ta-date">${dateStr}</div>`;
+
+    // Show time underneath date if resolution suggests multiple sub-daily buckets
+    if (bucket.resolution === "hour" || bucket.resolution === "half-hour") {
+        const timeStr = d.toISOString().slice(11, 16); // Extract HH:MM
+        return `${dateHtml}<div class="ta-time">${timeStr}</div>`;
+    }
+    return dateHtml;
 }
