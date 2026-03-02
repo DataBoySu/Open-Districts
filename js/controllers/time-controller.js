@@ -99,20 +99,6 @@ export function renderTimeAxis(buckets) {
 export function stopAutoPlay() { _stopAutoPlay(); }
 export function resumeAutoPlay(intervalMs = 250) { _startAutoPlay(intervalMs); }
 
-/** Update the LIVE / HISTORICAL badge in the time axis right zone. */
-export function renderBadge(isHistorical, overrideText = null) {
-    const badge = document.getElementById("ta-live-badge");
-    const label = document.getElementById("ta-live-label");
-    if (!badge || !label) return;
-    badge.classList.toggle("historical", isHistorical);
-
-    if (overrideText) {
-        label.innerHTML = overrideText;
-    } else {
-        label.textContent = isHistorical ? "HISTORICAL" : "LIVE";
-    }
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // PRIVATE
 // ═══════════════════════════════════════════════════════════════════
@@ -137,29 +123,9 @@ function _renderPlayhead() {
     `;
     }
 
-    // Dynamic Live/Date Label Badge
-    const isNowHistorical = frac < 0.99;
-    let badgeText = null;
-    if (isNowHistorical && _axis.buckets && _axis.buckets.length > 0) {
-        let idx = Math.floor(frac * _axis.buckets.length);
-        if (idx >= _axis.buckets.length) idx = _axis.buckets.length - 1;
-        const bucket = _axis.buckets[idx];
-
-        const d = new Date(bucket.startTs);
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
-
-        if (bucket.resolution === "hour" || bucket.resolution === "half-hour") {
-            const hh = String(d.getUTCHours()).padStart(2, "0");
-            const mm = String(d.getUTCMinutes()).padStart(2, "0");
-            badgeText = `<span style="font-weight:600">${dateStr}</span> <span style="opacity:0.7">· ${hh}:${mm}</span>`;
-        } else {
-            badgeText = `<span style="font-weight:600">${dateStr}</span>`;
-        }
-    }
-    renderBadge(isNowHistorical, badgeText);
-
     // Notify orchestrator of historical state change
+    // v4-app handles the badge labeling now
+    const isNowHistorical = frac < 0.99;
     if (isNowHistorical !== _ctx.state.isHistorical) {
         _ctx.emit("time:historicalChanged", { isHistorical: isNowHistorical });
     }

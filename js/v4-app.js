@@ -47,7 +47,6 @@ const AppState = {
     autoPlayTimer: null,
     autoPlayBucketIndex: 0,
     consecutiveSlowFrames: 0,
-    consecutiveSlowFrames: 0,
     envOverlaysEnabled: true,
     districtScopeLocked: true, // Default to limiting events to district boundary
 };
@@ -121,18 +120,45 @@ function _wireEvents() {
         if (frac > 0.99) {
             MapCtrl.clearHistoricalSnapshot(AppState.events);
             TimelineCtrl.clearHistoricalSnapshot();
+            _renderSyncDot(); // Reset top bar to LIVE
             return;
         }
 
         let bucketIndex = Math.floor(frac * AppState.timeBuckets.length);
         if (bucketIndex >= AppState.timeBuckets.length) bucketIndex = AppState.timeBuckets.length - 1;
 
+        const bucket = AppState.timeBuckets[bucketIndex];
+        const d = new Date(bucket.startTs);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
+        let labelText = `<span style="font-weight:600">${dateStr}</span>`;
+
+        if (bucket.resolution === "hour" || bucket.resolution === "half-hour") {
+            const hh = String(d.getUTCHours()).padStart(2, "0");
+            const mm = String(d.getUTCMinutes()).padStart(2, "0");
+            labelText += ` <span style="opacity:0.7">· ${hh}:${mm}</span>`;
+        }
+
+        _renderSyncDot(labelText);
         MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
         TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
     });
 
     // Time bucket step during autoplay → update map snapshot + timeline
     on("time:bucketStep", ({ bucketIndex }) => {
+        const bucket = AppState.timeBuckets[bucketIndex];
+        const d = new Date(bucket.startTs);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
+        let labelText = `<span style="font-weight:600">${dateStr}</span>`;
+
+        if (bucket.resolution === "hour" || bucket.resolution === "half-hour") {
+            const hh = String(d.getUTCHours()).padStart(2, "0");
+            const mm = String(d.getUTCMinutes()).padStart(2, "0");
+            labelText += ` <span style="opacity:0.7">· ${hh}:${mm}</span>`;
+        }
+
+        _renderSyncDot(labelText);
         MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
         TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
     });
@@ -256,7 +282,6 @@ async function loadDistrict(districtId, stateId) {
     TimelineCtrl.setGeoData(geoData);
     TimelineCtrl.renderTimeline(events);
     TimeCtrl.renderTimeAxis(timeBuckets);
-    TimeCtrl.renderBadge(false);
     _renderSyncDot();
     AICtrl.reset();
     // ── FIX-3: Reset env overlay throttle on district change (DEV-05) ─
@@ -493,13 +518,18 @@ function _renderModeToggle() {
     document.getElementById("mode-live")?.classList.toggle("active", AppState.mode === "live");
 }
 
-function _renderSyncDot() {
+function _renderSyncDot(overrideText = null) {
     const dot = document.getElementById("sync-dot");
     const label = document.getElementById("sync-label");
     if (!dot || !label) return;
     dot.classList.toggle("historical", AppState.isHistorical);
     label.classList.toggle("historical", AppState.isHistorical);
-    label.textContent = AppState.isHistorical ? "HISTORICAL" : "LIVE";
+
+    if (overrideText) {
+        label.innerHTML = overrideText;
+    } else {
+        label.textContent = AppState.isHistorical ? "HISTORICAL" : "LIVE";
+    }
 }
 
 async function _switchLocale(locale) {

@@ -1434,17 +1434,17 @@ button:focus-visible {
 #ta-main {
   flex: 1;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; Removed to allow labels to breathe */
   display: flex;
   flex-direction: column;
 }
 
-/* Ruler layer: 28px */
+/* Ruler layer: 32px */
 #ta-ruler {
-  height: 28px;
+  height: 32px;
   position: relative;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  overflow: hidden;
+  /* overflow: hidden; Removed to allow labels to breathe */
 }
 
 /* Density ribbon: 32px */
