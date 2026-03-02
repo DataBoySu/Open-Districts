@@ -47,7 +47,9 @@ const AppState = {
     autoPlayTimer: null,
     autoPlayBucketIndex: 0,
     consecutiveSlowFrames: 0,
+    consecutiveSlowFrames: 0,
     envOverlaysEnabled: true,
+    districtScopeLocked: true, // Default to limiting events to district boundary
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -64,6 +66,16 @@ function on(event, fn) {
 
 // ── Cross-controller wiring ───────────────────────────────────────
 function _wireEvents() {
+    // Top bar: unlock district scope toggle
+    const scopeToggle = document.getElementById("unlock-district-scope");
+    if (scopeToggle) {
+        scopeToggle.addEventListener("change", (e) => {
+            AppState.districtScopeLocked = !e.target.checked;
+            // Reload the district to rebuild events and timeline with new scope
+            loadDistrict(AppState.currentDistrictId, AppState.currentStateId);
+        });
+    }
+
     // Map region click → focus event
     on("map:regionClick", ({ eventId }) => setFocusedEvent(eventId));
 
@@ -157,12 +169,46 @@ async function loadDistrict(districtId, stateId) {
 
     const district = await DataService.getDistrictById(districtId, AppState.currentStateId);
 
-    const [events, timeBuckets, translation, geoData] = await Promise.all([
-        DataService.getEventsForDistrict(districtId),
-        DataService.getTimeSeries(districtId),
-        DataService.getTranslation(AppState.locale),
-        DataService.getGeoJSON(district.geoJsonUrl),
-    ]);
+    // Load geojson first to allow spatial filtering if needed
+    const geoData = await DataService.getGeoJSON(district.geoJsonUrl);
+
+    // Decide if we fetch events for the specific district or the whole state (unlocked scope)
+    let rawEvents = [];
+    if (AppState.districtScopeLocked) {
+        rawEvents = await DataService.getEventsForDistrict(districtId);
+    } else {
+        // Fetch ALL events (or all state events) if unlocked
+        const d_events = await DataService.getEventsForDistrict(districtId);
+        // We really want State-wide if unlocked. Let's ask DataService for 'ALL' by passing null block, but currently DataService relies on MOCK_EVENTS.
+        rawEvents = await DataService.getAllMockEvents();
+    }
+
+    // Filter spatially to be strictly accurate inside the district boundaries if Locked
+    // AND if the event has coordinates.
+    let events = rawEvents;
+    if (AppState.districtScopeLocked && geoData && window.turf) {
+        // Build an array of unified polygons for the district to test against
+        // Just use the bounding box to do a cheaper clip filter.
+        events = rawEvents.filter(e => {
+            if (e.districtId === districtId && (!e.location || !e.location.lat)) return true; // keep non-spatial region events
+            if (e.location && e.location.lat && e.location.lng) {
+                const pt = [e.location.lng, e.location.lat];
+                let isInside = false;
+                for (const f of geoData.features) {
+                    if (turf.booleanPointInPolygon(pt, f)) {
+                        isInside = true; break;
+                    }
+                }
+                return isInside;
+            }
+            return false;
+        });
+    }
+
+    // After filtering, rebuild time buckets from the filtered list
+    // (We also re-pass it to DataService calculation)
+    const timeBuckets = await DataService.calculateTimeSeriesDirectly(events);
+    const translation = await DataService.getTranslation(AppState.locale);
 
     AppState.currentDistrict = district;
     AppState.events = events;
@@ -268,51 +314,60 @@ async function _switchLocale(locale) {
 /**
  * Given lat/lng, returns the stateId string by checking which state
  * polygon in the India GeoJSON contains the point.
- * Uses d3.geoContains (already loaded via window.d3 from CDN).
+ * Uses turf.booleanPointInPolygon for high accuracy boundary detection.
  * @param {number} lat
  * @param {number} lng
  * @returns {Promise<string|null>}  stateId or null if outside all known polygons
  */
 async function _detectStateFromCoords(lat, lng) {
+    if (!window.turf) {
+        console.warn("[V4/Geo] Turf.js not loaded. Cannot resolve coords to state.");
+        return null;
+    }
+
     try {
-        const indiaGeo = await DataService.getAllStatesGeoJSON();
-        if (!indiaGeo || !window.d3) return null;
-        // turf.booleanPointInPolygon uses [longitude, latitude] order
-        const point = [lng, lat];
+        // Load the HEAVY, accurate GeoJSON purely for backend math (keeps UI fast)
+        const geoData = await DataService.getAccurateStatesGeoJSON();
+        const pt = window.turf.point([lng, lat]);
 
-        // India simplified geojson has overlapping polygons (e.g. Delhi inside Haryana).
-        // Filter all matches
-        const matches = indiaGeo.features.filter(f => turf.booleanPointInPolygon(point, f));
+        let matchedFeature = null;
+        let altFeature = null;
 
-        if (matches.length > 0) {
-            let match = matches[0];
-
-            // If matched both Delhi and Haryana (Gurgaon overlap), prefer Haryana since Gurgaon is HR
-            if (matches.length > 1) {
-                const hasHR = matches.find(m => m.properties.id === 'HARY' || m.properties.name === 'Haryana' || m.properties.NAME_1 === 'Haryana');
-                const hasDL = matches.find(m => m.properties.id === 'DELH' || m.properties.name === 'Delhi' || m.properties.NAME_1 === 'NCT of Delhi');
-                if (hasHR && hasDL) {
-                    match = hasHR;
-                } else {
-                    match = matches[matches.length - 1]; // Pick the last drawn
+        for (const feature of geoData.features) {
+            // Check if feature is a valid polygon/multipolygon
+            if (feature.geometry && (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')) {
+                if (window.turf.booleanPointInPolygon(pt, feature)) {
+                    const geoName = feature.properties.name || feature.properties.NAME_1 || "";
+                    if (geoName === "Haryana") {
+                        matchedFeature = feature;
+                        break;
+                    } else if (geoName === "Delhi") {
+                        altFeature = feature;
+                    } else {
+                        matchedFeature = feature;
+                    }
                 }
             }
+        }
 
+        const match = matchedFeature || altFeature;
+        if (match) {
             const geoName = match.properties.name || match.properties.NAME_1 || "";
             const states = await DataService.getAllStates();
             const stateObj = states.find(s => s.name.toLowerCase() === geoName.toLowerCase());
 
             let resolvedId = stateObj ? stateObj.id : null;
 
-            // Hardcode fallback mappings for simplified geojson just in case
+            // Fallback map
             if (!resolvedId) {
                 const idMap = { 'HARY': 'HR', 'MAHA': 'MH', 'DELH': 'DL', 'GUJA': 'GJ', 'UTTA': 'UP', 'KARN': 'KA', 'TAMI': 'TN', 'WEST': 'WB', 'PUNJ': 'PB', 'RAJA': 'RJ', 'MADH': 'MP', 'ORIS': 'OD' };
-                resolvedId = idMap[match.properties.id] || match.properties.id;
+                resolvedId = match.properties.id ? (idMap[match.properties.id] || match.properties.id) : null;
             }
 
             console.log(`[V4] Geolocation matched state: ${geoName} -> ID: ${resolvedId}`);
             return resolvedId;
         }
+
         return null;
     } catch (e) {
         console.warn("[V4] State detection from coords failed.", e);

@@ -38,10 +38,12 @@ export function renderTimeline(events) {
         return;
     }
 
+    const frag = document.createDocumentFragment();
     events.forEach(ev => {
         const card = _buildCard(ev);
-        spine.appendChild(card);
+        frag.appendChild(card);
     });
+    spine.appendChild(frag);
 }
 
 /** Apply focus/dimmed classes to all cards. Side-effect free from AppState. */

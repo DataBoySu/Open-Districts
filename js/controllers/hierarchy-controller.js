@@ -175,13 +175,16 @@ async function _renderIndiaMinimap(states) {
                 // Single click
                 _lastClickedStateId = stateId;
 
-                // Active styles
-                svg.querySelectorAll('.india-state-path').forEach(p => p.classList.remove('selected'));
-                svg.querySelectorAll('.state-label').forEach(l => l.classList.remove('active'));
+                // Active styles - targeted removal instead of querySelectorAll
+                if (window._activeStatePath) window._activeStatePath.classList.remove('selected');
+                if (window._activeStateLabel) window._activeStateLabel.classList.remove('active');
 
                 path.classList.add('selected');
                 const lbl = document.getElementById(`lbl-${stateId}`);
                 if (lbl) lbl.classList.add("active");
+
+                window._activeStatePath = path;
+                window._activeStateLabel = lbl;
 
                 if (matchedState) _showStateStats(matchedState);
 
@@ -210,14 +213,18 @@ async function _renderIndiaMinimap(states) {
 
 function _showStateStats(state) {
     const bar = document.getElementById("hs-state-stats-bar");
-    bar.classList.remove("hidden");
 
-    // reset transition
-    bar.style.transition = 'none';
-    bar.classList.add("slide-out");
-    void bar.offsetWidth; // flush CSS
-    bar.style.transition = '';
-    bar.classList.remove("slide-out");
+    // De-bounce DOM updates using requestAnimationFrame to prevent forced synchronous layouts
+    requestAnimationFrame(() => {
+        bar.classList.remove("hidden");
+        bar.style.transition = 'none';
+        bar.classList.add("slide-out");
+
+        requestAnimationFrame(() => {
+            bar.style.transition = '';
+            bar.classList.remove("slide-out");
+        });
+    });
 
     document.getElementById("hs-state-stats-name").textContent = state.name;
     const alertsEl = document.getElementById("hs-state-stats-alerts");
@@ -235,7 +242,7 @@ function _showStateStats(state) {
             alertsEl.style.color = "";
         }
     } else {
-        popEl.textContent = "Data Not Found";
+        popEl.getContext = "Data Not Found";
         alertsEl.textContent = "No Data";
         alertsEl.classList.remove("danger-text");
         alertsEl.style.color = "rgba(255,255,255,0.4)";
@@ -243,7 +250,6 @@ function _showStateStats(state) {
 
     // Setup button for explicit navigation
     const actionContainer = document.getElementById("hs-state-stats-action");
-    // clear and append to ensure fresh binding
     actionContainer.innerHTML = `
         <button id="hs-stats-enter-state-btn" class="hs-enter-btn">View Districts</button>
     `;
@@ -365,10 +371,16 @@ function _renderSVGMap(districts, stateGeo) {
                     _selectDistrict(districtObj);
                 } else {
                     lastClickedId = districtObj.id;
-                    svg.querySelectorAll('.hdist-poly').forEach(p => p.classList.remove('active'));
-                    svg.querySelectorAll('.hdist-lbl').forEach(l => l.classList.remove('active'));
+
+                    if (window._activeDistPath) window._activeDistPath.classList.remove('active');
+                    if (window._activeDistLabel) window._activeDistLabel.classList.remove('active');
+
                     path.classList.add('active');
                     text.classList.add('active');
+
+                    window._activeDistPath = path;
+                    window._activeDistLabel = text;
+
                     _showStatsPanel(districtObj);
                     clearTimeout(clickTimer);
                     clickTimer = setTimeout(() => { lastClickedId = null; }, 400);
@@ -413,8 +425,9 @@ function _renderSVGMap(districts, stateGeo) {
             } else {
                 lastClickedId = district.id;
 
-                svg.querySelectorAll('.dist-poly').forEach(p => p.classList.remove('active'));
+                if (window._activeGridRect) window._activeGridRect.classList.remove('active');
                 rect.classList.add('active');
+                window._activeGridRect = rect;
 
                 // We dont have real SVG path strings here, fallback panel shape rendering
                 _showStatsPanel(district, null);

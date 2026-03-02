@@ -1581,28 +1581,27 @@ button:focus-visible {
   gap: 16px;
 }
 
-/* State Paths */
+/* State Paths (Optimized for performance) */
 .india-state-path {
   fill: rgba(255, 255, 255, 0.06);
   stroke: rgba(255, 255, 255, 0.2);
-  stroke-width: 1.5;
+  stroke-width: 1;
   cursor: pointer;
-  transition: all 150ms ease-out;
+  vector-effect: non-scaling-stroke;
+  /* Intentionally no transition or filter to guarantee instantaneous 60fps hover on massive SVGs */
 }
 
 .india-state-path:not(.unsupported):hover,
 .india-state-path.hovered {
-  fill: rgba(31, 111, 235, 0.15);
+  fill: rgba(31, 111, 235, 0.25);
   stroke: #1F6FEB;
-  stroke-width: 2;
-  filter: drop-shadow(0 0 4px rgba(31, 111, 235, 0.4));
+  stroke-width: 1.5;
 }
 
 .india-state-path.selected {
-  fill: rgba(31, 111, 235, 0.3);
+  fill: rgba(31, 111, 235, 0.4);
   stroke: #1F6FEB;
-  stroke-width: 2.5;
-  filter: drop-shadow(0 0 6px rgba(31, 111, 235, 0.6));
+  stroke-width: 2;
 }
 
 /* Search filtering states */

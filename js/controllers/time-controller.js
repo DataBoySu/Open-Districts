@@ -173,11 +173,11 @@ function _initDrag() {
 // ── Buttons ───────────────────────────────────────────────────────
 function _initButtons() {
     document.getElementById("ta-play").addEventListener("click", () => {
-        if (_ctx.state.isAutoPlaying) { _stopAutoPlay(); } else { _startAutoPlay(700); }
+        if (_ctx.state.isAutoPlaying) { _stopAutoPlay(); } else { _startAutoPlay(250); }
     });
 
     document.getElementById("ta-ff").addEventListener("click", () => {
-        if (_ctx.state.isAutoPlaying && _axis.isFF) { _stopAutoPlay(); } else { _startAutoPlay(300); }
+        if (_ctx.state.isAutoPlaying && _axis.isFF) { _stopAutoPlay(); } else { _startAutoPlay(100); }
     });
 
     // Stop autoplay on map or ribbon touch

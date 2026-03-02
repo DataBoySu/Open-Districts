@@ -326,8 +326,17 @@ export function syncFocus(focusedEventId, events) {
         _regionLayerMap.forEach((layer, regionId) => {
             const entry = categoryMap[regionId];
             const cat = (entry && entry.impactScale === "WIDE") ? entry.category : "none";
-            layer.setStyle(categoryPolygonStyle(cat, false));
+            layer.setStyle(categoryPolygonStyle(cat, false, false));
         });
+        if (_markersLayer) {
+            _markersLayer.eachLayer(layer => {
+                const markerEv = events.find(e => e.id === layer.eventId);
+                if (markerEv) {
+                    const opts = categoryMarkerOptions(markerEv.category, false);
+                    layer.setStyle(opts);
+                }
+            });
+        }
         setTimeout(runArbitration, 100); // Ensure arbitration runs after potential map movement
         return;
     }

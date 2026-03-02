@@ -64,6 +64,23 @@ export const DataService = {
     },
 
     /**
+     * Get ALL events regardless of district. Used when District Scope is unlocked.
+     */
+    async getAllMockEvents() {
+        return [...MOCK_EVENTS].sort(
+            (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+        );
+    },
+
+    /**
+     * Dynamically compute time series based on a customized slice of events
+     * @param {Event[]} events 
+     */
+    async calculateTimeSeriesDirectly(events) {
+        return computeTimeSeries(events);
+    },
+
+    /**
      * Get a single event by its globally unique ID.
      * @param {string} eventId
      * @returns {Promise<Event|null>}
@@ -200,10 +217,18 @@ export const DataService = {
     },
 
     /**
-     * Load GeoJSON for the entire country minimap
+     * Load GeoJSON for the entire country minimap (Simplified for fast UI rendering)
      * @returns {Promise<GeoJSON.FeatureCollection>}
      */
     async getAllStatesGeoJSON() {
+        return loadGeoJSON(`./data/geo/india-states-simplified.geojson`);
+    },
+
+    /**
+     * Load high-accuracy GeoJSON for the entire country (Used ONLY for backend math/Turf.js location detection)
+     * @returns {Promise<GeoJSON.FeatureCollection>}
+     */
+    async getAccurateStatesGeoJSON() {
         return loadGeoJSON(`./data/geo/india-states.geojson`);
     },
 
