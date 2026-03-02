@@ -268,7 +268,11 @@ button:focus-visible {
 }
 
 #hierarchy-selector.hidden {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  display: flex !important;
+  /* override global .hidden */
 }
 
 #hierarchy-selector.fading {
@@ -712,12 +716,36 @@ button:focus-visible {
   font-weight: 300;
   color: var(--ink-sub);
   line-height: 1.45;
-  padding: 0 10px 8px 12px;
+  padding: 0 10px 0 12px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.tl-summary-wrap {
+  padding-bottom: 8px;
+}
+
+.tl-view-more {
+  display: none;
+  font-size: 8.5px;
+  font-weight: 500;
+  color: var(--primary);
+  padding: 4px 10px 0 12px;
+  letter-spacing: 0.2px;
+}
+
+.tl-card.has-overflow:not(.focused) .tl-view-more {
+  display: block;
+}
+
+.tl-card.focused .tl-summary {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
 }
 
 /* Details section — hidden until focused */
@@ -1417,46 +1445,7 @@ button:focus-visible {
   white-space: nowrap;
 }
 
-/* Right meta zone: 120px */
-#ta-meta {
-  width: 120px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-left: 1px solid rgba(255, 255, 255, 0.06);
-}
 
-#ta-live-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-#ta-live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--ok);
-  animation: dot-pulse 2.5s ease-in-out infinite;
-}
-
-#ta-live-label {
-  font-size: 8px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--ok);
-}
-
-#ta-live-badge.historical #ta-live-dot {
-  background: var(--ink-ghost);
-  animation: none;
-}
-
-#ta-live-badge.historical #ta-live-label {
-  color: var(--ink-ghost);
-}
 
 /* ═══════════════════════════════════════════════════════════════════
    SECTION 10 — HIERARCHY SELECTOR
@@ -1623,10 +1612,10 @@ button:focus-visible {
 }
 
 .india-state-path.search-match {
-  fill: rgba(0, 200, 255, 0.2);
-  stroke: #00e5ff;
+  fill: rgba(31, 111, 235, 0.3);
+  stroke: #1F6FEB;
   stroke-width: 2;
-  filter: drop-shadow(0 0 6px #00e5ff);
+  filter: drop-shadow(0 0 6px rgba(31, 111, 235, 0.5));
 }
 
 .state-label {
@@ -1849,8 +1838,6 @@ button:focus-visible {
     padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.4s;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 #hs-district-stats.open {
@@ -2083,8 +2070,6 @@ body.live-active #ta-playhead-line {
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   transition: color 0.2s, background 0.2s;
 }
 
@@ -2108,8 +2093,6 @@ body.live-active #ta-playhead-line {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   overflow-y: auto;
   overflow-x: hidden;
   width: 90vw;

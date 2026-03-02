@@ -105,7 +105,7 @@ export function computeTimeSeries(events, resolution) {
         };
     });
 
-    return buckets;
+    return buckets.filter(b => b.hasData);
 }
 
 // ── DENSITY RIBBON COLOUR ─────────────────────────────────────────────────────

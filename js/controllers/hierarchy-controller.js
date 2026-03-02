@@ -36,7 +36,7 @@ export function init(ctx) {
             if (q.length === 0) {
                 path.classList.remove("search-match", "search-dim");
                 if (label) label.style.opacity = "";
-            } else if (name.includes(q)) {
+            } else if (name.startsWith(q)) {
                 path.classList.add("search-match");
                 path.classList.remove("search-dim");
                 if (label) label.style.opacity = "1";
@@ -68,6 +68,7 @@ export async function open() {
     }
 
     _renderIndiaMinimap(_allStates);
+    _ctx.emit("hierarchy:opened");
 }
 
 /**
@@ -95,12 +96,16 @@ export async function openState(stateId) {
 
     _renderIndiaMinimap(_allStates);
     await _loadTierTwo(state);
+    _ctx.emit("hierarchy:opened");
 }
 
 export function close() {
     const overlay = document.getElementById("hierarchy-selector");
     overlay.classList.add("fading");
-    setTimeout(() => overlay.classList.add("hidden"), 160);
+    setTimeout(() => {
+        overlay.classList.add("hidden");
+        _ctx.emit("hierarchy:closed");
+    }, 160);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -137,7 +142,8 @@ async function _renderIndiaMinimap(states) {
         const pathStr = pathGen(feature);
         const centroid = pathGen.centroid(feature);
         const bounds = pathGen.bounds(feature);
-        const width = bounds[1][0] - bounds[0][0];
+        const polyWidth = bounds[1][0] - bounds[0][0];
+        const polyHeight = bounds[1][1] - bounds[0][1];
 
         // Path
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -197,16 +203,26 @@ async function _renderIndiaMinimap(states) {
 
         svg.appendChild(path);
 
-        // Label — Skip drawing text if the state's projected width is too small (avoids Northeast overlapping)
-        if (geoName && centroid && !isNaN(centroid[0]) && !isNaN(centroid[1]) && width > 25) {
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", centroid[0]);
-            text.setAttribute("y", centroid[1]);
-            text.id = `lbl-${stateId}`;
-            text.classList.add("state-label");
-            text.textContent = geoName;
-            text.style.pointerEvents = "none"; // Make sure labels don't intercept hover
-            svg.appendChild(text);
+        // Label — Strict physical bounding box check to prevent state names from overlapping
+        if (geoName && centroid && !isNaN(centroid[0]) && !isNaN(centroid[1])) {
+            const charCount = geoName.length;
+            // Using a static 9.5px font for Tier 1 states (viewBox 800x800)
+            // A long, thin rectangle could have a large bounding box but little area, so we over-estimate bounds.
+            const requiredWidth = (charCount * 6.5) + 20;
+            const requiredHeight = 35;
+
+            if (polyWidth > requiredWidth && polyHeight > requiredHeight) {
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", centroid[0]);
+                text.setAttribute("y", centroid[1] + 3); // vertical optical center
+                text.setAttribute("text-anchor", "middle");
+                text.id = `lbl-${stateId}`;
+                text.classList.add("state-label");
+                text.textContent = geoName;
+                text.setAttribute("font-size", "9.5px");
+                text.style.pointerEvents = "none";
+                svg.appendChild(text);
+            }
         }
     });
 }
@@ -327,17 +343,22 @@ function _renderSVGMap(districts, stateGeo) {
             const polyWidth = bounds[1][0] - bounds[0][0];
             const polyHeight = bounds[1][1] - bounds[0][1];
 
-            // District name label, only draw if it roughly fits
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            if (polyWidth > 8) {
+            // District name label: strict physical fit threshold
+            let text = null;
+            const charCount = districtObj.name.length;
+            // A 7.5px font requires roughly ~5 units of width per character in a 400x380 viewBox.
+            // We pad it aggressively to account for irregular polygon shapes (L-shapes, crescents) 
+            // since we are only using the bounding box, not an inscribed polygon algorithm.
+            const requiredWidth = (charCount * 5.5) + 15;
+            const requiredHeight = 22;
+
+            if (polyWidth > requiredWidth && polyHeight > requiredHeight) {
+                text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 text.setAttribute("x", centroid[0]);
-                text.setAttribute("y", centroid[1]);
+                text.setAttribute("y", centroid[1] + 2.5); // optical center for 7.5px font
                 text.setAttribute("text-anchor", "middle");
                 text.classList.add("hdist-lbl");
-
-                // Scale font to be smaller for small polygons
-                const fontSize = Math.max(3, Math.min(9, polyWidth / 3.5));
-                text.setAttribute("font-size", fontSize + "px");
+                text.setAttribute("font-size", "7.5px");
 
                 if (districtObj.id === _ctx.state.currentDistrictId) text.classList.add("active");
                 text.textContent = districtObj.name;
@@ -359,8 +380,10 @@ function _renderSVGMap(districts, stateGeo) {
             } else {
                 path.classList.add("unsupported");
                 path.style.opacity = "0.35";
-                text.setAttribute("font-size", "7");
-                text.setAttribute("fill", "rgba(255,255,255,0.28)");
+                if (text) {
+                    text.setAttribute("font-size", "7");
+                    text.setAttribute("fill", "rgba(255,255,255,0.28)");
+                }
             }
 
             // Double click handler

@@ -79,6 +79,7 @@ export function renderTimeAxis(buckets) {
 }
 
 export function stopAutoPlay() { _stopAutoPlay(); }
+export function resumeAutoPlay(intervalMs = 250) { _startAutoPlay(intervalMs); }
 
 /** Update the LIVE / HISTORICAL badge in the time axis right zone. */
 export function renderBadge(isHistorical) {

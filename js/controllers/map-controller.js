@@ -41,9 +41,42 @@ function _initLeaflet() {
         maxZoom: 19,
     }).addTo(_map);
 
-    // Custom zoom buttons
-    document.getElementById("zoom-in").addEventListener("click", () => _map.zoomIn());
-    document.getElementById("zoom-out").addEventListener("click", () => _map.zoomOut());
+    // Custom zoom buttons (Continuous zooming on hold)
+    const setupSmoothZoom = (id, delta) => {
+        const btn = document.getElementById(id);
+        let zoomInterval;
+        const startZoom = (e) => {
+            if (e.cancelable) e.preventDefault(); // prevent double tap zoom/selection on mobile
+            if (zoomInterval) return;
+
+            // Initial jump (standard click behavior)
+            _map.setZoom(_map.getZoom() + (delta * 2.5), { animate: true });
+
+            // Continuous scale
+            zoomInterval = setInterval(() => {
+                _map.setZoom(_map.getZoom() + delta, { animate: false });
+            }, 60);
+        };
+        const stopZoom = () => {
+            clearInterval(zoomInterval);
+            zoomInterval = null;
+        };
+
+        btn.addEventListener("mousedown", startZoom);
+        btn.addEventListener("touchstart", startZoom, { passive: false });
+        btn.addEventListener("mouseup", stopZoom);
+        btn.addEventListener("mouseleave", stopZoom);
+        btn.addEventListener("touchend", stopZoom);
+        btn.addEventListener("touchcancel", stopZoom);
+
+        // Keyboard accessibility
+        btn.addEventListener("click", (e) => {
+            if (e.detail === 0) _map.setZoom(_map.getZoom() + (delta * 2.5), { animate: true });
+        });
+    };
+
+    setupSmoothZoom("zoom-in", 0.15);
+    setupSmoothZoom("zoom-out", -0.15);
 
     let _arbitrationTimer;
 

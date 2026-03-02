@@ -94,6 +94,22 @@ function _wireEvents() {
         }
     });
 
+    // Pause heavy background ops while hierarchy selector is full screen
+    on("hierarchy:opened", () => {
+        AppState.wasAutoPlaying = AppState.isAutoPlaying;
+        TimeCtrl.stopAutoPlay();
+        if (!AppState.isHistorical) {
+            DataService.unsubscribeLiveUpdates(AppState.currentDistrictId);
+        }
+    });
+
+    on("hierarchy:closed", () => {
+        if (AppState.wasAutoPlaying) TimeCtrl.resumeAutoPlay();
+        if (!AppState.isHistorical) {
+            DataService.subscribeLiveUpdates(AppState.currentDistrictId, _onLiveUpdate);
+        }
+    });
+
     // Time scrub → check historical boundary
     on("time:historicalChanged", ({ isHistorical }) => setHistoricalMode(isHistorical));
 

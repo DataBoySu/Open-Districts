@@ -44,6 +44,28 @@ export function renderTimeline(events) {
         frag.appendChild(card);
     });
     spine.appendChild(frag);
+
+    // Auto-scroll to the bottom (latest events) to give a "climbing down" effect
+    requestAnimationFrame(() => {
+        // Need brief timeout to allow DOM to calculate scrollHeight fully after cards insert
+        setTimeout(() => {
+            const scrollArea = document.getElementById("tl-scroll");
+            if (scrollArea) {
+                scrollArea.scrollTo({
+                    top: scrollArea.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+            // Add 'has-overflow' flag to cards with long summaries
+            const wrappers = document.querySelectorAll(".tl-summary-wrap");
+            wrappers.forEach(wrap => {
+                const summaryEl = wrap.querySelector(".tl-summary");
+                if (summaryEl && summaryEl.scrollHeight > summaryEl.clientHeight + 2) {
+                    wrap.closest(".tl-card").classList.add("has-overflow");
+                }
+            });
+        }, 100);
+    });
 }
 
 /** Apply focus/dimmed classes to all cards. Side-effect free from AppState. */
@@ -110,7 +132,10 @@ function _buildCard(ev) {
         <div class="tl-type-pill cat-pill-${ev.category}">${_catLabel(ev.category)}</div>
       </div>
       <div class="tl-title-row">${ev.title}</div>
-      <div class="tl-summary">${ev.summary}</div>
+      <div class="tl-summary-wrap">
+        <div class="tl-summary">${ev.summary}</div>
+        <div class="tl-view-more" aria-hidden="true">View more</div>
+      </div>
       <div class="tl-details">
         ${_buildDetailRows(ev)}
         <div class="tl-source-tag">
