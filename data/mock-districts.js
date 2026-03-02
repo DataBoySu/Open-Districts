@@ -321,11 +321,8 @@ export const MOCK_REGIONS = {
         { id: "preet-vihar", name: "Preet Vihar" }
     ],
     "new_delhi": [
-        { id: "chanakya-puri", name: "Chanakya Puri" },
-        { id: "connaught-place", name: "Connaught Place" },
-        { id: "delhi-cantonment", name: "Delhi Cantonment" },
-        { id: "parliament-street", name: "Parliament Street" },
-        { id: "vasant-vihar", name: "Vasant Vihar" }
+        { id: "new-delhi", name: "New Delhi" },
+        { id: "delhi-cantonment", name: "Delhi Cantonment" }
     ],
     "north": [
         { id: "model-town", name: "Model Town" },
