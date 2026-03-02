@@ -1,0 +1,77 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": "new-delhi",
+            "properties": {
+                "id": "new-delhi",
+                "name": "New Delhi",
+                "districtId": "new_delhi"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            77.15,
+                            28.53
+                        ],
+                        [
+                            77.28,
+                            28.53
+                        ],
+                        [
+                            77.28,
+                            28.67
+                        ],
+                        [
+                            77.15,
+                            28.67
+                        ],
+                        [
+                            77.15,
+                            28.53
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "id": "delhi-cantonment",
+            "properties": {
+                "id": "delhi-cantonment",
+                "name": "Delhi Cantonment",
+                "districtId": "new_delhi"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            77.05,
+                            28.53
+                        ],
+                        [
+                            77.15,
+                            28.53
+                        ],
+                        [
+                            77.15,
+                            28.67
+                        ],
+                        [
+                            77.05,
+                            28.67
+                        ],
+                        [
+                            77.05,
+                            28.53
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}

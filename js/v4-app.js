@@ -113,9 +113,21 @@ function _wireEvents() {
     // Time scrub → check historical boundary
     on("time:historicalChanged", ({ isHistorical }) => setHistoricalMode(isHistorical));
 
-    // Time bucket step during autoplay → update map snapshot
+    // Time scrub → update map snapshot and timeline
+    on("time:scrub", ({ frac }) => {
+        if (!AppState.timeBuckets || AppState.timeBuckets.length === 0) return;
+
+        let bucketIndex = Math.floor(frac * AppState.timeBuckets.length);
+        if (bucketIndex >= AppState.timeBuckets.length) bucketIndex = AppState.timeBuckets.length - 1;
+
+        MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
+        TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
+    });
+
+    // Time bucket step during autoplay → update map snapshot + timeline
     on("time:bucketStep", ({ bucketIndex }) => {
         MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
+        TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
     });
 
     // Perf degradation → disable env overlays

@@ -87,7 +87,7 @@ const _rawStates = [
     { id: "CT", name: "Chhattisgarh", nameLocal: "छत्तीसगढ़", geoJsonUrl: "./data/geo/CT/state-outline.geojson", districts: [], dataPoints: 0 },
     { id: "DN", name: "Dadra and Nagar Haveli", nameLocal: "दादरा और नगर हवेली", geoJsonUrl: "./data/geo/DN/state-outline.geojson", districts: [], dataPoints: 0 },
     { id: "DD", name: "Daman and Diu", nameLocal: "दमन और दीव", geoJsonUrl: "./data/geo/DD/state-outline.geojson", districts: [], dataPoints: 0 },
-    { id: "DL", name: "Delhi", nameLocal: "दिल्ली", geoJsonUrl: "./data/geo/DL/state-outline.geojson", districts: [], dataPoints: 0 },
+    { id: "DL", name: "Delhi", nameLocal: "दिल्ली", geoJsonUrl: "./data/geo/DL/state-outline.geojson", districts: ["new_delhi"], dataPoints: 0 },
     { id: "GA", name: "Goa", nameLocal: "गोवा", geoJsonUrl: "./data/geo/GA/state-outline.geojson", districts: [], dataPoints: 0 },
     { id: "HR", name: "Haryana", nameLocal: "हरियाणा", geoJsonUrl: "./data/geo/HR/state-outline.geojson", districts: ["gurugram"], dataPoints: 5 },
     { id: "HP", name: "Himachal Pradesh", nameLocal: "हिमाचल प्रदेश", geoJsonUrl: "./data/geo/HP/state-outline.geojson", districts: [], dataPoints: 0 },
@@ -148,6 +148,15 @@ const _rawDistricts = [
         geoJsonUrl: "./data/geo/MH/pune.geojson",
         boundingBox: { north: 19.42, south: 18.18, east: 74.60, west: 73.50 },
         population: 9429408
+    },
+    {
+        id: "new_delhi",
+        stateId: "DL",
+        name: "New Delhi",
+        nameLocal: "नई दिल्ली",
+        geoJsonUrl: "./data/geo/DL/new_delhi.geojson",
+        boundingBox: { north: 28.67, south: 28.53, east: 77.28, west: 77.05 },
+        population: 257803
     }
 ];
 
@@ -207,5 +216,10 @@ export const MOCK_REGIONS = {
             id: "khed",
             name: "Khed"
         }
+    ],
+    // New Delhi 2026 regions
+    "new_delhi": [
+        { id: "new-delhi", name: "New Delhi" },
+        { id: "delhi-cantonment", name: "Delhi Cantonment" }
     ]
 };

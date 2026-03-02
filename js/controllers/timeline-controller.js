@@ -106,6 +106,47 @@ export function setGeoData(geoData) {
     _geoData = geoData;
 }
 
+/**
+ * Time-machine filter: dim/hide events based on the scrubber position.
+ * Events in the current bucket  → fully visible (highlighted)
+ * Events before the bucket      → visible but dimmed (grey historical)
+ * Events after the bucket       → hidden entirely
+ */
+export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
+    const bucket = timeBuckets[bucketIndex];
+    if (!bucket) return;
+
+    const endTs = new Date(bucket.endTs);
+    const startTs = bucket.startTs ? new Date(bucket.startTs) : null;
+
+    const cards = document.querySelectorAll(".tl-card");
+    cards.forEach(card => {
+        const eventId = card.getAttribute("data-event-id");
+        const ev = events.find(e => e.id === eventId);
+        if (!ev) {
+            card.classList.add("tl-hidden");
+            return;
+        }
+
+        const evTs = new Date(ev.timestamp);
+
+        if (evTs > endTs) {
+            // Future event — hide entirely
+            card.classList.add("tl-hidden");
+            card.classList.remove("tl-historical-dim", "tl-current");
+        } else if (startTs && evTs >= startTs) {
+            // In current bucket — highlight
+            card.classList.remove("tl-hidden", "tl-historical-dim");
+            card.classList.add("tl-current");
+        } else {
+            // Past event — dim
+            card.classList.remove("tl-hidden", "tl-current");
+            card.classList.add("tl-historical-dim");
+        }
+    });
+}
+
+
 // ═══════════════════════════════════════════════════════════════════
 // PRIVATE — internal helpers
 // ═══════════════════════════════════════════════════════════════════

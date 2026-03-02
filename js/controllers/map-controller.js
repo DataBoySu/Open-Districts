@@ -459,26 +459,74 @@ export function syncModeClass(mode, isHistorical, connectionStatus, envEnabled) 
 /** Update map layers to reflect a historical snapshot up to bucketIndex. */
 export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
     if (!_regionsLayer) return;
-    const cutoffTs = timeBuckets[bucketIndex]?.endTs;
-    if (!cutoffTs) return;
 
-    const cutoff = new Date(cutoffTs);
-    const historicalEvts = events.filter(e => new Date(e.timestamp) <= cutoff);
-    const categoryMap = _buildCategoryByRegion(historicalEvts);
+    const bucket = timeBuckets[bucketIndex];
+    if (!bucket) return;
 
+    const endTs = new Date(bucket.endTs);
+    const startTs = bucket.startTs ? new Date(bucket.startTs) : null;
+
+    // Partition events into: current-bucket, historical, and future
+    const currentBucketEvts = events.filter(e => {
+        const t = new Date(e.timestamp);
+        return t <= endTs && (!startTs || t >= startTs);
+    });
+    const historicalEvts = events.filter(e => {
+        const t = new Date(e.timestamp);
+        return t <= endTs && startTs && t < startTs;
+    });
+    const futureEvts = events.filter(e => new Date(e.timestamp) > endTs);
+
+    const currentCatMap = _buildCategoryByRegion(currentBucketEvts);
+    const historicalCatMap = _buildCategoryByRegion([...historicalEvts, ...currentBucketEvts]);
+
+    // Polygon regions
     _regionLayerMap.forEach((layer, regionId) => {
-        const entry = categoryMap[regionId];
-        const cat = (entry && entry.impactScale === "WIDE") ? entry.category : "none";
-        layer.setStyle(categoryPolygonStyle(cat, false));
-        if (layer._path && cat !== "none") {
-            _applyCatClass(layer._path, cat);
-        } else if (layer._path) {
-            _applyCatClass(layer._path, "none");
+        const current = currentCatMap[regionId];
+        const historical = historicalCatMap[regionId];
+
+        if (current && current.impactScale === "WIDE") {
+            // Active in this bucket — full highlight
+            const cat = current.category;
+            layer.setStyle({ ...categoryPolygonStyle(cat, false), opacity: 1, fillOpacity: 0.55 });
+            if (layer._path) _applyCatClass(layer._path, cat);
+        } else if (historical && historical.impactScale === "WIDE") {
+            // Past event — keep but dim
+            const cat = historical.category;
+            layer.setStyle({ ...categoryPolygonStyle(cat, false), opacity: 0.25, fillOpacity: 0.12 });
+            if (layer._path) _applyCatClass(layer._path, cat);
+        } else {
+            // No event or future event — clear
+            layer.setStyle(categoryPolygonStyle("none", false));
+            if (layer._path) _applyCatClass(layer._path, "none");
         }
     });
 
+    // Point/Local markers
+    if (_markersLayer) {
+        _markersLayer.eachLayer(layer => {
+            const ev = events.find(e => e.id === layer.eventId);
+            if (!ev || !layer._path) return;
+
+            const evTs = new Date(ev.timestamp);
+            if (evTs > endTs) {
+                // Future — hide
+                layer._path.style.display = "none";
+            } else if (startTs && evTs >= startTs) {
+                // Current bucket — full display
+                layer._path.style.display = "";
+                layer._path.style.opacity = "1";
+            } else {
+                // Past — dim
+                layer._path.style.display = "";
+                layer._path.style.opacity = "0.25";
+            }
+        });
+    }
+
     runArbitration();
 }
+
 
 /** Arbitration engine — governs all polygon animation play-state. */
 export function runArbitration() {
