@@ -141,9 +141,14 @@ async function _renderIndiaMinimap(states) {
 
         const pathStr = pathGen(feature);
         const centroid = pathGen.centroid(feature);
-        const bounds = pathGen.bounds(feature);
-        const polyWidth = bounds[1][0] - bounds[0][0];
-        const polyHeight = bounds[1][1] - bounds[0][1];
+        let polyWidth = 0, polyHeight = 0;
+        try {
+            const bounds = pathGen.bounds(feature);
+            if (bounds && bounds[0] && bounds[1]) {
+                polyWidth = bounds[1][0] - bounds[0][0];
+                polyHeight = bounds[1][1] - bounds[0][1];
+            }
+        } catch (e) { /* ignore bounds error for weird shapes */ }
 
         // Path
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -151,6 +156,11 @@ async function _renderIndiaMinimap(states) {
         path.classList.add("india-state-path");
         path.setAttribute("data-state-id", stateId);
         path.setAttribute("data-state-name", geoName);
+
+        // Native tooltip for hover
+        const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        title.textContent = geoName;
+        path.appendChild(title);
 
         // A state is unsupported if we have no events for it
         const isSupported = matchedState && matchedState.dataPoints > 0;
@@ -336,6 +346,11 @@ function _renderSVGMap(districts, stateGeo) {
             path.setAttribute("d", pathStr);
             path.classList.add("hdist-poly");
 
+            // Native tooltip for hover
+            const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+            title.textContent = districtObj.name;
+            path.appendChild(title);
+
             if (districtObj.id === _ctx.state.currentDistrictId) path.classList.add("active");
 
             // Calculate bounds to determine if text fits
@@ -399,12 +414,12 @@ function _renderSVGMap(districts, stateGeo) {
                     if (window._activeDistLabel) window._activeDistLabel.classList.remove('active');
 
                     path.classList.add('active');
-                    text.classList.add('active');
+                    if (text) text.classList.add('active');
 
                     window._activeDistPath = path;
-                    window._activeDistLabel = text;
+                    window._activeDistLabel = text || null;
 
-                    _showStatsPanel(districtObj);
+                    _showStatsPanel(districtObj); // Trigger side panel regardless of visual label
                     clearTimeout(clickTimer);
                     clickTimer = setTimeout(() => { lastClickedId = null; }, 400);
                 }
