@@ -1473,7 +1473,7 @@ button:focus-visible {
 
 .ta-tick-label {
   position: absolute;
-  bottom: 8px;
+  bottom: 2px;
   /* Lifted slightly to fit 2 lines if needed */
   transform: translateX(-50%);
   display: flex;

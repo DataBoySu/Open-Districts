@@ -66,7 +66,17 @@ export function renderTimeAxis(buckets) {
 
             const label = document.createElement("div");
             label.className = "ta-tick-label";
-            label.style.left = `${(i / total) * 100}%`;
+            if (i === 0) {
+                label.style.left = "0%";
+                label.style.transform = "translateX(4px)";
+                label.style.alignItems = "flex-start";
+            } else if (i >= total - Math.max(1, Math.floor(total / 7))) {
+                label.style.left = "100%";
+                label.style.transform = "translateX(calc(-100% - 4px))";
+                label.style.alignItems = "flex-end";
+            } else {
+                label.style.left = `${(i / total) * 100}%`;
+            }
             label.innerHTML = _rulerLabel(bucket, isSameDate);
             ruler.appendChild(label);
         }
@@ -88,12 +98,17 @@ export function stopAutoPlay() { _stopAutoPlay(); }
 export function resumeAutoPlay(intervalMs = 250) { _startAutoPlay(intervalMs); }
 
 /** Update the LIVE / HISTORICAL badge in the time axis right zone. */
-export function renderBadge(isHistorical) {
+export function renderBadge(isHistorical, overrideText = null) {
     const badge = document.getElementById("ta-live-badge");
     const label = document.getElementById("ta-live-label");
     if (!badge || !label) return;
     badge.classList.toggle("historical", isHistorical);
-    label.textContent = isHistorical ? "HISTORICAL" : "LIVE";
+
+    if (overrideText) {
+        label.innerHTML = overrideText;
+    } else {
+        label.textContent = isHistorical ? "HISTORICAL" : "LIVE";
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -120,8 +135,29 @@ function _renderPlayhead() {
     `;
     }
 
-    // Notify orchestrator of historical state change
+    // Dynamic Live/Date Label Badge
     const isNowHistorical = frac < 0.99;
+    let badgeText = null;
+    if (isNowHistorical && _axis.buckets && _axis.buckets.length > 0) {
+        let idx = Math.floor(frac * _axis.buckets.length);
+        if (idx >= _axis.buckets.length) idx = _axis.buckets.length - 1;
+        const bucket = _axis.buckets[idx];
+
+        const d = new Date(bucket.startTs);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
+
+        if (bucket.resolution === "hour" || bucket.resolution === "half-hour") {
+            const hh = String(d.getUTCHours()).padStart(2, "0");
+            const mm = String(d.getUTCMinutes()).padStart(2, "0");
+            badgeText = `<span style="font-weight:600">${dateStr}</span> <span style="opacity:0.7">· ${hh}:${mm}</span>`;
+        } else {
+            badgeText = `<span style="font-weight:600">${dateStr}</span>`;
+        }
+    }
+    renderBadge(isNowHistorical, badgeText);
+
+    // Notify orchestrator of historical state change
     if (isNowHistorical !== _ctx.state.isHistorical) {
         _ctx.emit("time:historicalChanged", { isHistorical: isNowHistorical });
     }

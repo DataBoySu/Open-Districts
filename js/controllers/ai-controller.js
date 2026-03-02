@@ -34,7 +34,7 @@ export function init(ctx) {
         if (e.key === "Enter" || e.key === " ") aiTab.click();
     });
 
-    // GUIDED AI topbar button — always opens (panel not visible when topbar is accessible)
+    // AI Mode topbar button — always opens (panel not visible when topbar is accessible)
     document.getElementById("tb-ai-btn").addEventListener("click", () => _open());
 
     // Close button in panel header
