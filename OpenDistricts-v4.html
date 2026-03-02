@@ -54,8 +54,13 @@
         <!-- 5. Spacer -->
         <div class="tb-spacer" aria-hidden="true"></div>
 
-        <!-- 6. Language selector (dynamic — rendered by JS from DataService) -->
-        <div id="tb-lang" role="group" aria-label="Language selector"></div>
+        <!-- 6. Language selector -->
+        <div id="tb-lang" role="group" aria-label="Language selector">
+            <div class="lang-focus-ring"></div>
+            <div class="lang-track" id="langTrack">
+                <!-- Items injected by JS -->
+            </div>
+        </div>
 
         <!-- 7. Mode toggle: DISTRICT | LIVE -->
         <div id="tb-mode" role="group" aria-label="Map mode">

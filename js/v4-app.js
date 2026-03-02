@@ -180,7 +180,7 @@ function setHistoricalMode(isHistorical) {
     }
 
     _renderSyncDot();
-    TimeCtrl.renderBadge(isHistorical);
+    // TimeCtrl.renderBadge is handled directly by the timeline playhead itself dynamically
     MapCtrl.syncModeClass(AppState.mode, isHistorical, AppState.connectionStatus, AppState.envOverlaysEnabled);
     MapCtrl.runArbitration();
 }

@@ -356,33 +356,97 @@ button:focus-visible {
   border-color: #1a60d4;
 }
 
-/* Language selector */
+/* Language selector (Infinite Swipe Pill) */
 #tb-lang {
-  display: flex;
-  gap: 2px;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.4s;
+  cursor: pointer;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.lang-pill {
+#tb-lang:hover {
+  border-color: rgba(255, 255, 255, 0.44);
+}
+
+#tb-lang.expanded {
+  width: 180px;
+  /* Expands to the left because of tb-spacer */
+  background-color: rgba(255, 255, 255, 0.08);
+  /* Dark background when open */
+  border-color: transparent;
+}
+
+.lang-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+}
+
+.lang-item {
+  position: absolute;
+  top: 0;
+  left: -16px;
+  /* Half of its own width */
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--ink-ghost);
   font-size: 8px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: var(--ink-ghost);
-  padding: 4px 8px;
+  opacity: 0;
+  /* Hidden by default when not expanded */
+  transition: opacity 0.2s, font-size 0.2s, color 0.2s;
+  will-change: transform;
+  pointer-events: none;
+}
+
+#tb-lang.expanded .lang-item {
+  opacity: 0.4;
+}
+
+#tb-lang .lang-item.active {
+  opacity: 1;
+  color: #fff;
+}
+
+#tb-lang.expanded .lang-item.active {
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.lang-focus-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
   border: 1px solid transparent;
-  border-radius: 2px;
-  transition: all 120ms;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s, border-color 0.3s;
 }
 
-.lang-pill:hover {
-  color: #fff;
-}
-
-.lang-pill.active {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
+#tb-lang.expanded .lang-focus-ring {
+  border-color: var(--primary);
+  opacity: 1;
 }
 
 /* Mode toggle */
