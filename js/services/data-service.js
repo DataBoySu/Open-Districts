@@ -4,14 +4,45 @@
 // THIS IS THE ONLY MODULE v4-app.js MAY IMPORT FROM.
 // v4-app.js must never import from /data/ directly.
 //
-// V4: resolves all calls from mock data files.
-// V5: swap out the internal implementation here only. Public API is frozen.
+// V4.1: resolves all calls from versioned data files at /data/live/
+// Public API is frozen. Implementation fetches live dataset + mock translations.
 
-import { MOCK_EVENTS } from "../../data/mock-events.js";
-import { MOCK_DISTRICTS, MOCK_STATES, MOCK_REGIONS } from "../../data/mock-districts.js";
 import { MOCK_TRANSLATIONS } from "../../data/mock-translations.js";
 import { computeTimeSeries, detectResolution } from "./time-processor.js";
 import { loadGeoJSON } from "./geo-service.js";
+
+// ── LIVE DATASET CACHE ────────────────────────────────────────────────────────
+// Loaded once at app boot; reused for all queries
+
+let _liveDataCache = null;
+
+async function _loadLiveData() {
+    if (_liveDataCache) return _liveDataCache;
+
+    try {
+        const manifestRes = await fetch('./data/live/manifest.json');
+        const manifest = await manifestRes.json();
+
+        const [eventsRes, districtsRes, statesRes, regionsRes] = await Promise.all([
+            fetch('./data/live/events.json'),
+            fetch('./data/live/districts.json'),
+            fetch('./data/live/states.json'),
+            fetch('./data/live/regions.json')
+        ]);
+
+        const events = await eventsRes.json();
+        const districts = await districtsRes.json();
+        const states = await statesRes.json();
+        const regions = await regionsRes.json();
+
+        _liveDataCache = { manifest, events, districts, states, regions };
+        console.log(`[DataService] Loaded live dataset v${manifest.datasetVersion} (${events.length} events, ${districts.length} districts, ${states.length} states)`);
+        return _liveDataCache;
+    } catch (err) {
+        console.error('[DataService] Failed to load live data:', err);
+        throw new Error('Could not load live dataset from /data/live/');
+    }
+}
 
 // ── INTERNAL HELPERS ──────────────────────────────────────────────────────────
 
@@ -47,7 +78,8 @@ export const DataService = {
      * @returns {Promise<Event[]>}
      */
     async getEventsForDistrict(districtId, dateRange) {
-        let baseEvents = MOCK_EVENTS.filter(e => e.districtId === districtId);
+        const { events } = await _loadLiveData();
+        let baseEvents = events.filter(e => e.districtId === districtId);
 
         const filtered = baseEvents
             .filter(e => {
@@ -65,9 +97,13 @@ export const DataService = {
 
     /**
      * Get ALL events regardless of district. Used when District Scope is unlocked.
+     * Optionally filters events by date range for time-scrub synchronization.
+     * @param {{ from?: string, to?: string }} [dateRange]  ISO UTC strings
      */
-    async getAllMockEvents() {
-        return [...MOCK_EVENTS].sort(
+    async getAllMockEvents(dateRange) {
+        const { events } = await _loadLiveData();
+        const filtered = _filterByDateRange(events, dateRange);
+        return [...filtered].sort(
             (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
         );
     },
@@ -87,27 +123,45 @@ export const DataService = {
      * @returns {Promise<Event|null>}
      */
     async getEventById(eventId) {
-        return MOCK_EVENTS.find(e => e.id === eventId) ?? null;
+        const { events } = await _loadLiveData();
+        return events.find(e => e.id === eventId) ?? null;
     },
 
     // ── Geography ──────────────────────────────────────────────────────────────
 
     /**
      * Get all districts for a state, including their alert counts.
+     * Returns districts enriched with computed dataPoints from live events.
+     * Optionally filters events by date range for time-scrub synchronization.
      * @param {string} stateId
+     * @param {{ from?: string, to?: string }} [dateRange]  ISO UTC strings
      * @returns {Promise<District[]>}
      */
-    async getDistrictsForState(stateId) {
-        return MOCK_DISTRICTS.filter(d => d.stateId === stateId);
+    async getDistrictsForState(stateId, dateRange) {
+        const { districts, events } = await _loadLiveData();
+        const filtered = _filterByDateRange(events, dateRange);
+        return districts
+            .filter(d => d.stateId === stateId)
+            .map(d => ({
+                ...d,
+                dataPoints: filtered.filter(e => e.districtId === d.id).length
+            }));
     },
 
     /**
      * Get a single state by ID.
+     * Returns state enriched with computed dataPoints from live events.
+     * Optionally filters events by date range for time-scrub synchronization.
      * @param {string} stateId
+     * @param {{ from?: string, to?: string }} [dateRange]  ISO UTC strings
      * @returns {Promise<State|null>}
      */
-    async getStateById(stateId) {
-        return MOCK_STATES.find(s => s.id === stateId) ?? null;
+    async getStateById(stateId, dateRange) {
+        const { states, events } = await _loadLiveData();
+        const filtered = _filterByDateRange(events, dateRange);
+        const raw = states.find(s => s.id === stateId);
+        if (!raw) return null;
+        return { ...raw, dataPoints: filtered.filter(e => e.stateId === stateId).length };
     },
 
     /**
@@ -116,24 +170,40 @@ export const DataService = {
      * @returns {Promise<Array<{id: string, name: string}>>}
      */
     async getRegions(districtId) {
-        return MOCK_REGIONS[districtId] || [];
+        const { regions } = await _loadLiveData();
+        return regions[districtId] || [];
     },
 
     /**
      * Get all states (for Tier 1 hierarchy selector).
+     * Returns states enriched with computed dataPoints from live events.
+     * Optionally filters events by date range for time-scrub synchronization.
+     * @param {{ from?: string, to?: string }} [dateRange]  ISO UTC strings
      * @returns {Promise<State[]>}
      */
-    async getAllStates() {
-        return [...MOCK_STATES];
+    async getAllStates(dateRange) {
+        const { states, events } = await _loadLiveData();
+        const filtered = _filterByDateRange(events, dateRange);
+        return states.map(s => ({
+            ...s,
+            dataPoints: filtered.filter(e => e.stateId === s.id).length
+        }));
     },
 
     /**
      * Get a single district by ID.
+     * Returns district enriched with computed dataPoints from live events.
+     * Optionally filters events by date range for time-scrub synchronization.
      * @param {string} districtId
+     * @param {string} [stateId]
+     * @param {{ from?: string, to?: string }} [dateRange]  ISO UTC strings
      * @returns {Promise<District|null>}
      */
-    async getDistrictById(districtId, stateId = null) {
-        const found = MOCK_DISTRICTS.find(d => d.id === districtId);
+    async getDistrictById(districtId, stateId = null, dateRange) {
+        const { districts, events } = await _loadLiveData();
+        const filtered = _filterByDateRange(events, dateRange);
+        const raw = districts.find(d => d.id === districtId);
+        const found = raw ? { ...raw, dataPoints: filtered.filter(e => e.districtId === raw.id).length } : null;
         if (found) return found;
 
         // Stub unsupported districts
@@ -194,7 +264,8 @@ export const DataService = {
      * @returns {Promise<Array<{id: string, name: string}>>}
      */
     async getRegionsForDistrict(districtId) {
-        return MOCK_REGIONS[districtId] ?? [];
+        const { regions } = await _loadLiveData();
+        return regions[districtId] ?? [];
     },
 
     /**

@@ -99,6 +99,17 @@ export function renderTimeAxis(buckets) {
 export function stopAutoPlay() { _stopAutoPlay(); }
 export function resumeAutoPlay(intervalMs = 250) { _startAutoPlay(intervalMs); }
 
+/**
+ * Restore the scrubber to a given fraction without triggering a scrub event.
+ * Used when district changes but timelineRange is preserved — we need the
+ * playhead to visually match the active temporal snapshot.
+ * @param {number} frac  0–1
+ */
+export function setScrubberFrac(frac) {
+    _axis.playheadFrac = Math.max(0, Math.min(1, frac ?? 1));
+    _renderPlayhead();
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // PRIVATE
 // ═══════════════════════════════════════════════════════════════════

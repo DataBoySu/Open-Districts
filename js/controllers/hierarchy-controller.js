@@ -63,9 +63,8 @@ export async function open() {
     document.getElementById("hs-search").value = "";
     document.getElementById("hs-state-stats-bar").classList.add("hidden");
 
-    if (_allStates.length === 0) {
-        _allStates = await _ctx.ds.getAllStates();
-    }
+    // Always refetch states with current timeline range to stay in sync
+    _allStates = await _ctx.ds.getAllStates(_ctx.state.timelineRange);
 
     _renderIndiaMinimap(_allStates);
     _ctx.emit("hierarchy:opened");
@@ -77,9 +76,8 @@ export async function open() {
  * @param {string} stateId  e.g. "OD", "MH"
  */
 export async function openState(stateId) {
-    if (_allStates.length === 0) {
-        _allStates = await _ctx.ds.getAllStates();
-    }
+    // Always refetch states with current timeline range to stay in sync
+    _allStates = await _ctx.ds.getAllStates(_ctx.state.timelineRange);
 
     const state = _allStates.find(s => s.id === stateId);
     if (!state) {
@@ -106,6 +104,60 @@ export function close() {
         overlay.classList.add("hidden");
         _ctx.emit("hierarchy:closed");
     }, 160);
+}
+
+/**
+ * Refresh hierarchy counts based on a new time range.
+ * Called when timeline is scrubbed so that hierarchy selector
+ * shows event counts for only the visible (filtered) events.
+ * 
+ * @param {Object} timelineRange - { from?: ISO string, to?: ISO string } or null for live
+ */
+export async function syncWithTimeline(timelineRange) {
+    if (!_allStates || _allStates.length === 0) return;
+
+    // Refetch state data with the new date range
+    _allStates = await _ctx.ds.getAllStates(timelineRange);
+
+    // Check if hierarchy selector is currently visible
+    const overlay = document.getElementById("hierarchy-selector");
+    if (!overlay || overlay.classList.contains("hidden")) return;
+
+    // If Tier 1 is showing, re-render the minimap (it will use updated _allStates)
+    const tier1 = document.getElementById("hs-tier1");
+    const tier2 = document.getElementById("hs-tier2");
+
+    if (tier1 && tier1.style.display !== "none") {
+        // Re-render the minimap with updated counts
+        const svg = document.getElementById("hs-india-svg");
+        svg.innerHTML = "";
+        _renderIndiaMinimap(_allStates);
+    }
+
+    // If Tier 2 is showing, refresh districts for the selected state
+    if (tier2 && !tier2.classList.contains("hidden") && _tierTwoState) {
+        const updatedState = _allStates.find(s => s.id === _tierTwoState.id);
+        if (updatedState) {
+            _tierTwoState = updatedState;
+            
+            // Refetch districts with the new time range to get updated dataPoints
+            const districts = await _ctx.ds.getDistrictsForState(_tierTwoState.id, timelineRange);
+            let stateGeo = null;
+            try {
+                stateGeo = await _ctx.ds.getStateGeoJSON(_tierTwoState.id);
+            } catch (e) {
+                console.warn(`[Hierarchy] No GeoJSON found for state ${_tierTwoState.id}`, e);
+            }
+            
+            // Re-render the district map with updated dataPoints
+            _renderSVGMap(districts, stateGeo);
+
+            // Update state stats if visible
+            if (!document.getElementById("hs-state-stats-bar")?.classList.contains("hidden")) {
+                _showStateStats(_tierTwoState);
+            }
+        }
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -291,7 +343,8 @@ async function _loadTierTwo(state) {
     tier2.classList.remove("hidden");
     document.getElementById("hs-t2-state-name").textContent = state.name;
 
-    const districts = await _ctx.ds.getDistrictsForState(state.id);
+    // Fetch districts with current timeline range to match hierarchy filtering
+    const districts = await _ctx.ds.getDistrictsForState(state.id, _ctx.state.timelineRange);
     let stateGeo = null;
     try {
         stateGeo = await _ctx.ds.getStateGeoJSON(state.id);
@@ -541,6 +594,11 @@ function _showStatsPanel(district) {
 }
 
 function _selectDistrict(district) {
+    // Prevent re-loading the same district (would reset temporal slate)
+    if (district.id === _ctx.state.currentDistrictId) {
+        close();
+        return;
+    }
     close();
     // Emit district change — orchestrator owns the data reload
     _ctx.emit("hierarchy:districtSelected", { districtId: district.id, stateId: district.stateId });

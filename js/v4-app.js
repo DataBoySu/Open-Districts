@@ -49,6 +49,7 @@ const AppState = {
     consecutiveSlowFrames: 0,
     envOverlaysEnabled: true,
     districtScopeLocked: true, // Default to limiting events to district boundary
+    timelineRange: null,  // { from: ISO string, to: ISO string } or null for live mode
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -118,8 +119,10 @@ function _wireEvents() {
 
         // Reset to full live mode if scrubbing all the way to the end
         if (frac > 0.99) {
+            AppState.timelineRange = null; // Return to live mode
             MapCtrl.clearHistoricalSnapshot(AppState.events);
             TimelineCtrl.clearHistoricalSnapshot();
+            _syncHierarchyWithTimeline(); // Refresh hierarchy counts
             _renderSyncDot(); // Reset top bar to LIVE
             return;
         }
@@ -128,6 +131,13 @@ function _wireEvents() {
         if (bucketIndex >= AppState.timeBuckets.length) bucketIndex = AppState.timeBuckets.length - 1;
 
         const bucket = AppState.timeBuckets[bucketIndex];
+        
+        // Update AppState with the selected time range
+        AppState.timelineRange = {
+            from: bucket.startTs || bucket.endTs,
+            to: bucket.endTs
+        };
+        
         const d = new Date(bucket.startTs);
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
@@ -142,11 +152,19 @@ function _wireEvents() {
         _renderSyncDot(labelText);
         MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
         TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
+        _syncHierarchyWithTimeline(); // Refresh hierarchy counts for scrub position
     });
 
     // Time bucket step during autoplay → update map snapshot + timeline
     on("time:bucketStep", ({ bucketIndex }) => {
         const bucket = AppState.timeBuckets[bucketIndex];
+        
+        // Update AppState with the current bucket range
+        AppState.timelineRange = {
+            from: bucket.startTs || bucket.endTs,
+            to: bucket.endTs
+        };
+
         const d = new Date(bucket.startTs);
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
@@ -161,6 +179,7 @@ function _wireEvents() {
         _renderSyncDot(labelText);
         MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
         TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
+        _syncHierarchyWithTimeline(); // Refresh hierarchy counts during autoplay
     });
 
     // Perf degradation → disable env overlays
@@ -225,7 +244,7 @@ async function loadDistrict(districtId, stateId) {
     AppState.currentDistrictId = districtId;
     AppState.currentStateId = stateId ?? AppState.currentStateId;
     AppState.focusedEventId = null;
-    AppState.isHistorical = false;
+    // Preserve isHistorical and timelineRange — district change should not reset temporal state
     AppState.connectionStatus = "live"; // Phase 2 fix: always "live" in mock
 
     const district = await DataService.getDistrictById(districtId, AppState.currentStateId);
@@ -236,12 +255,11 @@ async function loadDistrict(districtId, stateId) {
     // Decide if we fetch events for the specific district or the whole state (unlocked scope)
     let rawEvents = [];
     if (AppState.districtScopeLocked) {
-        rawEvents = await DataService.getEventsForDistrict(districtId);
+        rawEvents = await DataService.getEventsForDistrict(districtId, AppState.timelineRange);
     } else {
         // Fetch ALL events (or all state events) if unlocked
-        const d_events = await DataService.getEventsForDistrict(districtId);
-        // We really want State-wide if unlocked. Let's ask DataService for 'ALL' by passing null block, but currently DataService relies on MOCK_EVENTS.
-        rawEvents = await DataService.getAllMockEvents();
+        // Also pass timelineRange to respect temporal filtering
+        rawEvents = await DataService.getAllMockEvents(AppState.timelineRange);
     }
 
     // Filter spatially to be strictly accurate inside the district boundaries if Locked
@@ -294,6 +312,46 @@ async function loadDistrict(districtId, stateId) {
 
     // Load geo (async — non-blocking to timeline)
     await MapCtrl.loadDistrictGeo(district, events);
+
+    // ── Restore temporal snapshot if user had a time filter active ─────────────
+    // After loading a new district we have fresh timeBuckets. If a timelineRange
+    // was active before the load, find the closest matching bucket and re-apply
+    // the snapshot so the map and timeline stay in sync with the scrubber.
+    if (AppState.timelineRange) {
+        const cutoffMs = new Date(AppState.timelineRange.to).getTime();
+        let bucketIndex = 0;
+        for (let i = timeBuckets.length - 1; i >= 0; i--) {
+            if (new Date(timeBuckets[i].endTs).getTime() <= cutoffMs) {
+                bucketIndex = i;
+                break;
+            }
+        }
+
+        const bucket = timeBuckets[bucketIndex];
+        if (bucket) {
+            const frac = (bucketIndex + 1) / timeBuckets.length;
+            TimeCtrl.setScrubberFrac(frac);
+            MapCtrl.applyHistoricalSnapshot(bucketIndex, timeBuckets, events);
+            TimelineCtrl.applyHistoricalSnapshot(bucketIndex, timeBuckets, events);
+
+            // Restore sync dot date label
+            const d = new Date(bucket.startTs ?? bucket.endTs);
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const dateStr = `${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
+            let labelText = `<span style="font-weight:600">${dateStr}</span>`;
+            if (bucket.resolution === "hour" || bucket.resolution === "half-hour") {
+                const hh = String(d.getUTCHours()).padStart(2, "0");
+                const mm = String(d.getUTCMinutes()).padStart(2, "0");
+                labelText += ` <span style="opacity:0.7">· ${hh}:${mm}</span>`;
+            }
+            AppState.isHistorical = true;
+            _renderSyncDot(labelText);
+        }
+    } else {
+        AppState.isHistorical = false;
+        _renderSyncDot();
+    }
+    // ──────────────────────────────────────────────────────────────────────────
 
     // Subscribe to mock live updates
     _unsubscribeLive = DataService.subscribeLiveUpdates(districtId, _onLiveUpdate);
@@ -529,6 +587,37 @@ function _renderSyncDot(overrideText = null) {
         label.innerHTML = overrideText;
     } else {
         label.textContent = AppState.isHistorical ? "HISTORICAL" : "LIVE";
+    }
+}
+
+/**
+ * Synchronize hierarchy selector counts with current timeline range.
+ * Called when user scrubs timeline to update data point counts in
+ * state/district selectors based on filtered (visible) events only.
+ * 
+ * Side effects:
+ * - Updates AppState.currentDistrict with fresh dataPoints
+ * - Refreshes hierarchy selector display if it's open
+ */
+async function _syncHierarchyWithTimeline() {
+    if (!AppState.currentDistrictId || !AppState.currentStateId) return;
+
+    try {
+        // Refetch current district with time-filtered counts
+        const updated = await DataService.getDistrictById(
+            AppState.currentDistrictId,
+            AppState.currentStateId,
+            AppState.timelineRange  // Pass current timeline range
+        );
+
+        if (updated) {
+            AppState.currentDistrict = { ...AppState.currentDistrict, ...updated };
+        }
+
+        // Also refresh hierarchy display if it's open
+        await HierarchyCtrl.syncWithTimeline(AppState.timelineRange);
+    } catch (err) {
+        console.warn("[V4] Failed to sync hierarchy with timeline:", err);
     }
 }
 
