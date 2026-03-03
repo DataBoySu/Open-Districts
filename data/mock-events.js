@@ -32,22 +32,7 @@ export const MOCK_EVENTS = [
     verified: true,
     meta: { fatalities: 3, incidentType: "Road Accident" }
   },
-  {
-    id: "evt_GJ_surat_20260301_001",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "surat-city",
-    category: "safety",
-    title: "Woman Duped in Job Scam",
-    summary: "A woman seeking employment in the UK was defrauded of Rs 21 lakh after receiving a fake job offer letter.",
-    timestamp: "2026-03-01T05:00:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.1702, lng: 72.8311 },
-    location: { block: "Surat City" },
-    source: "Times of India",
-    verified: true,
-    meta: { amountLost: 2100000, scamType: "Employment Fraud" }
-  },
+
   {
     id: "evt_GJ_surat_20260301_002",
     stateId: "GJ",
@@ -104,38 +89,8 @@ export const MOCK_EVENTS = [
     verified: true,
     meta: { fraudAmount: 19280000000, accused: "Gajera Brothers" }
   },
-  {
-    id: "evt_GJ_surat_20260301_004",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "surat-city",
-    category: "safety",
-    title: "Family Dies by Suicide",
-    summary: "Three members of a family committed suicide in the Vesu area following alleged harassment.",
-    timestamp: "2026-03-01T06:45:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.1411, lng: 72.7758 },
-    location: { block: "Vesu" },
-    source: "Times of India",
-    verified: true,
-    meta: { fatalities: 3, reason: "Harassment" }
-  },
-  {
-    id: "evt_GJ_surat_20260301_005",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "surat-city",
-    category: "infrastructure",
-    title: "DGVCL Enhances Power Infrastructure",
-    summary: "DGVCL has initiated projects to boost the power distribution infrastructure across city urban areas.",
-    timestamp: "2026-03-01T09:00:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.1702, lng: 72.8311 },
-    location: { block: "Surat Urban Areas" },
-    source: "Times of India",
-    verified: true,
-    meta: { utility: "DGVCL", projectType: "Grid Upgrade" }
-  },
+
+
   {
     id: "evt_GJ_surat_20260301_006",
     stateId: "GJ",
@@ -152,70 +107,10 @@ export const MOCK_EVENTS = [
     verified: true,
     meta: { rescued: 4, severity: "Moderate" }
   },
-  {
-    id: "evt_GJ_surat_20260301_007",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "chorasi",
-    category: "mobility",
-    title: "Airport Records Record Footfall",
-    summary: "Surat Airport achieved its highest-ever monthly passenger traffic in February 2026.",
-    timestamp: "2026-03-01T12:00:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.1141, lng: 72.7425 },
-    location: { block: "Magdalla (Surat Airport)" },
-    source: "Times of India",
-    verified: true,
-    meta: { metric: "Monthly Footfall", status: "Record High" }
-  },
-  {
-    id: "evt_GJ_surat_20260301_008",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "surat-city",
-    category: "infrastructure",
-    title: "Adajan Diaphragm Wall Damaged",
-    summary: "A diaphragm wall at an ongoing construction site in Adajan sustained damage.",
-    timestamp: "2026-03-01T13:45:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.1925, lng: 72.7915 },
-    location: { block: "Adajan Site" },
-    source: "Times of India",
-    verified: true,
-    meta: { issue: "Structural Damage", severity: "Concern" }
-  },
-  {
-    id: "evt_GJ_surat_20260301_009",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "surat-city",
-    category: "safety",
-    title: "iPhone Robbery Ends in Stabbing",
-    summary: "A 19-year-old youth was stabbed in the neck during a violent robbery attempt in the city area.",
-    timestamp: "2026-03-01T21:10:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.1702, lng: 72.8311 },
-    location: { block: "Surat City Area" },
-    source: "Times of India",
-    verified: true,
-    meta: { victimAge: 19, weapon: "Knife" }
-  },
-  {
-    id: "evt_GJ_surat_20260301_010",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "surat-city",
-    category: "safety",
-    title: "Shooting Incident at Wedding",
-    summary: "A 29-year-old man was shot in the leg during a pre-wedding function in Surat City.",
-    timestamp: "2026-03-01T22:30:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.1702, lng: 72.8311 },
-    location: { block: "Surat City" },
-    source: "Times of India",
-    verified: true,
-    meta: { victimAge: 29, incident: "Shooting" }
-  },
+
+
+
+
   {
     id: "evt_GJ_surat_20260108_001",
     stateId: "GJ",
@@ -248,22 +143,7 @@ export const MOCK_EVENTS = [
     verified: true,
     meta: { serviceStatus: "Suspended", reason: "Public Safety" }
   },
-  {
-    id: "evt_GJ_surat_20260301_011",
-    stateId: "GJ",
-    districtId: "surat",
-    regionId: "surat-city",
-    category: "safety",
-    title: "Staged Crash Robbery Reported",
-    summary: "Robbers staged a vehicle crash to loot Rs 35 lakh in the Rander area.",
-    timestamp: "2026-03-01T15:20:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 21.2201, lng: 72.7915 },
-    location: { block: "Rander" },
-    source: "Times of India",
-    verified: true,
-    meta: { lootAmount: 3500000, arrests: 2 }
-  },
+
   // ── Gurugram, Haryana (Dec 2025 – Feb 2026) ───────────────────────────────
   // Source: Real events via research agent. Severity stripped per V4 schema.
 
@@ -880,22 +760,7 @@ export const MOCK_EVENTS = [
     verified: true,
     meta: { campaignName: "#StreetsForAll" }
   },
-  {
-    id: "evt_RJ_jaipur_20260201_001",
-    stateId: "RJ",
-    districtId: "jaipur",
-    regionId: null,
-    category: "weather",
-    title: "Western Disturbance Triggers Rainfall",
-    summary: "Active western disturbances caused moderate rainfall and hailstorms across the district, leading to significant traffic congestion.",
-    timestamp: "2026-02-01T03:06:00Z",
-    expiresAt: "2026-02-03T23:59:00Z",
-    geoPoint: { lat: 26.8900, lng: 75.8100 },
-    location: { block: "Tonk Road and JLN Marg" },
-    source: "The Times of India",
-    verified: true,
-    meta: { minTempCelsius: 12.7 }
-  },
+
   {
     id: "evt_PB_jalandhar_20260101_001",
     stateId: "PB",
@@ -944,22 +809,7 @@ export const MOCK_EVENTS = [
     verified: true,
     meta: { propertyDamage: "Bus torched" }
   },
-  {
-    id: "evt_OD_khordha_20260224_001",
-    stateId: "OD",
-    districtId: "khordha",
-    regionId: "bhubaneswar",
-    category: "infrastructure",
-    title: "Fatal Wall Collapse Bhubaneswar",
-    summary: "A 20-ft wall collapsed on laborers during drain construction work in Bhoi Sahi, Badagada.",
-    timestamp: "2026-02-24T21:46:00Z",
-    expiresAt: null,
-    geoPoint: { lat: 20.2450, lng: 85.8420 },
-    location: { block: "Bhoi Sahi, Badagada" },
-    source: "The Times of India",
-    verified: true,
-    meta: { fatalities: 2, injured: 4 }
-  },
+
   {
     id: "evt_OD_khordha_20260224_002",
     stateId: "OD",
