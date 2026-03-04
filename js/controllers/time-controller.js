@@ -15,6 +15,11 @@ const _axis = {
     buckets: [], // Added to support dynamic labels
 };
 
+const _idlePulse = {
+    armTimer: null,
+    pulseTimer: null,
+};
+
 // ═══════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════
@@ -23,6 +28,7 @@ export function init(ctx) {
     _ctx = ctx;
     _initDrag();
     _initButtons();
+    _armIdlePulse();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -155,6 +161,7 @@ function _initDrag() {
     // Mouse drag
     handle.addEventListener("mousedown", e => {
         _axis.isDragging = true;
+        _registerInteraction();
         _stopAutoPlay();
         e.preventDefault();
     });
@@ -167,10 +174,16 @@ function _initDrag() {
         _ctx.emit("time:scrub", { frac: _axis.playheadFrac });
     });
 
-    document.addEventListener("mouseup", () => { _axis.isDragging = false; });
+    document.addEventListener("mouseup", () => {
+        if (_axis.isDragging) {
+            _axis.isDragging = false;
+            _registerInteraction();
+        }
+    });
 
     // Click anywhere on ribbon to jump
     ribbon.addEventListener("click", e => {
+        _registerInteraction();
         const rect = e.currentTarget.getBoundingClientRect();
         _axis.playheadFrac = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
         _renderPlayhead();
@@ -181,6 +194,7 @@ function _initDrag() {
     // Touch (Pi touchscreen)
     handle.addEventListener("touchstart", e => {
         _axis.isDragging = true;
+        _registerInteraction();
         _stopAutoPlay();
         e.preventDefault();
     }, { passive: false });
@@ -193,21 +207,32 @@ function _initDrag() {
         _ctx.emit("time:scrub", { frac: _axis.playheadFrac });
     });
 
-    document.addEventListener("touchend", () => { _axis.isDragging = false; });
+    document.addEventListener("touchend", () => {
+        if (_axis.isDragging) {
+            _axis.isDragging = false;
+            _registerInteraction();
+        }
+    });
+
+    // Interacting anywhere in the time axis should defer idle pulse.
+    mainEl.addEventListener("pointerdown", _registerInteraction);
 }
 
 // ── Buttons ───────────────────────────────────────────────────────
 function _initButtons() {
     document.getElementById("ta-play").addEventListener("click", () => {
+        _registerInteraction();
         if (_ctx.state.isAutoPlaying) { _stopAutoPlay(); } else { _startAutoPlay(250); }
     });
 
     document.getElementById("ta-ff").addEventListener("click", () => {
+        _registerInteraction();
         if (_ctx.state.isAutoPlaying && _axis.isFF) { _stopAutoPlay(); } else { _startAutoPlay(100); }
     });
 
     // Stop button — reset to LIVE
     document.getElementById("ta-stop").addEventListener("click", () => {
+        _registerInteraction();
         _stopAutoPlay();
         _axis.playheadFrac = 1.0;
         _renderPlayhead();
@@ -221,6 +246,8 @@ function _initButtons() {
 // ── Autoplay ──────────────────────────────────────────────────────
 function _startAutoPlay(intervalMs) {
     _stopAutoPlay();
+    _setIdlePulse(false);
+    _clearIdlePulseTimers();
     _ctx.state.isAutoPlaying = true;
     _axis.isFF = intervalMs < 500;
 
@@ -270,6 +297,7 @@ function _stopAutoPlay() {
     }
 
     document.getElementById("ta-ff")?.classList.remove("playing");
+    _armIdlePulse();
 }
 
 // ── Utilities ─────────────────────────────────────────────────────
@@ -288,4 +316,37 @@ function _rulerLabel(bucket, isSameDate) {
         return `${dateHtml}<div class="ta-time">${timeStr}</div>`;
     }
     return dateHtml;
+}
+
+function _setIdlePulse(on) {
+    const handle = document.getElementById("ta-playhead-handle");
+    if (!handle) return;
+    handle.classList.toggle("idle-pulse", on);
+}
+
+function _clearIdlePulseTimers() {
+    clearTimeout(_idlePulse.armTimer);
+    clearTimeout(_idlePulse.pulseTimer);
+    _idlePulse.armTimer = null;
+    _idlePulse.pulseTimer = null;
+}
+
+function _registerInteraction() {
+    _setIdlePulse(false);
+    _armIdlePulse();
+}
+
+function _armIdlePulse() {
+    _clearIdlePulseTimers();
+    if (_ctx?.state?.isAutoPlaying || _axis.isDragging) return;
+
+    // Reserved cue: pulse once only after user inactivity.
+    _idlePulse.armTimer = setTimeout(() => {
+        if (_ctx?.state?.isAutoPlaying || _axis.isDragging) return;
+        _setIdlePulse(true);
+        _idlePulse.pulseTimer = setTimeout(() => {
+            _setIdlePulse(false);
+            _armIdlePulse();
+        }, 1100);
+    }, 9000);
 }
