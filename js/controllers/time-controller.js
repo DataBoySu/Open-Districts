@@ -124,7 +124,12 @@ function _renderPlayhead() {
     const ph = document.getElementById("ta-playhead");
     if (!ph) return;
     const frac = Math.max(0, Math.min(1, _axis.playheadFrac));
-    ph.style.left = `${frac * 100}%`;
+    const mainEl = document.getElementById("ta-main");
+    if (mainEl) {
+        ph.style.left = `${_leftPxFromFrac(mainEl, frac)}px`;
+    } else {
+        ph.style.left = `${frac * 100}%`;
+    }
 
     // Post-playhead darkening overlay (explicit div — reliable across all browsers)
     const overlay = document.getElementById("ta-ribbon-overlay");
@@ -168,8 +173,7 @@ function _initDrag() {
 
     document.addEventListener("mousemove", e => {
         if (!_axis.isDragging) return;
-        const rect = mainEl.getBoundingClientRect();
-        _axis.playheadFrac = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        _axis.playheadFrac = _fracFromClientX(e.clientX, mainEl);
         _renderPlayhead();
         _ctx.emit("time:scrub", { frac: _axis.playheadFrac });
     });
@@ -184,8 +188,7 @@ function _initDrag() {
     // Click anywhere on ribbon to jump
     ribbon.addEventListener("click", e => {
         _registerInteraction();
-        const rect = e.currentTarget.getBoundingClientRect();
-        _axis.playheadFrac = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        _axis.playheadFrac = _fracFromClientX(e.clientX, mainEl);
         _renderPlayhead();
         _stopAutoPlay();
         _ctx.emit("time:scrub", { frac: _axis.playheadFrac });
@@ -201,8 +204,7 @@ function _initDrag() {
 
     document.addEventListener("touchmove", e => {
         if (!_axis.isDragging) return;
-        const rect = mainEl.getBoundingClientRect();
-        _axis.playheadFrac = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+        _axis.playheadFrac = _fracFromClientX(e.touches[0].clientX, mainEl);
         _renderPlayhead();
         _ctx.emit("time:scrub", { frac: _axis.playheadFrac });
     });
@@ -349,4 +351,26 @@ function _armIdlePulse() {
             _armIdlePulse();
         }, 1100);
     }, 9000);
+}
+
+function _getPlayheadInsetPx(mainEl) {
+    const handle = document.getElementById("ta-playhead-handle");
+    const handleHalf = handle ? handle.offsetWidth / 2 : 18;
+    return Math.max(12, handleHalf + 2);
+}
+
+function _leftPxFromFrac(mainEl, frac) {
+    const width = mainEl.clientWidth || 0;
+    const inset = _getPlayheadInsetPx(mainEl);
+    const travel = Math.max(1, width - (inset * 2));
+    return inset + (Math.max(0, Math.min(1, frac)) * travel);
+}
+
+function _fracFromClientX(clientX, mainEl) {
+    const rect = mainEl.getBoundingClientRect();
+    const inset = _getPlayheadInsetPx(mainEl);
+    const minX = rect.left + inset;
+    const maxX = rect.right - inset;
+    const clampedX = Math.max(minX, Math.min(maxX, clientX));
+    return (clampedX - minX) / Math.max(1, (maxX - minX));
 }

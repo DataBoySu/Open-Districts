@@ -1453,6 +1453,8 @@ button:focus-visible {
   /* overflow: hidden; Removed to allow labels to breathe */
   display: flex;
   flex-direction: column;
+  padding: 4px 14px 10px;
+  box-sizing: border-box;
 }
 
 /* Ruler layer: 32px */
