@@ -69,10 +69,11 @@
   /* deep-scarlet     */
 
   /* ── Structural dimension tokens — override in breakpoints to scale layout ── */
-  --bar-h: 44px;       /* top bar height */
-  --floor-h: 60px;     /* time axis height */
-  --tl-w: clamp(200px, 22vw, 248px);   /* timeline panel width */
-  --ai-w: clamp(260px, 28vw, 300px);   /* AI panel width */
+  --bar-h: 56px;       /* top bar height */
+  --floor-h: 88px;     /* time axis height */
+  --tl-w: clamp(260px, 22vw, 340px);   /* timeline panel width */
+  --ai-w: clamp(320px, 27vw, 420px);   /* AI panel width */
+  --tap-min: 46px;     /* minimum touch target size */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -126,8 +127,8 @@ button:focus-visible {
   background: rgba(13, 17, 23, 0.95);
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  gap: 10px;
+  padding: 0 18px;
+  gap: 12px;
 }
 
 /* MAP CONTAINER — NEVER RESIZES */
@@ -180,8 +181,8 @@ button:focus-visible {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 28px;
-  height: 56px;
+  width: 36px;
+  height: 74px;
   background: var(--white);
   border: 1.5px solid rgba(0, 0, 0, 0.12);
   border-radius: 0 6px 6px 0;
@@ -189,7 +190,7 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 24px;
   color: var(--ink-ghost);
   transition: color 150ms, background 150ms, left 200ms ease-out, right 200ms ease-out;
   z-index: 50;
@@ -311,7 +312,7 @@ button:focus-visible {
 }
 
 .tb-district-meta {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 500;
   color: var(--ink-ghost);
   text-transform: uppercase;
@@ -322,7 +323,7 @@ button:focus-visible {
 .tb-district-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 19px;
   color: #FFFFFF;
   line-height: 1.2;
 }
@@ -333,12 +334,13 @@ button:focus-visible {
 
 /* Generic top bar button */
 .tb-btn {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: rgba(255, 255, 255, 0.75);
-  padding: 5px 10px;
+  padding: 0 14px;
+  min-height: var(--tap-min);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 2px;
   white-space: nowrap;
@@ -364,10 +366,10 @@ button:focus-visible {
 
 /* Language selector (Infinite Swipe Pill) */
 #tb-lang {
-  width: 32px;
-  height: 32px;
+  width: var(--tap-min);
+  height: var(--tap-min);
   background-color: transparent;
-  border-radius: 16px;
+  border-radius: 999px;
   position: relative;
   overflow: hidden;
   transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.4s;
@@ -384,7 +386,7 @@ button:focus-visible {
 }
 
 #tb-lang.expanded {
-  width: 180px;
+  width: 220px;
   /* Expands to the left because of tb-spacer */
   background-color: rgba(255, 255, 255, 0.08);
   /* Dark background when open */
@@ -402,15 +404,15 @@ button:focus-visible {
 .lang-item {
   position: absolute;
   top: 0;
-  left: -16px;
+  left: calc(-1 * var(--tap-min) / 2);
   /* Half of its own width */
-  width: 32px;
-  height: 32px;
+  width: var(--tap-min);
+  height: var(--tap-min);
   display: flex;
   justify-content: center;
   align-items: center;
   color: var(--ink-ghost);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -432,7 +434,7 @@ button:focus-visible {
 
 #tb-lang.expanded .lang-item.active {
   color: var(--primary);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -441,8 +443,8 @@ button:focus-visible {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 26px;
-  height: 26px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: 1px solid transparent;
   pointer-events: none;
@@ -465,12 +467,13 @@ button:focus-visible {
 }
 
 .mode-pill {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--ink-ghost);
-  padding: 5px 10px;
+  padding: 0 14px;
+  min-height: var(--tap-min);
   border-radius: 0;
   transition: all 120ms;
 }
@@ -493,8 +496,8 @@ button:focus-visible {
 }
 
 #sync-dot {
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--ok);
   animation: dot-pulse 2.5s ease-in-out infinite;
@@ -507,7 +510,7 @@ button:focus-visible {
 }
 
 #sync-label {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -540,13 +543,13 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px 0 14px;
+  padding: 0 12px 0 16px;
   border-bottom: 1px solid var(--rule);
   flex-shrink: 0;
 }
 
 .tl-header-meta {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -557,7 +560,7 @@ button:focus-visible {
 .tl-header-district {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 18px;
   color: var(--ink);
   line-height: 1.2;
 }
@@ -565,7 +568,7 @@ button:focus-visible {
 /* Collapse chevron button */
 .tl-collapse-btn {
   width: 24px;
-  height: 24px;
+  height: var(--tap-min);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -589,7 +592,7 @@ button:focus-visible {
 #tl-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 0;
+  padding: 16px 0;
   scrollbar-width: thin;
   scrollbar-color: var(--rule) transparent;
 }
@@ -616,7 +619,7 @@ button:focus-visible {
 /* ── CARD ── */
 .tl-card {
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   cursor: pointer;
   transition: opacity 150ms;
 }
@@ -626,9 +629,9 @@ button:focus-visible {
   content: "";
   position: absolute;
   left: -20px;
-  top: 14px;
-  width: 10px;
-  height: 10px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
   /* MINIMUM 10px */
   border-radius: 50%;
   background: var(--white);
@@ -737,14 +740,14 @@ button:focus-visible {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 8px 10px 6px 12px;
+  padding: 10px 12px 8px 14px;
   /* left 12 to clear severity band */
 }
 
 /* SVG thumbnail */
 .tl-thumb {
-  width: 28px;
-  height: 24px;
+  width: 34px;
+  height: 28px;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 1px;
@@ -763,7 +766,7 @@ button:focus-visible {
 .tl-loc-name {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
@@ -772,7 +775,7 @@ button:focus-visible {
 }
 
 .tl-time {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 400;
   text-transform: uppercase;
   color: var(--ink-ghost);
@@ -782,11 +785,11 @@ button:focus-visible {
 
 /* Event summary */
 .tl-summary {
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 300;
   color: var(--ink-sub);
   line-height: 1.45;
-  padding: 0 10px 0 12px;
+  padding: 0 12px 0 14px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -795,15 +798,15 @@ button:focus-visible {
 }
 
 .tl-summary-wrap {
-  padding-bottom: 8px;
+  padding-bottom: 10px;
 }
 
 .tl-view-more {
   display: none;
-  font-size: 8.5px;
+  font-size: 10px;
   font-weight: 500;
   color: var(--primary);
-  padding: 4px 10px 0 12px;
+  padding: 6px 12px 0 14px;
   letter-spacing: 0.2px;
 }
 
@@ -994,22 +997,22 @@ button:focus-visible {
 /* Custom zoom controls */
 #map-zoom-controls {
   position: absolute;
-  right: 60px;
-  bottom: calc(var(--floor-h) + 8px);
+  right: 24px;
+  bottom: calc(var(--floor-h) + 14px);
   /* above time axis */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   z-index: 1000;
 }
 
 .zoom-btn {
-  width: 64px;
-  height: 64px;
+  width: 78px;
+  height: 78px;
   background: var(--white);
   border: 1px solid var(--rule);
-  border-radius: 8px;
-  font-size: 40px;
+  border-radius: 12px;
+  font-size: 44px;
   font-weight: 300;
   color: var(--ink-mid);
   display: flex;
@@ -1218,7 +1221,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
+  padding: 0 14px;
   border-bottom: 1px solid var(--rule);
   flex-shrink: 0;
 }
@@ -1230,8 +1233,8 @@ button:focus-visible {
 }
 
 #ai-active-dot {
-  width: 7px;
-  height: 7px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--primary);
   animation: dot-pulse 2.0s ease-in-out infinite;
@@ -1241,19 +1244,19 @@ button:focus-visible {
 #ai-header-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--ink);
 }
 
 .ai-close-btn {
-  width: 26px;
-  height: 26px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--rule);
   border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--ink-ghost);
   transition: color 120ms, border-color 120ms;
 }
@@ -1265,7 +1268,7 @@ button:focus-visible {
 
 /* Context bar */
 #ai-context-bar {
-  padding: 7px 12px;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--rule-faint);
   flex-shrink: 0;
 }
@@ -1280,7 +1283,7 @@ button:focus-visible {
 }
 
 #ai-context-text {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -1295,15 +1298,15 @@ button:focus-visible {
 #ai-intent-section {
   flex: 1;
   overflow-y: auto;
-  padding: 10px 12px;
+  padding: 14px;
   scrollbar-width: thin;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 
 .ai-section-label {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1314,7 +1317,7 @@ button:focus-visible {
 .ai-intents {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 
 .ai-intents.hidden {
@@ -1325,7 +1328,8 @@ button:focus-visible {
 .intent-card {
   width: 100%;
   text-align: left;
-  padding: 10px 12px;
+  padding: 14px;
+  min-height: var(--tap-min);
   border: 1.5px solid var(--rule);
   border-radius: 2px;
   background: var(--white);
@@ -1339,13 +1343,13 @@ button:focus-visible {
 .intent-title {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 11px;
+  font-size: 14px;
   color: var(--ink);
   line-height: 1.3;
 }
 
 .intent-sub {
-  font-size: 8.5px;
+  font-size: 11px;
   font-weight: 300;
   color: var(--ink-ghost);
   margin-top: 2px;
@@ -1355,7 +1359,7 @@ button:focus-visible {
 /* Result area */
 #ai-result {
   border-top: 1px solid var(--rule-faint);
-  padding: 10px 12px;
+  padding: 12px 14px;
   flex-shrink: 0;
 }
 
@@ -1379,7 +1383,7 @@ button:focus-visible {
 }
 
 #ai-result-source-text {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 500;
   color: var(--ok);
   text-transform: uppercase;
@@ -1387,7 +1391,7 @@ button:focus-visible {
 }
 
 #ai-result-body {
-  font-size: 10.5px;
+  font-size: 12.5px;
   font-weight: 400;
   color: var(--ink-mid);
   line-height: 1.7;
@@ -1399,24 +1403,24 @@ button:focus-visible {
 
 /* Left controls zone: 100px */
 #ta-controls {
-  width: 104px;
+  width: 180px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 8px;
   /* Reduced gap slightly to fit 3 buttons nicely */
-  padding: 0 8px;
+  padding: 0 10px;
   border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .ta-ctrl-btn {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.55);
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  padding: 4px 8px;
+  padding: 0 12px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 2px;
   transition: color 120ms, border-color 120ms;
@@ -1424,7 +1428,7 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   height: 24px;
-  min-width: 24px;
+  min-width: var(--tap-min);
 }
 
 .ta-ctrl-btn:hover {
@@ -1435,6 +1439,11 @@ button:focus-visible {
 .ta-ctrl-btn.playing {
   color: #fff;
   border-color: var(--primary);
+}
+
+.ta-ctrl-btn svg {
+  width: 15px;
+  height: 15px;
 }
 
 /* Main timeline area: fills remaining width */
@@ -1448,7 +1457,7 @@ button:focus-visible {
 
 /* Ruler layer: 32px */
 #ta-ruler {
-  height: 32px;
+  height: 42px;
   position: relative;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   /* overflow: hidden; Removed to allow labels to breathe */
@@ -1456,7 +1465,7 @@ button:focus-visible {
 
 /* Density ribbon: 32px */
 #ta-ribbon {
-  height: 32px;
+  height: 46px;
   position: relative;
   display: flex;
 }
@@ -1555,7 +1564,7 @@ button:focus-visible {
 }
 
 .ta-date {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
@@ -1563,7 +1572,7 @@ button:focus-visible {
 }
 
 .ta-time {
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.4);
   white-space: nowrap;
@@ -1635,11 +1644,11 @@ button:focus-visible {
   width: 28px;
   height: 28px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 2px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.6);
   transition: color 120ms;
   pointer-events: auto;
@@ -1652,7 +1661,7 @@ button:focus-visible {
 
 /* Search input */
 #hs-search-wrap {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 #hs-search {
@@ -1880,7 +1889,7 @@ button:focus-visible {
   background: var(--primary);
   color: #fff;
   border: none;
-  padding: 8px 16px;
+  min-height: var(--tap-min);`r`n  padding: 0 18px;
   border-radius: 4px;
   font-family: var(--font-data);
   font-weight: 600;
@@ -2275,7 +2284,8 @@ body.live-active #ta-playhead-line {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
-  padding: 4px 20px;
+  min-height: 38px;
+  padding: 6px 24px;
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   display: flex;
@@ -2528,7 +2538,7 @@ body.live-active #ta-playhead-line {
   /* Topbar */
   .tb-district-meta         { font-size: 10px; letter-spacing: 1.6px; }
   .tb-district-name         { font-size: 20px; }
-  .tb-btn, .mode-pill       { font-size: 12px; padding: 8px 16px; }
+  .tb-btn, .mode-pill       { font-size: 12px; min-height: var(--tap-min);`r`n  padding: 0 18px; }
   #sync-label               { font-size: 11px; }
   #tb-logo                  { font-size: 17px; }
   #sync-dot                 { width: 10px; height: 10px; }
@@ -2606,7 +2616,7 @@ body.live-active #ta-playhead-line {
   /* AI panel */
   .ai-header-label          { font-size: 13px; }
   .ai-header-title          { font-size: 20px; }
-  .ai-chip                  { font-size: 13px; padding: 8px 16px; }
+  .ai-chip                  { font-size: 13px; min-height: var(--tap-min);`r`n  padding: 0 18px; }
   .ai-response-text         { font-size: 17px; line-height: 1.75; }
   .ai-source-label          { font-size: 13px; }
   #ai-header                { padding: 0 18px; }
@@ -2629,3 +2639,4 @@ body.live-active #ta-playhead-line {
   .hs-state-btn             { font-size: 17px; padding: 14px 20px; }
   .hs-title                 { font-size: 20px; }
 }
+
