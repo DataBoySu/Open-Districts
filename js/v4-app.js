@@ -743,6 +743,9 @@ function _startBrandingLogoFxLoop() {
 
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
 
+    // Run once immediately after splash/app init, then continue on 5-min cadence.
+    _triggerBrandingLogoFx();
+
     const elapsedMs = Date.now() - APP_SESSION_START_TS;
     const msToNextCycle = BRANDING_FX_INTERVAL_MS - (elapsedMs % BRANDING_FX_INTERVAL_MS);
 
