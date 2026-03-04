@@ -1,10 +1,11 @@
 // ─── AI CONTROLLER — v4-app.js extraction ─────────────────────────────────────
 // Owns: AI panel open/close, context mode switching, intent → result rendering.
 // Receives: { state, ds, emit } context.
-// Exports: init(ctx) → { open, close }
+// Exports: init(ctx) → { open, close, updatePanelText }
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { formatCardTime } from "../services/time-processor.js";
+import { t } from "../v4-app.js";
 
 let _ctx;
 
@@ -55,6 +56,14 @@ export function init(ctx) {
 export function open() { _open(); }
 export function close() { _close(); }
 
+/** Update AI panel text when language changes */
+export function updatePanelText() {
+    const panel = document.getElementById("ai-panel");
+    if (panel.classList.contains("open")) {
+        _open();  // Re-render context and labels
+    }
+}
+
 /** Clear result area (called by orchestrator when district changes). */
 export function reset() {
     document.getElementById("ai-result").classList.add("hidden");
@@ -86,7 +95,7 @@ function _open() {
         contextBar.className = "event-bound";
         const timeStr = formatCardTime(focusedEvent.timestamp);
         const regionLabel = _humaniseRegion(focusedEvent.regionId) ?? focusedEvent.location?.block ?? "–";
-        contextText.textContent = `${focusedEvent.category.toUpperCase()} · ${regionLabel} · ${timeStr}`;
+        contextText.textContent = `${t(`category.${focusedEvent.category}`).toUpperCase()} · ${regionLabel} · ${timeStr}`;
         if (contextMode) {
             contextMode.textContent = "EVENT CONTEXT";
             contextMode.className = "ai-context-badge event";
@@ -97,7 +106,7 @@ function _open() {
         // ── GENERAL DISTRICT context ─────────────────────────────────
         contextBar.className = "general";
         const districtName = _ctx.state.currentDistrict?.name ?? "–";
-        contextText.textContent = `DISTRICT · ${districtName} · GENERAL`;
+        contextText.textContent = `${t('ai.general.context', { name: districtName })}`;
         if (contextMode) {
             contextMode.textContent = "DISTRICT CONTEXT";
             contextMode.className = "ai-context-badge general";

@@ -23,6 +23,7 @@ export const MOCK_TRANSLATIONS = [
             "ui.weeklyEvents": "WEEKLY EVENTS",
             "ui.today": "Today",
             "ui.verified": "Verified",
+            "ui.unverified": "Unverified",
 
             // AI panel
             "ui.guidedIntelligence": "Guided Intelligence",
@@ -94,6 +95,7 @@ export const MOCK_TRANSLATIONS = [
             "ui.weeklyEvents": "ସାପ୍ତାହିକ ଘଟଣା",
             "ui.today": "ଆଜି",
             "ui.verified": "ଯାଞ୍ଚ ହୋଇଛି",
+            "ui.unverified": "ଅଯାଞ୍ଚିତ",
 
             // AI panel
             "ui.guidedIntelligence": "ନିର୍ଦ୍ଦେଶିତ ବୁଦ୍ଧି",
@@ -165,6 +167,7 @@ export const MOCK_TRANSLATIONS = [
             "ui.weeklyEvents": "साप्ताहिक घटनाएं",
             "ui.today": "आज",
             "ui.verified": "सत्यापित",
+            "ui.unverified": "असत्यापित",
 
             // AI panel
             "ui.guidedIntelligence": "निर्देशित बुद्धिमत्ता",

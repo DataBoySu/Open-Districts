@@ -1,9 +1,10 @@
 // ─── HIERARCHY CONTROLLER — v4-app.js extraction ──────────────────────────────
 // Owns: Change Area overlay, tier-1 state grid, tier-2 district map + list.
 // Receives: { state, ds, emit } context.
-// Exports: init(ctx) → { open, close }
+// Exports: init(ctx) → { open, close, updateLabels }
 // ─────────────────────────────────────────────────────────────────────────────
 import { fuzzyMatch } from '../utils/string-matcher.js';
+import { t } from "../v4-app.js";
 
 let _ctx;
 let _allStates = [];
@@ -104,6 +105,14 @@ export function close() {
         overlay.classList.add("hidden");
         _ctx.emit("hierarchy:closed");
     }, 160);
+}
+
+/**
+ * Update labels when language changes.
+ */
+export function updateLabels() {
+    // Hierarchy selector labels are mostly generated dynamically
+    // No static hardcoded labels to update currently
 }
 
 /**

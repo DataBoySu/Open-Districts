@@ -53,6 +53,26 @@ const AppState = {
 };
 
 // ═══════════════════════════════════════════════════════════════════
+// 1.5 TRANSLATION HELPER — get strings in current locale
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Get a translated string by key, with optional variable substitution.
+ * If translation not available, returns the key itself.
+ * Usage: t('ui.weeklyEvents') or t('ui.alertCount', { count: 5 })
+ */
+export function t(key, vars = {}) {
+    let str = AppState.translations[key] ?? key;
+    
+    // Variable substitution: {name} → value
+    Object.entries(vars).forEach(([varName, value]) => {
+        str = str.replace(`{${varName}}`, value);
+    });
+    
+    return str;
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // 2. EVENT BUS — zero-config, synchronous
 // ═══════════════════════════════════════════════════════════════════
 
@@ -558,37 +578,6 @@ async function _renderLanguageSelector() {
                 }
             }
         });
-
-        // Handle clicking on individual language items
-        track.addEventListener('click', (e) => {
-            const langItem = e.target.closest('.lang-item');
-            if (!langItem || !_pillExpanded) return;
-
-            // Find which language item was clicked
-            const clickedIndex = _langNodes.indexOf(langItem);
-            if (clickedIndex === -1) return;
-
-            // Calculate the virtual index for this visible item
-            const centerIndexInteger = Math.round(_pillPosition);
-            const itemVirtualIndex = centerIndexInteger - Math.floor(7 / 2) + clickedIndex;
-            const len = _activeLocales.length;
-            const langIndex = ((itemVirtualIndex % len) + len) % len;
-            const selectedLocale = _activeLocales[langIndex];
-
-            if (selectedLocale) {
-                // Animate to this language
-                _pillTargetPosition = langIndex;
-                
-                // After animation completes, switch locale and collapse
-                setTimeout(() => {
-                    _pillExpanded = false;
-                    container.classList.remove('expanded');
-                    if (selectedLocale !== AppState.locale) {
-                        _switchLocale(selectedLocale);
-                    }
-                }, 400);
-            }
-        });
     } else {
         // Find nearest integer that matches activeIdx
         if (!_pillDragging) {
@@ -652,13 +641,26 @@ async function _syncHierarchyWithTimeline() {
     }
 }
 
+function _updateTopBarLabels() {
+    // Update district label in topbar
+    const districtMeta = document.getElementById("tb-district-meta");
+    if (districtMeta) {
+        districtMeta.textContent = t('ui.currentDistrict');
+    }
+}
+
 async function _switchLocale(locale) {
     AppState.locale = locale;
     const translation = await DataService.getTranslation(locale);
     AppState.translations = translation.strings;
+    
+    // Update all UI elements with new translations
     _renderLanguageSelector();
-    TimelineCtrl.renderTimeline(AppState.events);
+    _updateTopBarLabels();  // Update "WEEKLY EVENTS", etc.
+    TimelineCtrl.renderTimeline(AppState.events);  // Re-render timeline with new category labels
     TimelineCtrl.renderFocusState(AppState.focusedEventId);
+    AICtrl.updatePanelText();  // Update AI panel with translations
+    HierarchyCtrl.updateLabels();  // Update hierarchy selector labels
 }
 
 // ═══════════════════════════════════════════════════════════════════

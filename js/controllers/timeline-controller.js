@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { formatCardTime } from "../services/time-processor.js";
+import { t } from "../v4-app.js";
 
 // ── Internal cache ────────────────────────────────────────────────
 const _regionCache = {};
@@ -200,7 +201,7 @@ function _buildCard(ev) {
         ${_buildDetailRows(ev)}
         <div class="tl-source-tag">
           <div class="tl-source-dot" aria-hidden="true"></div>
-          ${ev.verified ? "Verified" : "Unverified"} &middot; ${ev.source}
+          ${ev.verified ? t('ui.verified') : t('ui.unverified')} &middot; ${ev.source}
         </div>
       </div>
     </div>`;
@@ -270,15 +271,19 @@ function _getRegionName(regionId, fallback) {
 }
 
 function _catLabel(cat) {
-    const MAP = {
-        health: "HEALTH",
+    // Use translated category name, shortened for display
+    const fullName = t(`category.${cat}`) || cat.toUpperCase();
+    
+    // Abbreviate to fit in pill: most fit 5-7 chars
+    const abbr = {
+        health: "HLTH",
         infrastructure: "INFRA",
-        mobility: "MOBIL.",
-        safety: "SAFETY",
-        weather: "WEATHER",
-        emergency: "EMRGNCY"
+        mobility: "MOBIL",
+        safety: "SAFE",
+        weather: "WX",
+        emergency: "EMRG"
     };
-    return MAP[cat] ?? cat.toUpperCase().slice(0, 7);
+    return abbr[cat] ?? fullName.slice(0, 6).toUpperCase();
 }
 
 // ── Collapse ──────────────────────────────────────────────────────
