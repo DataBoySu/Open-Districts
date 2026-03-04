@@ -23,6 +23,12 @@ import { formatCardTime } from "./services/time-processor.js";
 
 // ── Local storage key for saved district selection ─────────────────────────────
 const STORAGE_KEY = "opendistricts_savedDistrict";
+const APP_SESSION_START_TS = Date.now();
+const BRANDING_FX_INTERVAL_MS = 5 * 60 * 1000;
+const BRANDING_FX_DURATION_MS = 1700;
+let _brandingFxTimeoutId = null;
+let _brandingFxIntervalId = null;
+let _brandingFxRunning = false;
 
 // ═══════════════════════════════════════════════════════════════════
 // 1. APP STATE — single source of truth
@@ -677,13 +683,82 @@ function _setText(id, value) {
     if (el) el.textContent = value;
 }
 
+function _setLogoText(value) {
+    const el = document.getElementById("tb-logo");
+    if (!el) return;
+
+    const text = String(value ?? "");
+    el.setAttribute("aria-label", text);
+    el.textContent = "";
+
+    const frag = document.createDocumentFragment();
+    Array.from(text).forEach((char, index) => {
+        const span = document.createElement("span");
+        span.className = "tb-logo-char";
+        span.style.setProperty("--od-char-index", String(index));
+        span.textContent = char === " " ? "\u00A0" : char;
+        frag.appendChild(span);
+    });
+    el.appendChild(frag);
+}
+
+function _triggerBrandingLogoFx() {
+    if (_brandingFxRunning || document.hidden) return;
+
+    const logo = document.getElementById("tb-logo");
+    if (!logo) return;
+
+    const chars = logo.querySelectorAll(".tb-logo-char");
+    if (chars.length === 0) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+
+    chars.forEach((charNode) => {
+        const x = (Math.random() - 0.5) * 18;
+        const y = (Math.random() - 0.5) * 12;
+        const r = (Math.random() - 0.5) * 30;
+        charNode.style.setProperty("--od-x", `${x.toFixed(2)}px`);
+        charNode.style.setProperty("--od-y", `${y.toFixed(2)}px`);
+        charNode.style.setProperty("--od-r", `${r.toFixed(2)}deg`);
+    });
+
+    _brandingFxRunning = true;
+    logo.classList.add("od-logo-fx");
+
+    window.setTimeout(() => {
+        logo.classList.remove("od-logo-fx");
+        chars.forEach((charNode) => {
+            charNode.style.removeProperty("--od-x");
+            charNode.style.removeProperty("--od-y");
+            charNode.style.removeProperty("--od-r");
+        });
+        _brandingFxRunning = false;
+    }, BRANDING_FX_DURATION_MS);
+}
+
+function _startBrandingLogoFxLoop() {
+    if (_brandingFxTimeoutId) clearTimeout(_brandingFxTimeoutId);
+    if (_brandingFxIntervalId) clearInterval(_brandingFxIntervalId);
+    _brandingFxTimeoutId = null;
+    _brandingFxIntervalId = null;
+
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+
+    const elapsedMs = Date.now() - APP_SESSION_START_TS;
+    const msToNextCycle = BRANDING_FX_INTERVAL_MS - (elapsedMs % BRANDING_FX_INTERVAL_MS);
+
+    _brandingFxTimeoutId = window.setTimeout(() => {
+        _triggerBrandingLogoFx();
+        _brandingFxIntervalId = window.setInterval(_triggerBrandingLogoFx, BRANDING_FX_INTERVAL_MS);
+    }, msToNextCycle);
+}
+
 function _setAttr(id, attr, value) {
     const el = document.getElementById(id);
     if (el) el.setAttribute(attr, value);
 }
 
 function _applyPermanentTranslations() {
-    _setText("tb-logo", t("ui.appName"));
+    _setLogoText(t("ui.appName"));
     _setText("tb-district-meta", t("ui.currentDistrict"));
     _setText("tb-change-area", t("ui.changeArea"));
     _setText("mode-district", t("ui.modeBasic"));
@@ -882,6 +957,7 @@ async function startApp() {
     }
 
     await _renderLanguageSelector();
+    _startBrandingLogoFxLoop();
     console.log("[V4] App Initialization Complete.");
 }
 

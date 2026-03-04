@@ -298,6 +298,49 @@ button:focus-visible {
   color: #FFFFFF;
   flex-shrink: 0;
   letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  white-space: pre;
+}
+
+#tb-logo .tb-logo-char {
+  display: inline-block;
+  transform: translate3d(0, 0, 0);
+}
+
+#tb-logo.od-logo-fx .tb-logo-char {
+  will-change: transform, opacity, filter;
+  animation: od-logo-disintegrate-reform 1320ms cubic-bezier(0.2, 0.65, 0.2, 1) both;
+  animation-delay: calc(var(--od-char-index, 0) * 24ms);
+}
+
+@keyframes od-logo-disintegrate-reform {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  36% {
+    opacity: 0;
+    filter: blur(2px);
+    transform: translate3d(var(--od-x, 0px), var(--od-y, 0px), 0) scale(0.88) rotate(var(--od-r, 0deg));
+  }
+  62% {
+    opacity: 0;
+    filter: blur(1.6px);
+    transform: translate3d(calc(var(--od-x, 0px) * -0.35), calc(var(--od-y, 0px) * -0.35), 0) scale(0.93) rotate(calc(var(--od-r, 0deg) * -0.28));
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #tb-logo.od-logo-fx .tb-logo-char {
+    animation: none;
+  }
 }
 
 .tb-sep {
