@@ -21,6 +21,8 @@ export function init(ctx) {
     document.getElementById("hs-close").addEventListener("click", () => close());
     document.getElementById("hs-t2-close").addEventListener("click", () => close());
     document.getElementById("hs-back").addEventListener("click", () => _backToTier1());
+    document.getElementById("hs-panel-close")?.addEventListener("click", () => _collapseTierOnePanel());
+    document.getElementById("hs-panel-open")?.addEventListener("click", () => _expandTierOnePanel());
 
     // Close on backdrop click
     document.getElementById("hierarchy-selector").addEventListener("click", e => {
@@ -63,6 +65,7 @@ export async function open() {
     document.getElementById("hs-tier2").classList.add("hidden");
     document.getElementById("hs-search").value = "";
     document.getElementById("hs-state-stats-bar").classList.add("hidden");
+    _expandTierOnePanel();
 
     // Always refetch states with current timeline range to stay in sync
     _allStates = await _ctx.ds.getAllStates(_ctx.state.timelineRange);
@@ -92,6 +95,7 @@ export async function openState(stateId) {
     // Reset UI state, then immediately go to Tier 2
     document.getElementById("hs-state-stats-bar").classList.add("hidden");
     document.getElementById("hs-search").value = "";
+    _expandTierOnePanel();
 
     _renderIndiaMinimap(_allStates);
     await _loadTierTwo(state);
@@ -299,6 +303,7 @@ async function _renderIndiaMinimap(states) {
 }
 
 function _showStateStats(state) {
+    _expandTierOnePanel();
     const bar = document.getElementById("hs-state-stats-bar");
 
     // De-bounce DOM updates using requestAnimationFrame to prevent forced synchronous layouts
@@ -616,4 +621,17 @@ function _selectDistrict(district) {
 function _backToTier1() {
     document.getElementById("hs-tier2").classList.add("hidden");
     document.getElementById("hs-tier1").style.display = "";
+    _expandTierOnePanel();
+}
+
+function _collapseTierOnePanel() {
+    const panel = document.getElementById("hs-right-panel");
+    if (!panel) return;
+    panel.classList.add("collapsed");
+}
+
+function _expandTierOnePanel() {
+    const panel = document.getElementById("hs-right-panel");
+    if (!panel) return;
+    panel.classList.remove("collapsed");
 }

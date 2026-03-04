@@ -1581,7 +1581,7 @@ button:focus-visible {
 }
 
 #hierarchy-selector {
-  background: rgba(13, 17, 23, 0.97);
+  background: #0b0f18;
   z-index: 500;
   position: fixed;
   top: 0;
@@ -1589,8 +1589,8 @@ button:focus-visible {
   right: 0;
   bottom: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
 }
 
 #hierarchy-selector.hidden {
@@ -1598,39 +1598,52 @@ button:focus-visible {
 }
 
 #hs-inner {
-  width: min(900px, 94vw);
-  max-height: 92vh;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
+  padding: 0;
 }
 
 /* Tier 1 header */
 #hs-header {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 0;
+  pointer-events: none;
 }
 
 #hs-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 16px;
   color: #FFFFFF;
+  letter-spacing: 0.3px;
+  pointer-events: auto;
 }
 
 .hs-close-btn {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.6);
   transition: color 120ms;
+  pointer-events: auto;
+  background: rgba(10, 14, 23, 0.75);
 }
 
 .hs-close-btn:hover {
@@ -1664,17 +1677,18 @@ button:focus-visible {
 
 /* Tier 1 Body: split map and search/stats */
 #hs-tier1-body {
-  display: flex;
-  gap: 20px;
-  height: calc(92vh - 120px);
+  display: block;
+  height: 100vh;
 }
 
 /* Left: Map Container */
 #hs-india-map {
-  flex: 1.8;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #0b0f18;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -1688,10 +1702,77 @@ button:focus-visible {
 
 /* Right: Panel (Search + Stats) */
 #hs-right-panel {
-  flex: 1;
+  position: absolute;
+  top: 54px;
+  right: 14px;
+  width: clamp(250px, 26vw, 360px);
+  max-height: calc(100% - 68px);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(10, 14, 23, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  overflow: auto;
+  z-index: 3;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+#hs-right-panel.collapsed {
+  transform: translateX(calc(100% + 14px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+#hs-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#hs-popup-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hs-popup-close-btn {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.hs-popup-open-btn {
+  position: absolute;
+  top: 56px;
+  right: 14px;
+  padding: 7px 10px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(10, 14, 23, 0.84);
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+  z-index: 4;
+}
+
+#hs-right-panel.collapsed ~ #hs-panel-open {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* State Paths (Optimized for performance) */
@@ -1759,12 +1840,12 @@ button:focus-visible {
 /* State Stats Bar (appears below search) */
 #hs-state-stats-bar {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--rule);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 2px;
-  padding: 16px 20px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   transform: translateY(0);
   opacity: 1;
   transition: transform 250ms ease-out, opacity 250ms ease-out;
@@ -1781,11 +1862,11 @@ button:focus-visible {
 
 #hs-state-stats-name {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: #fff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 #hs-state-stats-action {
@@ -1824,6 +1905,7 @@ button:focus-visible {
 #hs-tier2,
 #hs-tier1 {
   width: 100%;
+  height: 100%;
 }
 
 #hs-tier2.hidden {
@@ -1831,10 +1913,15 @@ button:focus-visible {
 }
 
 #hs-t2-header {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 4;
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 0;
 }
 
 .hs-back-btn {
@@ -1861,7 +1948,7 @@ button:focus-visible {
 #hs-t2-body {
   display: flex;
   gap: 16px;
-  height: calc(92vh - 120px);
+  height: 100vh;
   position: relative;
   /* Context for sliding panel */
 }
@@ -1869,9 +1956,9 @@ button:focus-visible {
 #hs-district-map-wrap {
   flex: 1;
   /* Take up remaining or full space */
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
+  background: #0b0f18;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -2334,8 +2421,8 @@ body.live-active #ta-playhead-line {
   :root {
     --bar-h:   50px;
     --floor-h: 70px;
-    --tl-w: clamp(240px, 20vw, 320px);
-    --ai-w: clamp(300px, 24vw, 380px);
+    --tl-w: clamp(220px, 18vw, 280px);
+    --ai-w: clamp(280px, 20vw, 340px);
   }
 
   /* Topbar */
@@ -2383,8 +2470,8 @@ body.live-active #ta-playhead-line {
   :root {
     --bar-h:   56px;
     --floor-h: 80px;
-    --tl-w: clamp(280px, 20vw, 400px);
-    --ai-w: clamp(340px, 24vw, 460px);
+    --tl-w: clamp(240px, 16vw, 320px);
+    --ai-w: clamp(300px, 18vw, 380px);
   }
 
   /* Topbar */
@@ -2434,8 +2521,8 @@ body.live-active #ta-playhead-line {
   :root {
     --bar-h:   64px;
     --floor-h: 92px;
-    --tl-w: clamp(320px, 19vw, 460px);
-    --ai-w: clamp(380px, 23vw, 520px);
+    --tl-w: clamp(260px, 14vw, 360px);
+    --ai-w: clamp(320px, 16vw, 420px);
   }
 
   /* Topbar */
@@ -2488,8 +2575,8 @@ body.live-active #ta-playhead-line {
   :root {
     --bar-h:   84px;    /* 56px × 1.5 — exactly matches 150%-zoom feel */
     --floor-h: 114px;   /* 76px × 1.5 */
-    --tl-w: clamp(420px, 19vw, 600px);
-    --ai-w: clamp(510px, 23vw, 690px);
+    --tl-w: clamp(300px, 12vw, 420px);
+    --ai-w: clamp(380px, 15vw, 520px);
   }
 
   /* Topbar */

@@ -357,28 +357,32 @@
                         <svg id="hs-india-svg" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
                             <!-- Paths injected by JS -->
                         </svg>
-                    </div>
-
-                    <!-- Right: Search and Stats Bar -->
-                    <div id="hs-right-panel">
-                        <div id="hs-search-wrap">
-                            <input type="text" id="hs-search" placeholder="Search state..." autocomplete="off"
-                                aria-label="Search state">
-                        </div>
-
-                        <!-- Stats Bar (Hidden until state selected) -->
-                        <div id="hs-state-stats-bar" class="hidden" role="region" aria-label="State Stats">
-                            <h3 id="hs-state-stats-name"></h3>
-                            <div class="hs-stat-row">
-                                <span>Population</span>
-                                <strong id="hs-state-stats-pop">-</strong>
+                        <!-- In-map popup: Search and Stats -->
+                        <div id="hs-right-panel" role="dialog" aria-label="State details">
+                            <div id="hs-popup-head">
+                                <span id="hs-popup-title">State Selector</span>
+                                <button id="hs-panel-close" class="hs-popup-close-btn" aria-label="Collapse popup">&#10005;</button>
                             </div>
-                            <div class="hs-stat-row">
-                                <span>Data Points</span>
-                                <strong id="hs-state-stats-alerts" class="danger-text">-</strong>
+                            <div id="hs-search-wrap">
+                                <input type="text" id="hs-search" placeholder="Search state..." autocomplete="off"
+                                    aria-label="Search state">
                             </div>
-                            <div id="hs-state-stats-action">Double-click map to enter</div>
+
+                            <!-- Stats Bar (Hidden until state selected) -->
+                            <div id="hs-state-stats-bar" class="hidden" role="region" aria-label="State Stats">
+                                <h3 id="hs-state-stats-name"></h3>
+                                <div class="hs-stat-row">
+                                    <span>Population</span>
+                                    <strong id="hs-state-stats-pop">-</strong>
+                                </div>
+                                <div class="hs-stat-row">
+                                    <span>Data Points</span>
+                                    <strong id="hs-state-stats-alerts" class="danger-text">-</strong>
+                                </div>
+                                <div id="hs-state-stats-action">Double-click map to enter</div>
+                            </div>
                         </div>
+                        <button id="hs-panel-open" class="hs-popup-open-btn" aria-label="Show state popup">State Panel</button>
                     </div>
                 </div>
             </div>
