@@ -124,7 +124,7 @@ const _rawDistricts = [
         aliases: ["Gurgaon"],
         nameLocal: "गुरुग्राम",
         geoJsonUrl: "./data/geo/HR/gurugram.geojson?v=2",
-        boundingBox: { north: 28.37909, south: 28.2239, east: 76.83812, west: 76.65111 },
+        boundingBox: { north: 28.54135, south: 28.19905, east: 77.22411, west: 76.65111 },
         population: 1514432,
         dataPoints: 20,
         dataPoints: 5
@@ -137,7 +137,7 @@ const _rawDistricts = [
         name: "Surat",
         nameLocal: "સુરત",
         geoJsonUrl: "./data/geo/GJ/surat.geojson?v=2",
-        boundingBox: { north: 21.4747, south: 21.203, east: 72.9505, west: 72.5976 },
+        boundingBox: { north: 21.5692, south: 20.8165, east: 73.6992, west: 72.5976 },
         population: 6081322,
         dataPoints: 7,
         dataPoints: 15
@@ -148,7 +148,7 @@ const _rawDistricts = [
         name: "Pune",
         nameLocal: "",
         geoJsonUrl: "./data/geo/MH/pune.geojson?v=2",
-        boundingBox: { north: 19.3952, south: 19.0044, east: 74.3111, west: 73.6302 },
+        boundingBox: { north: 19.3952, south: 17.8949, east: 75.1642, west: 73.3228 },
         population: 9429408,
         dataPoints: 15
     },
@@ -159,7 +159,7 @@ const _rawDistricts = [
         name: "Jalandhar",
         nameLocal: "ਜਲੰਧਰ",
         geoJsonUrl: "./data/geo/PB/jalandhar.geojson?v=2",
-        boundingBox: { north: 31.232, south: 30.9879, east: 75.4282, west: 75.0771 },
+        boundingBox: { north: 31.6167, south: 30.9679, east: 75.9572, west: 75.0771 },
         population: 2193590,
         dataPoints: 1,
         dataPoints: 8
@@ -171,7 +171,7 @@ const _rawDistricts = [
         name: "Ujjain",
         nameLocal: "उज्जैन",
         geoJsonUrl: "./data/geo/MP/ujjain.geojson?v=2",
-        boundingBox: { north: 23.6228, south: 23.2833, east: 75.4503, west: 75.1346 },
+        boundingBox: { north: 23.7574, south: 22.8297, east: 76.2548, west: 75.1346 },
         population: 1986864,
         dataPoints: 2,
         dataPoints: 7
@@ -183,7 +183,7 @@ const _rawDistricts = [
         name: "Khordha",
         nameLocal: "ଖୋର୍ଦ୍ଧା",
         geoJsonUrl: "./data/geo/OD/khordha.geojson?v=2",
-        boundingBox: { north: 20.2796, south: 20.1159, east: 85.3891, west: 85.1992 },
+        boundingBox: { north: 20.4347, south: 19.6724, east: 86.0812, west: 84.935 },
         population: 2251673,
         dataPoints: 1,
         dataPoints: 9
@@ -195,7 +195,7 @@ const _rawDistricts = [
         name: "Gaya",
         nameLocal: "गया",
         geoJsonUrl: "./data/geo/BR/gaya.geojson?v=2",
-        boundingBox: { north: 25.0591, south: 24.8197, east: 84.855, west: 84.6413 },
+        boundingBox: { north: 25.0726, south: 24.2865, east: 85.3975, west: 84.2913 },
         population: 4391418,
         dataPoints: 1,
         dataPoints: 11
@@ -208,7 +208,7 @@ const _rawDistricts = [
         name: "Sitapur",
         nameLocal: "सीतापुर",
         geoJsonUrl: "./data/geo/UP/sitapur.geojson?v=2",
-        boundingBox: { north: 27.8104, south: 27.2551, east: 80.8005, west: 80.299 },
+        boundingBox: { north: 27.9063, south: 27.1, east: 81.4148, west: 80.299 },
         population: 4483992,
         dataPoints: 5
     },
@@ -219,7 +219,7 @@ const _rawDistricts = [
         name: "Mysuru",
         nameLocal: "ಮೈಸೂರು",
         geoJsonUrl: "./data/geo/KA/mysuru.geojson?v=2",
-        boundingBox: { north: 12.577, south: 12.1878, east: 76.2395, west: 75.9087 },
+        boundingBox: { north: 12.6557, south: 11.7384, east: 77.134, west: 75.9087 },
         population: 3001127,
         dataPoints: 5
     },
@@ -230,7 +230,7 @@ const _rawDistricts = [
         name: "Hugli",
         nameLocal: "হুগলী",
         geoJsonUrl: "./data/geo/WB/hugli.geojson?v=2",
-        boundingBox: { north: 22.9724, south: 22.7743, east: 87.7894, west: 87.6605 },
+        boundingBox: { north: 23.2227, south: 22.5974, east: 88.5021, west: 87.5051 },
         population: 5519145,
         dataPoints: 4
     },
