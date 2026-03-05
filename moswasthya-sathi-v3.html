@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoSwasthya Sathi v3 — Solar-Clean</title>
+  <title>MoSwasthya Sathi v3 - Solar-Clean</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@100..900&display=swap"
@@ -59,7 +59,7 @@
   </svg>
 
   <!-- ═══════════════════════════════════════════════════
-     ZONE 1 — INFORMATION CANOPY
+     ZONE 1 - INFORMATION CANOPY
 ═══════════════════════════════════════════════════ -->
   <header id="canopy">
 
@@ -87,7 +87,7 @@
 
     <div class="c-spacer"></div>
 
-    <!-- Region crumb — opens modal -->
+    <!-- Region crumb - opens modal -->
     <div id="region-crumb" onclick="openRegionModal()">
       <div>
         <div class="rc-label">District</div>
@@ -105,7 +105,7 @@
 
 
   <!-- ═══════════════════════════════════════════════════
-     ZONE 2 — INTERACTIVE CORE
+     ZONE 2 - INTERACTIVE CORE
 ═══════════════════════════════════════════════════ -->
   <main id="core">
 
@@ -128,7 +128,7 @@
         <!-- BACKGROUND FILL -->
         <rect width="620" height="430" fill="#F1F5F9" />
 
-        <!-- BASE GRID — monochromatic, no POI clutter -->
+        <!-- BASE GRID - monochromatic, no POI clutter -->
         <defs>
           <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
             <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#CBD5E1" stroke-width="0.4" />
@@ -158,7 +158,7 @@
         <path class="map-district-boundary" d="M 0,130 L 620,130" />
         <path class="map-district-boundary" d="M 0,310 L 620,310" />
 
-        <!-- ALERT POLYGONS — Disease Trends layer -->
+        <!-- ALERT POLYGONS - Disease Trends layer -->
         <!-- Fever zone (Balianta) -->
         <polygon id="poly-fever-1" class="alert-poly fever layer-disease" points="80,80 200,70 230,150 180,200 80,190"
           onclick="openSitrep('fever')" />
@@ -176,7 +176,7 @@
         <polygon id="poly-water-1-hatch" class="layer-water" points="460,210 580,200 600,310 480,320 450,260"
           fill="url(#water-hatch)" stroke="none" pointer-events="none" opacity="0.7" />
 
-        <!-- PHC SQUARE ANCHORS — Infrastructure layer -->
+        <!-- PHC SQUARE ANCHORS - Infrastructure layer -->
         <!-- PHC tiles: 32×32 solid green, non-scaling-stroke -->
         <g class="phc-anchor layer-infra" onclick="openSitrep('phc')" transform="translate(130,230)">
           <rect x="-16" y="-16" width="32" height="32" rx="4" vector-effect="non-scaling-stroke" />
@@ -199,7 +199,7 @@
           <text x="0" y="0">+PHC</text>
         </g>
 
-        <!-- WATER POINTS — Water layer -->
+        <!-- WATER POINTS - Water layer -->
         <g class="water-point layer-water" onclick="openSitrep('water')" transform="translate(340,360)">
           <circle cx="0" cy="0" r="12" vector-effect="non-scaling-stroke" />
           <text x="0" y="0">H₂O</text>
@@ -213,7 +213,7 @@
           <text x="0" y="0">H₂O</text>
         </g>
 
-        <!-- ROAD BLOCKS — Infrastructure layer -->
+        <!-- ROAD BLOCKS - Infrastructure layer -->
         <g class="road-block layer-infra" transform="translate(310,200)">
           <rect x="-18" y="-10" width="36" height="20" rx="3" vector-effect="non-scaling-stroke" />
           <text x="0" y="0">⚠ ROAD</text>
@@ -242,7 +242,7 @@
       <div id="data-banner">
         <div class="db-year" id="db-year">2023</div>
         <div class="db-sub">Historical Data Frame</div>
-        <div class="db-tag" id="db-tag">—</div>
+        <div class="db-tag" id="db-tag">-</div>
       </div>
 
       <!-- Zoom controls -->
@@ -255,7 +255,7 @@
       <div id="timeline-zone">
         <div class="tl-header">
           <span class="tl-label">📅 Neighborhood Memory</span>
-          <span class="tl-val" id="tl-val">2024 — Current</span>
+          <span class="tl-val" id="tl-val">2024 - Current</span>
         </div>
         <input type="range" id="tl-slider" min="0" max="4" value="4" step="1" aria-label="Neighborhood memory timeline">
         <div class="tl-ticks">
@@ -299,7 +299,7 @@
       <!-- DASHBOARD PANEL -->
       <div id="dashboard-panel">
 
-        <div class="section-label" id="snap-label">Local Snapshot — Khordha</div>
+        <div class="section-label" id="snap-label">Local Snapshot - Khordha</div>
 
         <div class="stat-card danger" id="sc-alerts" onclick="openSitrep('fever')">
           <div class="sc-icon"><svg width="24" height="24">
@@ -360,7 +360,7 @@
       <div id="mosathi-panel">
 
         <div class="chat-intro">
-          <strong>ମୋ ସାଥୀ</strong> — Tap a card below to explore health data, or press the microphone to speak.
+          <strong>ମୋ ସାଥୀ</strong> - Tap a card below to explore health data, or press the microphone to speak.
         </div>
 
         <div class="intent-label">Quick Actions</div>
@@ -392,20 +392,20 @@
               <use href="#icon-water" />
             </svg></span>
           <div class="ic-body">
-            <div class="ic-title">Water Point Status — Today</div>
+            <div class="ic-title">Water Point Status - Today</div>
             <div class="ic-sub">Isolates water layer · Shows borewell alerts</div>
           </div>
           <span class="ic-arrow">→</span>
         </div>
 
         <div id="chat-result">
-          <div class="cr-header" id="cr-header">— Result —</div>
+          <div class="cr-header" id="cr-header">- Result -</div>
           <div class="cr-body" id="cr-body"></div>
         </div>
 
       </div>
 
-      <!-- Speak button — always visible -->
+      <!-- Speak button - always visible -->
       <div id="speak-section">
         <button id="speak-btn" onclick="openVoice()">
           <span class="sb-mic"><svg width="24" height="24">
@@ -423,29 +423,29 @@
 
 
   <!-- ═══════════════════════════════════════════════════
-     ZONE 3 — PULSE TICKER
+     ZONE 3 - PULSE TICKER
 ═══════════════════════════════════════════════════ -->
   <footer id="ticker">
     <div id="ticker-badge">Live</div>
     <div id="ticker-track">
       <div class="ticker-scroll">
-        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster — Balianta Block — 23 confirmed cases —
+        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster - Balianta Block - 23 confirmed cases -
           Khordha PHC on alert</span>
         <span class="t-sep">·</span>
-        <span class="t-item info"><span class="t-dot"></span>💧 Borewell #7 restored — Tangi — Supply resumed
+        <span class="t-item info"><span class="t-dot"></span>💧 Borewell #7 restored - Tangi - Supply resumed
           08:30</span>
         <span class="t-sep">·</span>
-        <span class="t-item ok"><span class="t-dot"></span>💉 Vaccination camp — Khordha Block — Feb 27,
+        <span class="t-item ok"><span class="t-dot"></span>💉 Vaccination camp - Khordha Block - Feb 27,
           09:00–16:00</span>
         <span class="t-sep">·</span>
-        <span class="t-item danger"><span class="t-dot"></span>⚠ NH-16 road block near Bhubaneswar — Diversion via
+        <span class="t-item danger"><span class="t-dot"></span>⚠ NH-16 road block near Bhubaneswar - Diversion via
           SH-12</span>
         <span class="t-sep">·</span>
-        <span class="t-item ok"><span class="t-dot"></span>✅ New PHC operational — Bolagarh — Emergency: 104</span>
+        <span class="t-item ok"><span class="t-dot"></span>✅ New PHC operational - Bolagarh - Emergency: 104</span>
         <span class="t-sep">·</span>
-        <span class="t-item info"><span class="t-dot"></span>📋 ASHA worker training — Jatni — Feb 25–26, 08:00</span>
+        <span class="t-item info"><span class="t-dot"></span>📋 ASHA worker training - Jatni - Feb 25–26, 08:00</span>
         <span class="t-sep">·</span>
-        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster — Balianta Block — 23 confirmed cases —
+        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster - Balianta Block - 23 confirmed cases -
           Khordha PHC on alert</span>
       </div>
     </div>
@@ -587,7 +587,7 @@
       <div class="srp-head">
         <div class="srp-icon-wrap" id="srp-icon">⚠</div>
         <div class="srp-title-group">
-          <div class="srp-title" id="srp-title">Fever Outbreak — Balianta Block</div>
+          <div class="srp-title" id="srp-title">Fever Outbreak - Balianta Block</div>
           <div class="srp-loc" id="srp-loc">Khordha District · Odisha · Updated Today 08:45</div>
         </div>
         <div class="srp-close" onclick="closeSitrep()">✕</div>
@@ -612,7 +612,7 @@
           <div class="l" id="srs-3l">Teams Deployed</div>
         </div>
       </div>
-      <button id="srp-cta" onclick="closeSitrep()">📞 Call Helpline — 104</button>
+      <button id="srp-cta" onclick="closeSitrep()">📞 Call Helpline - 104</button>
     </div>
   </div>
 

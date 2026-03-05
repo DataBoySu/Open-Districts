@@ -255,18 +255,18 @@
     "districtId": "gurugram",
     "regionId": "gurugram-sadar",
     "category": "health",
-    "title": "ARI Spike — Winter Pollution Impact",
+    "title": "ARI Spike - Winter Pollution Impact",
     "summary": "2,293 acute respiratory illness emergencies recorded. 358 case increase over previous winter due to poor AQI.",
     "translations": {
       "hi": {
-        "title": "एआरआई में उछाल — शीतकालीन प्रदूषण का प्रभाव",
+        "title": "एआरआई में उछाल - शीतकालीन प्रदूषण का प्रभाव",
         "summary": "2,293 तीव्र श्वसन संबंधी आपातकालीन मामले दर्ज किए गए। खराब AQI के कारण पिछले सर्दियों की तुलना में 358 मामलों की वृद्धि हुई।"
       }
     },
     "timestamp": "2026-01-31T18:00:00Z",
     "expiresAt": "2026-03-15T18:00:00Z",
     "geoPoint": { "lat": 28.4595, "lng": 77.0266 },
-    "location": { "block": "Gurugram Sadar — Civil Hospital, Medanta, Paras" },
+    "location": { "block": "Gurugram Sadar - Civil Hospital, Medanta, Paras" },
     "source": "Gurugram Health Dept / HT",
     "verified": true,
     "verifiedAt": "2026-01-31T23:23:00Z",
@@ -282,11 +282,11 @@
     "districtId": "gurugram",
     "regionId": "gurugram-sadar",
     "category": "infrastructure",
-    "title": "Service Road Repairs — Sector 30/31",
+    "title": "Service Road Repairs - Sector 30/31",
     "summary": "GMDA tenders floated for service lane upgrades and footpath repairs to reduce highway congestion.",
     "translations": {
       "hi": {
-        "title": "सर्विस रोड मरम्मत — सेक्टर 30/31",
+        "title": "सर्विस रोड मरम्मत - सेक्टर 30/31",
         "summary": "राजमार्ग पर भीड़ कम करने के लिए सर्विस लेन अपग्रेड और फुटपाथ मरम्मत के लिए जीएमडीए द्वारा निविदाएं जारी की गईं।"
       }
     },
@@ -309,11 +309,11 @@
     "districtId": "gurugram",
     "regionId": "gurugram-sadar",
     "category": "mobility",
-    "title": "Fatal Crash — KMP Expressway",
+    "title": "Fatal Crash - KMP Expressway",
     "summary": "Dumper truck collision with tourist vehicle resulting in 2 fatalities. Significant traffic disruption reported.",
     "translations": {
       "hi": {
-        "title": "भीषण दुर्घटना — केएमपी एक्सप्रेसवे",
+        "title": "भीषण दुर्घटना - केएमपी एक्सप्रेसवे",
         "summary": "डंपर ट्रक और पर्यटक वाहन की टक्कर में 2 लोगों की मौत। भारी ट्रैफिक जाम की सूचना मिली है।"
       }
     },
@@ -336,11 +336,11 @@
     "districtId": "gurugram",
     "regionId": "badshahpur",
     "category": "safety",
-    "title": "Serious Assault — Badshahpur Police Area",
+    "title": "Serious Assault - Badshahpur Police Area",
     "summary": "19-year-old student assaulted. Accused arrested under serious criminal charges. Investigation active.",
     "translations": {
       "hi": {
-        "title": "गंभीर हमला — बादशाहपुर पुलिस क्षेत्र",
+        "title": "गंभीर हमला - बादशाहपुर पुलिस क्षेत्र",
         "summary": "19 वर्षीय छात्र पर हमला। आरोपी को गंभीर आपराधिक धाराओं के तहत गिरफ्तार किया गया। जांच जारी है।"
       }
     },
@@ -364,11 +364,11 @@
     "regionId": null,
     "category": "weather",
     "impactScale": "WIDE",
-    "title": "Dense Fog — Massive Pile-up Advisory",
+    "title": "Dense Fog - Massive Pile-up Advisory",
     "summary": "Visibility < 50m causing multiple vehicle collisions across Haryana highways, including Gurugram sectors.",
     "translations": {
       "hi": {
-        "title": "घना कोहरा — बड़े वाहनों की टक्कर की चेतावनी",
+        "title": "घना कोहरा - बड़े वाहनों की टक्कर की चेतावनी",
         "summary": "दृश्यता 50 मीटर से कम होने के कारण गुरुग्राम सहित हरियाणा के राजमार्गों पर कई वाहन आपस में टकराए।"
       }
     },

@@ -1,4 +1,4 @@
-// ─── TIMELINE CONTROLLER — v4-app.js extraction ───────────────────────────────
+// ─── TIMELINE CONTROLLER - v4-app.js extraction ───────────────────────────────
 // Owns: spine rendering, card build, focus/dim state, collapse, auto-hide.
 // Receives: { state, ds, emit } context injected by orchestrator.
 // Exports: init(ctx) → { renderTimeline, renderFocusState, prefetchRegions }
@@ -25,7 +25,7 @@ export function init(ctx) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// PUBLIC — called by orchestrator
+// PUBLIC - called by orchestrator
 // ═══════════════════════════════════════════════════════════════════
 
 /** Rebuild the spine from scratch with a new event array. */
@@ -132,15 +132,15 @@ export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
         const evTs = new Date(ev.timestamp);
 
         if (evTs > endTs) {
-            // Future event — hide entirely
+            // Future event - hide entirely
             card.classList.add("tl-hidden");
             card.classList.remove("tl-historical-dim", "tl-current");
         } else if (startTs && evTs >= startTs) {
-            // In current bucket — highlight
+            // In current bucket - highlight
             card.classList.remove("tl-hidden", "tl-historical-dim");
             card.classList.add("tl-current");
         } else {
-            // Past event — dim
+            // Past event - dim
             card.classList.remove("tl-hidden", "tl-current");
             card.classList.add("tl-historical-dim");
         }
@@ -157,7 +157,7 @@ export function clearHistoricalSnapshot() {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// PRIVATE — internal helpers
+// PRIVATE - internal helpers
 // ═══════════════════════════════════════════════════════════════════
 
 function _buildCard(ev) {
@@ -207,7 +207,7 @@ function _buildCard(ev) {
     </div>`;
 
     card.addEventListener("click", () => {
-        // Emit to orchestrator — it owns state mutation
+        // Emit to orchestrator - it owns state mutation
         const currentFocused = _ctx.state.focusedEventId;
         _ctx.emit("timeline:cardTap", { eventId: currentFocused === ev.id ? null : ev.id });
     });
@@ -321,7 +321,7 @@ function _initCollapse() {
 
 // ── Auto-expand on card tap ───────────────────────────────────────
 function _initCardAutoExpand(expand) {
-    // Watch for delegation on tl-scroll — cards are rendered later
+    // Watch for delegation on tl-scroll - cards are rendered later
     document.getElementById("tl-scroll")?.addEventListener("click", e => {
         if (e.target.closest(".tl-card") && _ctx.state.manuallyCollapsed) {
             expand();

@@ -1,4 +1,4 @@
-// ─── MOCK DISTRICTS & STATES — OpenDistricts V4 ───────────────────────────────
+// ─── MOCK DISTRICTS & STATES - OpenDistricts V4 ───────────────────────────────
 // Schema source: docs/V4-transition-schema.md
 
 import { MOCK_EVENTS } from "./mock-events.js";

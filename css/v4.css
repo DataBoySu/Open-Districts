@@ -1,11 +1,11 @@
-/* ─── OPENDISTRICTS V4 — v4.css ───────────────────────────────────────────────
+/* ─── OPENDISTRICTS V4 - v4.css ───────────────────────────────────────────────
    Design tokens + exact layout model from docs/V4-transition.md Sections 02-09
    Constraints: CSS transform + opacity only. No blur on map elements.
    No box-shadow on timeline cards. Never hard-code values outside this token set.
 ──────────────────────────────────────────────────────────────────────────────── */
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 03 — DESIGN TOKENS
+   SECTION 03 - DESIGN TOKENS
 ═══════════════════════════════════════════════════════════════════ */
 :root {
   /* Ink (text) */
@@ -32,7 +32,7 @@
   --font-display: 'Syne', sans-serif;
   --font-data: 'DM Mono', monospace;
 
-  /* Incident type fills — shades only, no primary hues */
+  /* Incident type fills - shades only, no primary hues */
   --fill-health: rgba(185, 28, 48, 0.16);
   /* crimson-rose     */
   --fill-infrastructure: rgba(146, 92, 12, 0.14);
@@ -54,7 +54,7 @@
   --border-weather: rgba(96, 50, 168, 0.38);
   --border-emergency: rgba(168, 22, 38, 0.56);
 
-  /* Incident type solid hues (for text/badges — muted shades) */
+  /* Incident type solid hues (for text/badges - muted shades) */
   --hue-health: #B91C30;
   /* crimson-rose     */
   --hue-infrastructure: #925C0C;
@@ -68,7 +68,7 @@
   --hue-emergency: #A81626;
   /* deep-scarlet     */
 
-  /* ── Structural dimension tokens — override in breakpoints to scale layout ── */
+  /* ── Structural dimension tokens - override in breakpoints to scale layout ── */
   --bar-h: 56px;       /* top bar height */
   --floor-h: 88px;     /* time axis height */
   --tl-w: clamp(260px, 22vw, 340px);   /* timeline panel width */
@@ -112,7 +112,7 @@ button:focus-visible {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 02 — LAYOUT ARCHITECTURE
+   SECTION 02 - LAYOUT ARCHITECTURE
    (Exact CSS model. Do not deviate from these rules.)
 ═══════════════════════════════════════════════════════════════════ */
 
@@ -131,7 +131,7 @@ button:focus-visible {
   gap: 12px;
 }
 
-/* MAP CONTAINER — NEVER RESIZES */
+/* MAP CONTAINER - NEVER RESIZES */
 #map {
   position: absolute;
   top: var(--bar-h);
@@ -148,7 +148,7 @@ button:focus-visible {
   filter: grayscale(100%) brightness(105%) contrast(88%);
 }
 
-/* LEFT TIMELINE — OVERLAY */
+/* LEFT TIMELINE - OVERLAY */
 #timeline-panel {
   position: absolute;
   top: var(--bar-h);
@@ -226,7 +226,7 @@ button:focus-visible {
   right: var(--ai-w);
 }
 
-/* RIGHT AI PANEL — OVERLAY */
+/* RIGHT AI PANEL - OVERLAY */
 #ai-panel {
   position: absolute;
   top: var(--bar-h);
@@ -247,7 +247,7 @@ button:focus-visible {
   transform: translateX(0);
 }
 
-/* TIME AXIS — ALWAYS VISIBLE */
+/* TIME AXIS - ALWAYS VISIBLE */
 #time-axis {
   position: absolute;
   bottom: 0;
@@ -261,7 +261,7 @@ button:focus-visible {
   align-items: stretch;
 }
 
-/* HIERARCHY SELECTOR — FULL-SCREEN OVERLAY */
+/* HIERARCHY SELECTOR - FULL-SCREEN OVERLAY */
 #hierarchy-selector {
   position: absolute;
   inset: 0;
@@ -288,7 +288,7 @@ button:focus-visible {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 04 — TOP BAR COMPONENTS
+   SECTION 04 - TOP BAR COMPONENTS
 ═══════════════════════════════════════════════════════════════════ */
 
 #tb-logo {
@@ -610,7 +610,7 @@ button:focus-visible {
   border-radius: 50%;
   background: var(--ok);
   animation: dot-pulse 2.5s ease-in-out infinite;
-  /* 0.4 Hz — compliant */
+  /* 0.4 Hz - compliant */
 }
 
 #sync-dot.historical {
@@ -643,10 +643,10 @@ button:focus-visible {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 05 — LEFT TIMELINE PANEL
+   SECTION 05 - LEFT TIMELINE PANEL
 ═══════════════════════════════════════════════════════════════════ */
 
-/* Panel header — height matches topbar */
+/* Panel header - height matches topbar */
 #tl-header {
   height: var(--bar-h);
   display: flex;
@@ -733,7 +733,7 @@ button:focus-visible {
   transition: opacity 150ms;
 }
 
-/* NODE DOT — ON THE SPINE */
+/* NODE DOT - ON THE SPINE */
 .tl-card::before {
   content: "";
   position: absolute;
@@ -788,7 +788,7 @@ button:focus-visible {
   display: none;
 }
 
-/* CARD INNER — FLAT, NOT ELEVATED */
+/* CARD INNER - FLAT, NOT ELEVATED */
 .tl-card-inner {
   position: relative;
   border: 1.5px solid var(--rule);
@@ -799,7 +799,7 @@ button:focus-visible {
   /* NO box-shadow. Cards are flat. */
 }
 
-/* LEFT SEVERITY BAND — 3px full height */
+/* LEFT SEVERITY BAND - 3px full height */
 .tl-card-inner::before {
   content: "";
   position: absolute;
@@ -930,7 +930,7 @@ button:focus-visible {
   overflow: visible;
 }
 
-/* Details section — hidden until focused */
+/* Details section - hidden until focused */
 .tl-details {
   display: none;
   background: var(--bg);
@@ -1002,7 +1002,7 @@ button:focus-visible {
 
 /* ── Phase 2 additions ───────────────────────────────────────── */
 
-/* Event title row — between card-head and summary */
+/* Event title row - between card-head and summary */
 .tl-title-row {
   font-family: var(--font-display);
   font-weight: 600;
@@ -1100,7 +1100,7 @@ button:focus-visible {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 06 — MAP ELEMENTS
+   SECTION 06 - MAP ELEMENTS
 ═══════════════════════════════════════════════════════════════════ */
 
 /* Custom zoom controls */
@@ -1141,7 +1141,7 @@ button:focus-visible {
   transform: scale(0.95);
 }
 
-/* Environmental overlays — Only when env-active class is present
+/* Environmental overlays - Only when env-active class is present
    env-active requires: mode=live AND connectionStatus=live AND !isHistorical */
 .env-rain,
 .env-haze {
@@ -1187,7 +1187,7 @@ button:focus-visible {
       transparent 0px, transparent 6px,
       rgba(130, 170, 210, 0.28) 6px, rgba(130, 170, 210, 0.28) 7.5px);
   animation: rain-fall 0.8s linear infinite;
-  /* 1.25 Hz — compliant */
+  /* 1.25 Hz - compliant */
   z-index: 4;
 }
 
@@ -1207,7 +1207,7 @@ button:focus-visible {
   background: radial-gradient(ellipse 80% 60% at 50% 50%,
       rgba(190, 170, 110, 0.15) 0%, transparent 70%);
   animation: haze-shift 5s ease-in-out infinite alternate;
-  /* 0.1 Hz — compliant */
+  /* 0.1 Hz - compliant */
   z-index: 3;
   will-change: opacity;
 }
@@ -1295,7 +1295,7 @@ button:focus-visible {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 09 — RIGHT AI PANEL
+   SECTION 09 - RIGHT AI PANEL
 ═══════════════════════════════════════════════════════════════════ */
 
 /* Collapse sliver */
@@ -1347,7 +1347,7 @@ button:focus-visible {
   border-radius: 50%;
   background: var(--primary);
   animation: dot-pulse 2.0s ease-in-out infinite;
-  /* 0.5 Hz — compliant */
+  /* 0.5 Hz - compliant */
 }
 
 #ai-header-title {
@@ -1507,7 +1507,7 @@ button:focus-visible {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 07 — TIME AXIS
+   SECTION 07 - TIME AXIS
 ═══════════════════════════════════════════════════════════════════ */
 
 /* Left controls zone: 100px */
@@ -1713,7 +1713,7 @@ button:focus-visible {
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   SECTION 10 — HIERARCHY SELECTOR
+   SECTION 10 - HIERARCHY SELECTOR
 ═══════════════════════════════════════════════════════════════════ */
 
 /* Hide side tabs when hierarchy selector is open */
@@ -2273,7 +2273,7 @@ button:focus-visible {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  /* height NOT set — wraps content */
+  /* height NOT set - wraps content */
 }
 
 #hs-stats-name {
@@ -2468,7 +2468,7 @@ body.live-active #ta-playhead-line {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SETTINGS SIDEBAR PANEL — Bottom Left
+   SETTINGS SIDEBAR PANEL - Bottom Left
 ═══════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -2631,14 +2631,14 @@ body.live-active #ta-playhead-line {
 /* ═══════════════════════════════════════════════════════════════════
    WIDE-SCREEN RESPONSIVE SCALING
    Strategy: override structural tokens + key font sizes at breakpoints.
-   Layout model is untouched — only the token values and font sizes grow.
+   Layout model is untouched - only the token values and font sizes grow.
    ─── Breakpoints ───────────────────────────────────────────────────
      1280px  laptop/large tablet
      1600px  HD desktop / 1080p
      1920px  full HD / large desktop
 ═══════════════════════════════════════════════════════════════════ */
 
-/* ── 1280px — laptop / large tablet ─────────────────────────── */
+/* ── 1280px - laptop / large tablet ─────────────────────────── */
 @media (min-width: 1280px) {
   :root {
     --bar-h: 60px;
@@ -2687,7 +2687,7 @@ body.live-active #ta-playhead-line {
   #hs-state-stats-name      { font-size: 24px; }
 }
 
-/* ── 1600px — HD desktop / 1080p ─────────────────────────────── */
+/* ── 1600px - HD desktop / 1080p ─────────────────────────────── */
 @media (min-width: 1600px) {
   :root {
     --bar-h: 66px;
@@ -2739,7 +2739,7 @@ body.live-active #ta-playhead-line {
   #hs-state-stats-name      { font-size: 26px; }
 }
 
-/* ── 1920px — 1080p large desktop ────────────────────────────── */
+/* ── 1920px - 1080p large desktop ────────────────────────────── */
 @media (min-width: 1920px) {
   :root {
     --bar-h: 74px;
@@ -2794,7 +2794,7 @@ body.live-active #ta-playhead-line {
   #hs-state-stats-name      { font-size: 28px; }
 }
 
-/* ── 2560px — 1440p native (= what 150% zoom gave you) ───────── */
+/* ── 2560px - 1440p native (= what 150% zoom gave you) ───────── */
 @media (min-width: 2560px) {
   :root {
     --bar-h: 86px;
@@ -2836,7 +2836,7 @@ body.live-active #ta-playhead-line {
   .ai-source-label          { font-size: 13px; }
   #ai-header                { padding: 0 18px; }
 
-  /* Time axis internals — ruler + ribbon fill floor height */
+  /* Time axis internals - ruler + ribbon fill floor height */
   #ta-ruler                 { height: 60px; }
   #ta-ribbon                { height: 68px; }
   #ta-controls              { width: 246px; }

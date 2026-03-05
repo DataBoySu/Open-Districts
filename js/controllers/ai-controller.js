@@ -1,4 +1,4 @@
-// ─── AI CONTROLLER — v4-app.js extraction ─────────────────────────────────────
+// ─── AI CONTROLLER - v4-app.js extraction ─────────────────────────────────────
 // Owns: AI panel open/close, context mode switching, intent → result rendering.
 // Receives: { state, ds, emit } context.
 // Exports: init(ctx) → { open, close, updatePanelText }
@@ -16,7 +16,7 @@ let _ctx;
 export function init(ctx) {
     _ctx = ctx;
 
-    // ai-tab (side tab, always visible) — symmetric toggle
+    // ai-tab (side tab, always visible) - symmetric toggle
     const aiTab = document.getElementById("ai-tab");
     const aiChevron = document.getElementById("ai-tab-chevron");
 
@@ -35,7 +35,7 @@ export function init(ctx) {
         if (e.key === "Enter" || e.key === " ") aiTab.click();
     });
 
-    // AI Mode topbar button — always opens (panel not visible when topbar is accessible)
+    // AI Mode topbar button - always opens (panel not visible when topbar is accessible)
     document.getElementById("tb-ai-btn").addEventListener("click", () => _open());
 
     // Close button in panel header

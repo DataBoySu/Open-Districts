@@ -1,5 +1,5 @@
-// ─── TIME PROCESSOR — OpenDistricts V4 ────────────────────────────────────────
-// Schema source: docs/V4-transition-schema.md — Question 2
+// ─── TIME PROCESSOR - OpenDistricts V4 ────────────────────────────────────────
+// Schema source: docs/V4-transition-schema.md - Question 2
 // This module is the ONLY place temporal aggregation logic lives.
 // v4-app.js calls DataService.getTimeSeries(), which calls this module.
 // When V5 swaps to a backend pre-aggregated bucket endpoint, this module
@@ -123,7 +123,7 @@ export function computeTimeSeries(events, resolution) {
 export function bucketToRibbonColour(bucket) {
     if (!bucket.hasData) return "rgba(255,255,255,0.06)";
 
-    // Category hues (shades only — no pure primaries)
+    // Category hues (shades only - no pure primaries)
     const BASE = {
         health: { r: 185, g: 28, b: 48, baseOpacity: 0.44 },   // crimson-rose
         infrastructure: { r: 146, g: 92, b: 12, baseOpacity: 0.34 },   // amber-ochre

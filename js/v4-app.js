@@ -1,10 +1,10 @@
-// ─── OPENDISTRICTS V4 — v4-app.js (THIN ORCHESTRATOR) ────────────────────────
+// ─── OPENDISTRICTS V4 - v4-app.js (THIN ORCHESTRATOR) ────────────────────────
 // This file owns:
 //   • AppState (single source of truth)
 //   • Controlled state mutators
 //   • emit() event bus (cross-controller communication)
-//   • loadDistrict() — coordinates all controllers
-//   • boot() — initialization sequence
+//   • loadDistrict() - coordinates all controllers
+//   • boot() - initialization sequence
 //
 // This file does NOT contain any:
 //   • DOM rendering logic (see controllers/)
@@ -31,7 +31,7 @@ let _brandingFxIntervalId = null;
 let _brandingFxRunning = false;
 
 // ═══════════════════════════════════════════════════════════════════
-// 1. APP STATE — single source of truth
+// 1. APP STATE - single source of truth
 // ═══════════════════════════════════════════════════════════════════
 
 const AppState = {
@@ -60,7 +60,7 @@ const AppState = {
 };
 
 // ═══════════════════════════════════════════════════════════════════
-// 1.5 TRANSLATION HELPER — get strings in current locale
+// 1.5 TRANSLATION HELPER - get strings in current locale
 // ═══════════════════════════════════════════════════════════════════
 
 /**
@@ -80,7 +80,7 @@ export function t(key, vars = {}) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 2. EVENT BUS — zero-config, synchronous
+// 2. EVENT BUS - zero-config, synchronous
 // ═══════════════════════════════════════════════════════════════════
 
 const _listeners = {};
@@ -258,7 +258,7 @@ function setHistoricalMode(isHistorical) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 4. DISTRICT LOAD — coordinates all controllers
+// 4. DISTRICT LOAD - coordinates all controllers
 // ═══════════════════════════════════════════════════════════════════
 
 let _unsubscribeLive;
@@ -271,7 +271,7 @@ async function loadDistrict(districtId, stateId) {
     AppState.currentDistrictId = districtId;
     AppState.currentStateId = stateId ?? AppState.currentStateId;
     AppState.focusedEventId = null;
-    // Preserve isHistorical and timelineRange — district change should not reset temporal state
+    // Preserve isHistorical and timelineRange - district change should not reset temporal state
     AppState.connectionStatus = "live"; // Phase 2 fix: always "live" in mock
 
     const district = await DataService.getDistrictById(districtId, AppState.currentStateId);
@@ -337,7 +337,7 @@ async function loadDistrict(districtId, stateId) {
 
     MapCtrl.syncModeClass(AppState.mode, false, "live", AppState.envOverlaysEnabled);
 
-    // Load geo (async — non-blocking to timeline)
+    // Load geo (async - non-blocking to timeline)
     await MapCtrl.loadDistrictGeo(district, events);
 
     // ── Restore temporal snapshot if user had a time filter active ─────────────
@@ -796,7 +796,7 @@ function _applyPermanentTranslations() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 8. GEOLOCATION — detect user's state from browser GPS (Option B)
+// 8. GEOLOCATION - detect user's state from browser GPS (Option B)
 // ═══════════════════════════════════════════════════════════════════
 
 /**
@@ -884,7 +884,7 @@ function _runFirstTimeLocationFlow() {
             if (stateId) {
                 HierarchyCtrl.openState(stateId);
             } else {
-                // User is outside India or point didn't match — fallback to India map
+                // User is outside India or point didn't match - fallback to India map
                 console.log("[V4] Could not match location to a state. Showing India map.");
                 HierarchyCtrl.open();
             }
@@ -948,12 +948,12 @@ async function startApp() {
     }
 
     if (savedDistrict?.districtId && savedDistrict?.stateId) {
-        // Returning user — restore their last district directly
+        // Returning user - restore their last district directly
         console.log(`[V4] Restoring saved district: ${savedDistrict.districtId} (${savedDistrict.stateId})`);
         await TimelineCtrl.prefetchRegions(savedDistrict.districtId);
         await loadDistrict(savedDistrict.districtId, savedDistrict.stateId);
     } else {
-        // First-time visitor — load a default and then ask for location
+        // First-time visitor - load a default and then ask for location
         await TimelineCtrl.prefetchRegions("khordha");
         await loadDistrict("khordha", "OD");
         setTimeout(() => _runFirstTimeLocationFlow(), 600);

@@ -1,5 +1,5 @@
-// ─── DATA SERVICE — OpenDistricts V4 ──────────────────────────────────────────
-// Schema source: docs/V4-transition-schema.md — Question 3
+// ─── DATA SERVICE - OpenDistricts V4 ──────────────────────────────────────────
+// Schema source: docs/V4-transition-schema.md - Question 3
 //
 // THIS IS THE ONLY MODULE v4-app.js MAY IMPORT FROM.
 // v4-app.js must never import from /data/ directly.
@@ -310,7 +310,7 @@ export const DataService = {
     /**
      * Get time-bucketed density data for the time axis ribbon.
      * Resolution auto-detected if not provided.
-     * V5: this will proxy to GET /api/v1/time-series — same return shape.
+     * V5: this will proxy to GET /api/v1/time-series - same return shape.
      *
      * @param {string}              districtId
      * @param {"hour"|"day"|"month"|"auto"} [resolution]
@@ -372,7 +372,7 @@ export const DataService = {
 
     /**
      * Subscribe to live event updates for a district.
-     * V4: no-op (mock shows always-live status — green dot always on).
+     * V4: no-op (mock shows always-live status - green dot always on).
      * V5: opens WebSocket to ws://.../events/district/{districtId}
      *     Delivers { type: "event.new"|"event.updated"|"event.expired", event: Event }
      *
@@ -402,7 +402,7 @@ export const DataService = {
     },
 
     /**
-     * Connection status observable — read by top bar sync dot.
+     * Connection status observable - read by top bar sync dot.
      * V4: always "live". V5: "live" | "reconnecting" | "offline"
      * @returns {"live"|"reconnecting"|"offline"}
      */

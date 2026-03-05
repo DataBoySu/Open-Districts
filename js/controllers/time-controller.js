@@ -1,4 +1,4 @@
-// ─── TIME CONTROLLER — v4-app.js extraction ───────────────────────────────────
+// ─── TIME CONTROLLER - v4-app.js extraction ───────────────────────────────────
 // Owns: time axis ruler + ribbon render, playhead drag, autoplay, historical mode.
 // Receives: { state, ds, emit } context.
 // Exports: init(ctx) → { renderTimeAxis, stopAutoPlay }
@@ -107,7 +107,7 @@ export function resumeAutoPlay(intervalMs = 250) { _startAutoPlay(intervalMs); }
 
 /**
  * Restore the scrubber to a given fraction without triggering a scrub event.
- * Used when district changes but timelineRange is preserved — we need the
+ * Used when district changes but timelineRange is preserved - we need the
  * playhead to visually match the active temporal snapshot.
  * @param {number} frac  0–1
  */
@@ -131,7 +131,7 @@ function _renderPlayhead() {
         ph.style.left = `${frac * 100}%`;
     }
 
-    // Post-playhead darkening overlay (explicit div — reliable across all browsers)
+    // Post-playhead darkening overlay (explicit div - reliable across all browsers)
     const overlay = document.getElementById("ta-ribbon-overlay");
     if (overlay) {
         const pct = (1 - frac) * 100;
@@ -232,7 +232,7 @@ function _initButtons() {
         if (_ctx.state.isAutoPlaying && _axis.isFF) { _stopAutoPlay(); } else { _startAutoPlay(100); }
     });
 
-    // Stop button — reset to LIVE
+    // Stop button - reset to LIVE
     document.getElementById("ta-stop").addEventListener("click", () => {
         _registerInteraction();
         _stopAutoPlay();

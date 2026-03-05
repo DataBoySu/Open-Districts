@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenDistricts V4</title>
     <meta name="description"
-        content="OpenDistricts — Community health and civic intelligence kiosk. Left = Time. Center = Territory. Right = Intelligence.">
+        content="OpenDistricts - Community health and civic intelligence kiosk. Left = Time. Center = Territory. Right = Intelligence.">
 
     <!-- Fonts: Syne (display) + DM Mono (data) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +33,7 @@
 <body>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-       BRANDING SPLASH SCREEN — V4 UNINTERRUPTED ENTRY
+       BRANDING SPLASH SCREEN - V4 UNINTERRUPTED ENTRY
   ═══════════════════════════════════════════════════════════════════════ -->
     <div id="splash-overlay">
         <div class="splash-grid-overlay"></div>
@@ -87,7 +87,7 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-       TOP BAR — 44px, all system controls, fixed L→R order
+       TOP BAR - 44px, all system controls, fixed L→R order
   ═══════════════════════════════════════════════════════════════════════ -->
     <header id="topbar">
 
@@ -136,13 +136,13 @@
 
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-       MAP CONTAINER — always 100vw, never resizes
+       MAP CONTAINER - always 100vw, never resizes
   ═══════════════════════════════════════════════════════════════════════ -->
     <div id="map" class="district-view">
 
         <!-- Leaflet renders here -->
 
-        <!-- Environmental overlays — Live Mode only, CSS-activated -->
+        <!-- Environmental overlays - Live Mode only, CSS-activated -->
         <div class="env-rain" aria-hidden="true"></div>
         <div class="env-haze" aria-hidden="true"></div>
 
@@ -151,7 +151,7 @@
             <button id="zoom-in" class="zoom-btn" aria-label="Zoom in">+</button>
             <button id="zoom-out" class="zoom-btn" aria-label="Zoom out">−</button>
         </div>
-        <!-- Map Settings Tray — Pulls up from the bottom temporal bar -->
+        <!-- Map Settings Tray - Pulls up from the bottom temporal bar -->
         <div id="settings-tray-container">
             <!-- Pull-up tab -->
             <button id="settings-tab" class="tray-pull-tab" aria-label="Toggle map settings" aria-expanded="false">
@@ -188,7 +188,7 @@
 
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-       LEFT TIMELINE PANEL — overlay, opens at boot
+       LEFT TIMELINE PANEL - overlay, opens at boot
   ═══════════════════════════════════════════════════════════════════════ -->
     <nav id="timeline-panel" aria-label="Weekly event timeline">
 
@@ -209,13 +209,13 @@
 
     </nav>
 
-    <!-- Side toggle tab — decoupled from panel to prevent any clipping -->
+    <!-- Side toggle tab - decoupled from panel to prevent any clipping -->
     <button id="tl-tab" class="panel-side-tab" aria-label="Toggle timeline" aria-expanded="true">
         <span id="tl-tab-chevron">‹</span>
     </button>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-       RIGHT AI PANEL — overlay, closed at boot
+       RIGHT AI PANEL - overlay, closed at boot
   ═══════════════════════════════════════════════════════════════════════ -->
     <aside id="ai-panel" aria-label="Guided Intelligence panel">
 
@@ -228,13 +228,13 @@
             <button id="ai-close-btn" class="ai-close-btn" aria-label="Close AI panel">&#10005;</button>
         </div>
 
-        <!-- Context bar — changes based on general vs event-bound mode -->
+        <!-- Context bar - changes based on general vs event-bound mode -->
         <div id="ai-context-bar">
             <span id="ai-context-text"></span>
             <div id="ai-context-mode-badge" class="ai-context-badge general">DISTRICT CONTEXT</div>
         </div>
 
-        <!-- Intent section — scrollable -->
+        <!-- Intent section - scrollable -->
         <div id="ai-intent-section">
             <div class="ai-section-label" id="ai-section-label">SELECT A QUERY</div>
 
@@ -270,7 +270,7 @@
                 </button>
                 <button class="intent-card" data-intent="historical-compare">
                     <div class="intent-title">Historical Comparison</div>
-                    <div class="intent-sub">Same event type, same region — past 3 years</div>
+                    <div class="intent-sub">Same event type, same region - past 3 years</div>
                 </button>
             </div>
         </div>
@@ -286,14 +286,14 @@
 
     </aside>
 
-    <!-- Side toggle tab — decoupled from AI panel -->
+    <!-- Side toggle tab - decoupled from AI panel -->
     <button id="ai-tab" class="panel-side-tab ai" aria-label="Toggle AI panel" aria-expanded="false">
         <span id="ai-tab-chevron">›</span>
     </button>
 
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-       TIME AXIS — 60px, always visible
+       TIME AXIS - 60px, always visible
   ═══════════════════════════════════════════════════════════════════════ -->
     <div id="time-axis" role="region" aria-label="Temporal timeline">
 
@@ -318,10 +318,10 @@
 
         <!-- Main timeline area: ruler + density ribbon + playhead -->
         <div id="ta-main">
-            <!-- Ruler layer (28px) — rendered by JS canvas-free approach with divs -->
+            <!-- Ruler layer (28px) - rendered by JS canvas-free approach with divs -->
             <div id="ta-ruler" aria-hidden="true"></div>
 
-            <!-- Density ribbon (32px) — coloured segments rendered by JS -->
+            <!-- Density ribbon (32px) - coloured segments rendered by JS -->
             <div id="ta-ribbon" role="presentation"></div>
 
             <!-- Playhead: 2px white line + draggable handle -->
@@ -338,7 +338,7 @@
 
 
     <!-- ═══════════════════════════════════════════════════════════════════════
-       HIERARCHY SELECTOR — full-screen overlay, z-index takeover
+       HIERARCHY SELECTOR - full-screen overlay, z-index takeover
   ═══════════════════════════════════════════════════════════════════════ -->
     <div id="hierarchy-selector" class="hidden" role="dialog" aria-modal="true" aria-label="Select district">
 

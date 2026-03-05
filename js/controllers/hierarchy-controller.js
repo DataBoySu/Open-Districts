@@ -1,4 +1,4 @@
-// ─── HIERARCHY CONTROLLER — v4-app.js extraction ──────────────────────────────
+// ─── HIERARCHY CONTROLLER - v4-app.js extraction ──────────────────────────────
 // Owns: Change Area overlay, tier-1 state grid, tier-2 district map + list.
 // Receives: { state, ds, emit } context.
 // Exports: init(ctx) → { open, close, updateLabels }
@@ -321,7 +321,7 @@ async function _renderIndiaMinimap(states) {
 
         svg.appendChild(path);
 
-        // Label — Strict physical bounding box check to prevent state names from overlapping
+        // Label - Strict physical bounding box check to prevent state names from overlapping
         if (geoName && centroid && !isNaN(centroid[0]) && !isNaN(centroid[1])) {
             const charCount = geoName.length;
             // Using a static 9.5px font for Tier 1 states (viewBox 800x800)
@@ -474,7 +474,7 @@ function _renderSVGMap(districts, stateGeo) {
                 // cross-assignment between similarly-named districts (e.g. Udaipur → Jaipur
                 // edit-distance 2) when the GeoJSON's own id makes the correct district clear.
                 if (fuzzyResult && geoId && fuzzyResult.id !== geoId) {
-                    matchedDistrict = null; // GeoJSON id disagrees — treat as unregistered
+                    matchedDistrict = null; // GeoJSON id disagrees - treat as unregistered
                 } else {
                     matchedDistrict = fuzzyResult;
                 }
@@ -626,7 +626,7 @@ function _renderSVGMap(districts, stateGeo) {
 
         svg.appendChild(rect);
 
-        // District name — centered within cell
+        // District name - centered within cell
         const textFallback = document.createElementNS("http://www.w3.org/2000/svg", "text");
         textFallback.setAttribute("x", x + w / 2);
         textFallback.setAttribute("y", y + h / 2 - 4);
@@ -675,7 +675,7 @@ function _showStatsPanel(district) {
         alertsEl.style.color = "";
     }
 
-    // Inject "View Map" button — also bound to same _selectDistrict action
+    // Inject "View Map" button - also bound to same _selectDistrict action
     actionEl.innerHTML = `<button class="hs-district-action-btn">${t("ui.viewMap")}</button>`;
     actionEl.querySelector("button").onclick = () => _selectDistrict(district);
 }
@@ -687,7 +687,7 @@ function _selectDistrict(district) {
         return;
     }
     close();
-    // Emit district change — orchestrator owns the data reload
+    // Emit district change - orchestrator owns the data reload
     _ctx.emit("hierarchy:districtSelected", { districtId: district.id, stateId: district.stateId });
 }
 

@@ -1,4 +1,4 @@
-// ─── MAP CONTROLLER — v4-app.js extraction ────────────────────────────────────
+// ─── MAP CONTROLLER - v4-app.js extraction ────────────────────────────────────
 // Owns: Leaflet init (ONCE), GeoJSON layer management, animation arbitration.
 // Receives: { state, ds, emit } context.
 // Exports: init(ctx) → { loadDistrictGeo, syncFocus, syncModeClass, runArbitration }
@@ -18,7 +18,7 @@ let _boundaryLayer, _regionsLayer, _markersLayer, _maskLayer;
 const _regionLayerMap = new Map(); // regionId → Leaflet layer
 
 // ═══════════════════════════════════════════════════════════════════
-// INIT — called ONCE at boot
+// INIT - called ONCE at boot
 // ═══════════════════════════════════════════════════════════════════
 
 export function init(ctx) {
@@ -194,7 +194,7 @@ export async function loadDistrictGeo(district, events) {
     const bounds = L.latLngBounds(boundingBoxToLeaflet(district.boundingBox));
     _map.fitBounds(bounds, { padding: [20, 20] });
 
-    // Try to load GeoJSON — falls back to mock grid in geo-service
+    // Try to load GeoJSON - falls back to mock grid in geo-service
     const geoData = await _ctx.ds.getGeoJSON(district.geoJsonUrl);
 
     const categoryMap = _buildCategoryByRegion(events);
@@ -321,7 +321,7 @@ export async function loadDistrictGeo(district, events) {
         runArbitration();
     }, 120);
 
-    // Point markers — renderAs-aware ──────────────────────────────────────────
+    // Point markers - renderAs-aware ──────────────────────────────────────────
     const group = L.featureGroup();
 
     /** Infer renderAs from schema fields when the field is absent. */
@@ -378,7 +378,7 @@ export async function loadDistrictGeo(district, events) {
                 }
                 // One DivIcon per site
                 pts.forEach(pt => {
-                    const label = pt.label ? `${ev.title} — ${pt.label}` : ev.title;
+                    const label = pt.label ? `${ev.title} - ${pt.label}` : ev.title;
                     group.addLayer(_makeIconMarker(ev, [pt.lat, pt.lng], label));
                 });
                 // Dashed bounding circle around the cluster
@@ -670,17 +670,17 @@ export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
         const historical = historicalCatMap[regionId];
 
         if (current && current.impactScale === "WIDE") {
-            // Active in this bucket — full highlight
+            // Active in this bucket - full highlight
             const cat = current.category;
             layer.setStyle({ ...categoryPolygonStyle(cat, false), opacity: 1, fillOpacity: 0.55 });
             if (layer._path) _applyCatClass(layer._path, cat);
         } else if (historical && historical.impactScale === "WIDE") {
-            // Past event — keep but dim
+            // Past event - keep but dim
             const cat = historical.category;
             layer.setStyle({ ...categoryPolygonStyle(cat, false), opacity: 0.25, fillOpacity: 0.12 });
             if (layer._path) _applyCatClass(layer._path, cat);
         } else {
-            // No event or future event — clear
+            // No event or future event - clear
             layer.setStyle(categoryPolygonStyle("none", false));
             if (layer._path) _applyCatClass(layer._path, "none");
         }
@@ -697,7 +697,7 @@ export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
             const isCurrent = startTs ? evTs >= startTs : false;
             const opacity = show ? (isCurrent ? '1' : '0.25') : null;
 
-            // DivIcon L.Marker — use getElement() for visibility
+            // DivIcon L.Marker - use getElement() for visibility
             if (layer instanceof L.Marker) {
                 const el = layer.getElement?.();
                 if (el) el.style.opacity = show ? (isCurrent ? '1' : '0.25') : '0';
@@ -755,7 +755,7 @@ export function clearHistoricalSnapshot(events) {
     runArbitration();
 }
 
-/** Arbitration engine — governs all polygon animation play-state. */
+/** Arbitration engine - governs all polygon animation play-state. */
 export function runArbitration() {
     if (_ctx.state.isPanning || !_map.getBounds) return;
 
@@ -781,7 +781,7 @@ export function runArbitration() {
     // 2. LOCAL and POINT events (Markers/Circles/Polylines)
     if (_markersLayer) {
         _markersLayer.eachLayer(layer => {
-            // L.Polyline (corridor) — use bounds intersection, no path animation
+            // L.Polyline (corridor) - use bounds intersection, no path animation
             if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
                 return; // corridors don't participate in CSS pulse arbitration
             }
@@ -815,7 +815,7 @@ export function runArbitration() {
     const maxTier = _effectiveTierCeiling(elapsed);
 
     visibleItems.forEach(({ layer, category, priority }, index) => {
-        // DivIcon L.Marker — no SVG path, skip path-based animation
+        // DivIcon L.Marker - no SVG path, skip path-based animation
         if (layer instanceof L.Marker) return;
         if (!layer._path) return;
         const path = layer._path;
@@ -873,7 +873,7 @@ function _buildCategoryByRegion(events) {
     return result;
 }
 
-/** Top event for region — picks lowest displayPriority (most urgent), then most recent. */
+/** Top event for region - picks lowest displayPriority (most urgent), then most recent. */
 function _topEventForRegion(regionId, events) {
     return events
         .filter(e => e.regionId === regionId)
@@ -918,7 +918,7 @@ function _updatePerfCounter(ms) {
         _ctx.state.consecutiveSlowFrames = 0;
     }
     if (_ctx.state.consecutiveSlowFrames >= 3) {
-        console.warn("[V4] Arbitration slow ×3 — disabling env overlays.");
+        console.warn("[V4] Arbitration slow ×3 - disabling env overlays.");
         _ctx.state.envOverlaysEnabled = false;
         _ctx.emit("perf:envDisabled", {});
     }

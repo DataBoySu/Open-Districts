@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════
-// DATA FRAMES — Temporal Slider
+// DATA FRAMES - Temporal Slider
 // ═══════════════════════════════════════════
 const dataFrames = [
   {
-    label: '2021 — Baseline',
+    label: '2021 - Baseline',
     year: '2021',
     tag: 'ok', tagText: 'Good Coverage',
     alerts: 3, phc: 10, water: 20,
@@ -13,7 +13,7 @@ const dataFrames = [
     featurePulse: 'phc',
   },
   {
-    label: '2022 — Vaccination Drive',
+    label: '2022 - Vaccination Drive',
     year: '2022',
     tag: 'ok', tagText: 'Vax Drive Active',
     alerts: 2, phc: 12, water: 22,
@@ -23,7 +23,7 @@ const dataFrames = [
     featurePulse: 'phc',
   },
   {
-    label: '2023 — Swine Flu Peak',
+    label: '2023 - Swine Flu Peak',
     year: '2023',
     tag: 'danger', tagText: 'Swine Flu Alert',
     alerts: 14, phc: 9, water: 18,
@@ -33,7 +33,7 @@ const dataFrames = [
     featurePulse: 'fever',
   },
   {
-    label: '2024 — Recovery',
+    label: '2024 - Recovery',
     year: '2024',
     tag: 'ok', tagText: 'Recovering',
     alerts: 6, phc: 11, water: 23,
@@ -43,7 +43,7 @@ const dataFrames = [
     featurePulse: 'water',
   },
   {
-    label: 'Current — 2025–26',
+    label: 'Current - 2025–26',
     year: 'Current',
     tag: 'ok', tagText: 'Live Data',
     alerts: 7, phc: 12, water: 24,
@@ -195,7 +195,7 @@ function selectLang(el) {
 
     // Update cards
     let snapL = document.getElementById('snap-label');
-    if (snapL) snapL.textContent = `${t.snap} — ${currentDistrict.name}`;
+    if (snapL) snapL.textContent = `${t.snap} - ${currentDistrict.name}`;
 
     document.getElementById('sc1-p').textContent = t.healthAlerts;
     document.getElementById('sc1-p').nextElementSibling.textContent = t.healthSub;
@@ -245,12 +245,12 @@ const translations = {
     vaxSub: 'Coverage Target',
     speak: 'Talk to MoSathi',
     speakSub: 'Press & Speak',
-    feverTick: 'Fever cluster — Balianta Block — 23 confirmed cases',
-    waterTick: 'Borewell #7 restored — Tangi — Supply resumed 08:30',
-    vaxTick: 'Vaccination camp — Khordha Block — Feb 27, 09:00–16:00',
-    roadTick: 'NH-16 road block near Bhubaneswar — Diversion via SH-12',
-    phcTick: 'New PHC operational — Bolagarh — Emergency: 104',
-    ashaTick: 'ASHA worker training — Jatni — Feb 25–26, 08:00'
+    feverTick: 'Fever cluster - Balianta Block - 23 confirmed cases',
+    waterTick: 'Borewell #7 restored - Tangi - Supply resumed 08:30',
+    vaxTick: 'Vaccination camp - Khordha Block - Feb 27, 09:00–16:00',
+    roadTick: 'NH-16 road block near Bhubaneswar - Diversion via SH-12',
+    phcTick: 'New PHC operational - Bolagarh - Emergency: 104',
+    ashaTick: 'ASHA worker training - Jatni - Feb 25–26, 08:00'
   },
   'OD': {
     brandName: 'କମ୍ୟୁନିଟି ହେଲଥ କିଓସ୍କ',
@@ -272,12 +272,12 @@ const translations = {
     vaxSub: 'କଭରେଜ୍ ଲକ୍ଷ୍ୟ',
     speak: 'ମୋ ସାଥୀ ସହ କଥା ହୁଅ',
     speakSub: 'ଦବାନ୍ତୁ ଏବଂ କୁହନ୍ତୁ',
-    feverTick: 'ଜ୍ୱର ସଂକ୍ରମଣ — ବାଲିଅନ୍ତା ବ୍ଲକ — 23 ଟି ମାମଲା',
-    waterTick: 'ବୋରୱେଲ୍ #7 ମରାମତି ହୋଇଛି — ଟାଙ୍ଗୀ',
-    vaxTick: 'ଟିକାକରଣ ଶିବିର — ଖୋର୍ଦ୍ଧା ବ୍ଲକ',
+    feverTick: 'ଜ୍ୱର ସଂକ୍ରମଣ - ବାଲିଅନ୍ତା ବ୍ଲକ - 23 ଟି ମାମଲା',
+    waterTick: 'ବୋରୱେଲ୍ #7 ମରାମତି ହୋଇଛି - ଟାଙ୍ଗୀ',
+    vaxTick: 'ଟିକାକରଣ ଶିବିର - ଖୋର୍ଦ୍ଧା ବ୍ଲକ',
     roadTick: 'ଭୁବନେଶ୍ୱର ନିକଟରେ NH-16 ରାସ୍ତା ଅବରୋଧ',
-    phcTick: 'ନୂତନ PHC କାର୍ଯ୍ୟକ୍ଷମ — ବୋଲାଗଡ — ଜରୁରୀକାଳୀନ: 104',
-    ashaTick: 'ଆଶା କର୍ମୀ ତାଲିମ — ଜଟଣୀ'
+    phcTick: 'ନୂତନ PHC କାର୍ଯ୍ୟକ୍ଷମ - ବୋଲାଗଡ - ଜରୁରୀକାଳୀନ: 104',
+    ashaTick: 'ଆଶା କର୍ମୀ ତାଲିମ - ଜଟଣୀ'
   },
   'MH': {
     brandName: 'समुदाय आरोग्य किओस्क',
@@ -348,20 +348,20 @@ function runIntent(id) {
     setKnowledge('disease');
     document.getElementById('kt-disease').click();
     crH.textContent = '📈 Disease History: Khordha (2023)';
-    crB.textContent = 'Timeline set to 2023 — Swine Flu peak. 14 active alerts detected. Fever polygons rendered over Balianta and Cuttack blocks. PHC count reduced to 9 operational centers during this period.';
+    crB.textContent = 'Timeline set to 2023 - Swine Flu peak. 14 active alerts detected. Fever polygons rendered over Balianta and Cuttack blocks. PHC count reduced to 9 operational centers during this period.';
   } else if (id === 'nearest-hospitals') {
     setKnowledge('infra');
     document.getElementById('kt-infra').click();
     crH.textContent = '🏥 Nearest Operational PHCs';
-    crB.textContent = 'Infrastructure layer activated. 12 PHC tiles highlighted. Nearest: Balianta PHC — 2.1 km. Tangi PHC — 4.8 km. Bolagarh PHC — 6.3 km. Call 104 for emergency referral.';
+    crB.textContent = 'Infrastructure layer activated. 12 PHC tiles highlighted. Nearest: Balianta PHC - 2.1 km. Tangi PHC - 4.8 km. Bolagarh PHC - 6.3 km. Call 104 for emergency referral.';
     // Reset to current frame
     document.getElementById('tl-slider').value = 4;
     applyFrame(4);
   } else if (id === 'water-status') {
     setKnowledge('water');
     document.getElementById('kt-water').click();
-    crH.textContent = '💧 Water Point Status — Today';
-    crB.textContent = '24 of 27 water points active. Borewell #7 (Tangi) restored this morning. 3 points in Balianta under maintenance — alternate tanker supply arranged. No contamination reports.';
+    crH.textContent = '💧 Water Point Status - Today';
+    crB.textContent = '24 of 27 water points active. Borewell #7 (Tangi) restored this morning. 3 points in Balianta under maintenance - alternate tanker supply arranged. No contamination reports.';
     document.getElementById('tl-slider').value = 4;
     applyFrame(4);
   }
@@ -370,7 +370,7 @@ function runIntent(id) {
 }
 
 // ═══════════════════════════════════════════
-// REGION MODAL — District selection
+// REGION MODAL - District selection
 // ═══════════════════════════════════════════
 function openRegionModal() {
   document.getElementById('region-modal').classList.add('visible');
@@ -407,7 +407,7 @@ function selectDistrict(state, name, stateName, alerts, phc, water) {
   currentDistrict = { name, state: stateName, alerts, phc, water };
   document.getElementById('crumb-val').textContent = name;
   document.getElementById('hud-name').textContent = name;
-  document.getElementById('snap-label').textContent = `Local Snapshot — ${name}`;
+  document.getElementById('snap-label').textContent = `Local Snapshot - ${name}`;
   document.getElementById('sc1-n').textContent = alerts;
   document.getElementById('sc2-n').textContent = phc;
   document.getElementById('sc3-n').textContent = water;
@@ -423,32 +423,32 @@ function selectDistrict(state, name, stateName, alerts, phc, water) {
 // ═══════════════════════════════════════════
 const sitrepData = {
   fever: {
-    icon: '<svg width="28" height="28"><use href="#icon-alert"/></svg>', title: 'Fever Outbreak — Balianta Block',
+    icon: '<svg width="28" height="28"><use href="#icon-alert"/></svg>', title: 'Fever Outbreak - Balianta Block',
     loc: () => `${currentDistrict.name} · ${currentDistrict.state} · Updated Today 08:45`,
     body: '23 confirmed cases of seasonal fever reported in Balianta Block. Khordha District PHC has been notified. Mobile health teams deployed. Residents advised to use ORS, maintain hygiene, and visit nearest PHC if symptoms persist beyond 48 hours.',
     s: [['23', 'Cases'], ['4', 'Wards'], ['2', 'Teams']], cls: ['d', 'w', 'g'],
-    cta: '📞 Call PHC Balianta — 104'
+    cta: '📞 Call PHC Balianta - 104'
   },
   flu: {
-    icon: '<svg width="28" height="28"><use href="#icon-alert"/></svg>', title: 'Swine Flu Alert — Cuttack Block',
+    icon: '<svg width="28" height="28"><use href="#icon-alert"/></svg>', title: 'Swine Flu Alert - Cuttack Block',
     loc: () => `${currentDistrict.name} · ${currentDistrict.state} · Updated Yesterday`,
     body: 'Elevated H1N1 activity detected in Cuttack block. 8 confirmed cases, 3 hospitalized. District surveillance teams conducting contact tracing. Antiviral medication available at designated PHCs.',
     s: [['8', 'Cases'], ['3', 'Hospitalized'], ['1', 'PHC Alert']], cls: ['d', 'd', 'w'],
-    cta: '📞 Call Surveillance Unit — 1800-11-1234'
+    cta: '📞 Call Surveillance Unit - 1800-11-1234'
   },
   water: {
-    icon: '<svg width="28" height="28"><use href="#icon-water"/></svg>', title: 'Water Infrastructure — Active Status',
+    icon: '<svg width="28" height="28"><use href="#icon-water"/></svg>', title: 'Water Infrastructure - Active Status',
     loc: () => `${currentDistrict.name} · ${currentDistrict.state}`,
-    body: '24 of 27 borewell and supply points active. Borewell #7 in Tangi restored at 08:30. 3 borewells in Balianta block under scheduled maintenance — alternate tanker supply arranged. No contamination reports filed.',
+    body: '24 of 27 borewell and supply points active. Borewell #7 in Tangi restored at 08:30. 3 borewells in Balianta block under scheduled maintenance - alternate tanker supply arranged. No contamination reports filed.',
     s: [['24', 'Active'], ['3', 'Maintenance'], ['0', 'Contaminated']], cls: ['g', 'w', 'g'],
-    cta: '📋 Report Water Issue — 1916'
+    cta: '📋 Report Water Issue - 1916'
   },
   phc: {
     icon: '<svg width="28" height="28"><use href="#icon-hospital"/></svg>', title: 'PHC Operational Status',
     loc: () => `${currentDistrict.name} · ${currentDistrict.state}`,
     body: () => `${currentDistrict.phc} of ${currentDistrict.phc + 2} PHCs are fully operational across ${currentDistrict.name}. 2 PHCs running on reduced hours. Emergency helpline 104 active 24/7. Nearest PHC: 2.1 km from this kiosk.`,
     s: () => [[currentDistrict.phc + '', 'Active'], [2, 'Reduced Hours'], ['104', 'Emergency']], cls: ['g', 'w', 'g'],
-    cta: '📞 Find Nearest PHC — 104'
+    cta: '📞 Find Nearest PHC - 104'
   },
 };
 
@@ -498,7 +498,7 @@ function flashSkeleton() {
 }
 
 // ═══════════════════════════════════════════
-// ZOOM (mock — translates SVG viewBox)
+// ZOOM (mock - translates SVG viewBox)
 // ═══════════════════════════════════════════
 let vbX = 0, vbY = 0, vbW = 620, vbH = 430;
 function zoomIn() {

@@ -1,4 +1,4 @@
-// ─── GEO SERVICE — OpenDistricts V4 ───────────────────────────────────────────
+// ─── GEO SERVICE - OpenDistricts V4 ───────────────────────────────────────────
 // GeoJSON loading, caching, and bounding box helpers.
 // All geographic data access flows through this module.
 
@@ -13,7 +13,7 @@ const _geoCache = new Map(); // url → GeoJSON FeatureCollection
 /**
  * Load a GeoJSON file by URL. Caches the result in memory.
  * Falls back to mock inline geometry when the URL is not available
- * (dev mode — real files will be served at those paths in production).
+ * (dev mode - real files will be served at those paths in production).
  *
  * @param {string} url
  * @returns {Promise<GeoJSON.FeatureCollection>}
@@ -21,7 +21,7 @@ const _geoCache = new Map(); // url → GeoJSON FeatureCollection
 export async function loadGeoJSON(url) {
     if (_geoCache.has(url)) return _geoCache.get(url);
 
-    // Handle Data URIs — used for unmapped districts with dynamically generated GeoJSON
+    // Handle Data URIs - used for unmapped districts with dynamically generated GeoJSON
     if (url && url.startsWith('data:')) {
         try {
             const commaIdx = url.indexOf(',');
@@ -70,7 +70,7 @@ export function boundingBoxToLeaflet(bb) {
     ];
 }
 
-// ── Category colour map (shades only — no pure primaries) ──────────────────────
+// ── Category colour map (shades only - no pure primaries) ──────────────────────
 const CAT_HUES = {
     health: { hex: "#B91C30", r: 185, g: 28, b: 48 },   // crimson-rose
     infrastructure: { hex: "#925C0C", r: 146, g: 92, b: 12 },   // amber-ochre
@@ -255,7 +255,7 @@ const CATEGORY_SVG_FNS = {
  *   L.divIcon({ html: buildMarkerIconHtml(ev), className: '',
  *               iconSize: [30, 30], iconAnchor: [15, 15] })
  *
- * @param {object}  event   Event object — must have `.category`
+ * @param {object}  event   Event object - must have `.category`
  * @param {boolean} dimmed  True when the marker is unfocused / dimmed
  * @returns {string} HTML string (self-contained, no external CSS dependency)
  */

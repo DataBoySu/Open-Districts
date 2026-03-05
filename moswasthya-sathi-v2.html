@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1024">
-  <title>MoSwasthya Sathi v2 — Pinch-to-World</title>
+  <title>MoSwasthya Sathi v2 - Pinch-to-World</title>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -366,7 +366,7 @@
       height: 100%;
     }
 
-    /* Zoom Tier HUD — top left overlay */
+    /* Zoom Tier HUD - top left overlay */
     #zoom-tier-hud {
       position: absolute;
       top: 10px;
@@ -1647,7 +1647,7 @@
       <!-- Leaflet map container -->
       <div id="leaflet-map"></div>
 
-      <!-- HUD overlay — district/state/national label -->
+      <!-- HUD overlay - district/state/national label -->
       <div id="zoom-tier-hud">
         <div class="hud-tier" id="hud-tier-label">District View · Lvl 12</div>
         <div class="hud-name" id="hud-name">Khordha</div>
@@ -1714,7 +1714,7 @@
 
       <div id="dashboard-panel">
 
-        <div class="section-label" id="snapshot-label">Local Snapshot — Khordha</div>
+        <div class="section-label" id="snapshot-label">Local Snapshot - Khordha</div>
 
         <!-- Stat cards -->
         <div class="stat-card danger" onclick="openSitRep('alert')">
@@ -1794,28 +1794,28 @@
     <div id="ticker-badge">Live</div>
     <div id="ticker-track">
       <div class="ticker-scroll">
-        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster — Balianta Block — 23 confirmed cases —
+        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster - Balianta Block - 23 confirmed cases -
           Khordha PHC on alert</span>
         <span class="t-sep">·</span>
-        <span class="t-item info"><span class="t-dot"></span>💧 Borewell #7 restored — Tangi — Supply resumed as of
+        <span class="t-item info"><span class="t-dot"></span>💧 Borewell #7 restored - Tangi - Supply resumed as of
           08:30</span>
         <span class="t-sep">·</span>
-        <span class="t-item ok"><span class="t-dot"></span>💉 Vaccination camp — Khordha Block — Feb 27, 09:00–16:00 —
+        <span class="t-item ok"><span class="t-dot"></span>💉 Vaccination camp - Khordha Block - Feb 27, 09:00–16:00 -
           All children 0-5 yrs</span>
         <span class="t-sep">·</span>
-        <span class="t-item danger"><span class="t-dot"></span>⚠ NH-16 road blocked — Bhubaneswar — Diversion via SH-12
+        <span class="t-item danger"><span class="t-dot"></span>⚠ NH-16 road blocked - Bhubaneswar - Diversion via SH-12
           in effect</span>
         <span class="t-sep">·</span>
-        <span class="t-item info"><span class="t-dot"></span>📋 ASHA worker training — Jatni Block — Feb 25–26 · Report
+        <span class="t-item info"><span class="t-dot"></span>📋 ASHA worker training - Jatni Block - Feb 25–26 · Report
           08:00</span>
         <span class="t-sep">·</span>
-        <span class="t-item ok"><span class="t-dot"></span>✅ New PHC operational — Bolagarh — 6 days/week — Emergency:
+        <span class="t-item ok"><span class="t-dot"></span>✅ New PHC operational - Bolagarh - 6 days/week - Emergency:
           104</span>
         <span class="t-sep">·</span>
-        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster — Balianta Block — 23 confirmed cases —
+        <span class="t-item danger"><span class="t-dot"></span>⚠ Fever cluster - Balianta Block - 23 confirmed cases -
           Khordha PHC on alert</span>
         <span class="t-sep">·</span>
-        <span class="t-item info"><span class="t-dot"></span>💧 Borewell #7 restored — Tangi — Supply resumed as of
+        <span class="t-item info"><span class="t-dot"></span>💧 Borewell #7 restored - Tangi - Supply resumed as of
           08:30</span>
       </div>
     </div>
@@ -1844,7 +1844,7 @@
       <div class="srp-header">
         <div class="srp-icon" id="srp-icon">⚠</div>
         <div class="srp-titles">
-          <div class="srp-title" id="srp-title">Fever Outbreak — Balianta Block</div>
+          <div class="srp-title" id="srp-title">Fever Outbreak - Balianta Block</div>
           <div class="srp-location" id="srp-location">Khordha District · Odisha · Last updated: Today 08:45</div>
         </div>
         <div class="srp-close" onclick="closeSitRep()">✕</div>
@@ -1869,7 +1869,7 @@
           <div class="l">Teams Deployed</div>
         </div>
       </div>
-      <button id="srp-call-btn">📞 Call PHC Balianta — 104</button>
+      <button id="srp-call-btn">📞 Call PHC Balianta - 104</button>
     </div>
   </div>
 
@@ -1909,7 +1909,7 @@
       attributionControl: false,
     });
 
-    // Tile layer — OSM
+    // Tile layer - OSM
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18, minZoom: 3,
     }).addTo(map);
@@ -2043,16 +2043,16 @@
         document.getElementById('agg-phc').textContent = '85%';
         document.getElementById('agg-alerts').textContent = '143';
         document.getElementById('agg-pop').textContent = '4.2 Cr';
-        snapshotLabel.textContent = 'Live Pulse — Odisha';
+        snapshotLabel.textContent = 'Live Pulse - Odisha';
       } else if (showNat) {
         aggPill.classList.add('visible');
         document.getElementById('agg-phc').textContent = '78%';
         document.getElementById('agg-alerts').textContent = '1,847';
         document.getElementById('agg-pop').textContent = '140 Cr';
-        snapshotLabel.textContent = 'Live Pulse — India';
+        snapshotLabel.textContent = 'Live Pulse - India';
       } else {
         aggPill.classList.remove('visible');
-        snapshotLabel.textContent = 'Local Snapshot — Khordha';
+        snapshotLabel.textContent = 'Local Snapshot - Khordha';
       }
 
       // Skeleton loading flash
@@ -2157,7 +2157,7 @@
     }
     function selectDistrict(name) {
       crumbDistrict.textContent = name;
-      snapshotLabel.textContent = `Local Snapshot — ${name}`;
+      snapshotLabel.textContent = `Local Snapshot - ${name}`;
       document.getElementById('hud-name').textContent = name;
       closeDistrictGrid();
       showSkeleton();
@@ -2168,17 +2168,17 @@
     // ═══════════════════════════════════════════════
     const sitRepData = {
       alert: {
-        icon: '⚠', title: 'Fever Outbreak — Balianta Block',
+        icon: '⚠', title: 'Fever Outbreak - Balianta Block',
         location: 'Khordha District · Odisha · Last updated: Today 08:45',
         body: '23 confirmed cases of seasonal fever reported in Balianta Block. Khordha District PHC has been notified and mobile health teams dispatched. Community members are advised to use ORS, avoid crowded areas, and visit the nearest PHC if symptoms persist beyond 48 hours.',
       },
       phc: {
-        icon: '🏥', title: 'PHC Status — Khordha District',
+        icon: '🏥', title: 'PHC Status - Khordha District',
         location: 'Khordha · Odisha · 12 PHCs Active',
         body: '12 of 14 PHCs are fully operational across Khordha District. 2 PHCs in Bolagarh and Tangi blocks are running on reduced hours. Emergency helpline 104 is active 24/7 across all centers.',
       },
       water: {
-        icon: '💧', title: 'Water Infrastructure — Khordha',
+        icon: '💧', title: 'Water Infrastructure - Khordha',
         location: 'Khordha · Odisha · 24 Active Water Points',
         body: '24 of 27 borewell and water supply points are active. Borewell #7 in Tangi restored this morning. 3 points in Balianta block are under maintenance with alternative tanker supply arranged.',
       },

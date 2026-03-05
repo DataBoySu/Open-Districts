@@ -1,4 +1,4 @@
-// ─── MOCK TRANSLATIONS — OpenDistricts V4 ─────────────────────────────────────
+// ─── MOCK TRANSLATIONS - OpenDistricts V4 ─────────────────────────────────────
 // Schema source: docs/V4-transition-schema.md
 // Format: BCP 47 locale codes. Keys are dot-notation UI keys (not DOM IDs).
 // Supported: "en" (English), "or" (Odia), "hi" (Hindi)
@@ -39,7 +39,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "Is This Spreading?",
             "ai.intent.spreadingSub": "7-day case trajectory for this event",
             "ai.intent.historicalCompare": "Historical Comparison",
-            "ai.intent.historicalCompareSub": "Same event type, same region — past 3 years",
+            "ai.intent.historicalCompareSub": "Same event type, same region - past 3 years",
 
             // Hierarchy selector
             "ui.selectDistrict": "Select Your District",
@@ -105,7 +105,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "क्या यह फैल रहा है?",
             "ai.intent.spreadingSub": "इस घटना के लिए 7-दिवसीय केस प्रक्षेपवक्र",
             "ai.intent.historicalCompare": "ऐतिहासिक तुलना",
-            "ai.intent.historicalCompareSub": "समान घटना प्रकार, समान क्षेत्र — पिछले 3 वर्ष",
+            "ai.intent.historicalCompareSub": "समान घटना प्रकार, समान क्षेत्र - पिछले 3 वर्ष",
             "ui.selectDistrict": "अपना जिला चुनें",
             "ui.searchState": "राज्य खोजें...",
             "ui.back": "पीछे",
@@ -161,7 +161,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "શું આ ફેલાઈ રહ્યું છે?",
             "ai.intent.spreadingSub": "આ ઘટના માટે 7-દિવસનો કેસ ટ્રેજેક્ટરી",
             "ai.intent.historicalCompare": "ઐતિહાસિક સરખામણી",
-            "ai.intent.historicalCompareSub": "સમાન ઘટના પ્રકાર, સમાન પ્રદેશ — છેલ્લા 3 વર્ષ",
+            "ai.intent.historicalCompareSub": "સમાન ઘટના પ્રકાર, સમાન પ્રદેશ - છેલ્લા 3 વર્ષ",
             "ui.selectDistrict": "તમારો જિલ્લો પસંદ કરો",
             "ui.searchState": "રાજ્ય શોધો...",
             "ui.back": "પાછા",
@@ -217,7 +217,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "हे पसरत आहे का?",
             "ai.intent.spreadingSub": "या घटनेसाठी ७-दिवसांचा केस ट्रॅजेक्टोरी",
             "ai.intent.historicalCompare": "ऐतिहासिक तुलना",
-            "ai.intent.historicalCompareSub": "समान घटना प्रकार, समान प्रदेश — मागील ३ वर्षे",
+            "ai.intent.historicalCompareSub": "समान घटना प्रकार, समान प्रदेश - मागील ३ वर्षे",
             "ui.selectDistrict": "तुमचा जिल्हा निवडा",
             "ui.searchState": "राज्य शोधा...",
             "ui.back": "मागे",
@@ -273,7 +273,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "ਕੀ ਇਹ ਫੈਲ ਰਿਹਾ ਹੈ?",
             "ai.intent.spreadingSub": "ਇਸ ਘਟਨਾ ਲਈ 7-ਦਿਨਾਂ ਦਾ ਕੇਸ ਟ੍ਰੈਜੈਕਟਰੀ",
             "ai.intent.historicalCompare": "ਇਤਿਹਾਸਕ ਤੁਲਨਾ",
-            "ai.intent.historicalCompareSub": "ਉਹੀ ਘਟਨਾ ਦੀ ਕਿਸਮ, ਉਹੀ ਖੇਤਰ — ਪਿਛਲੇ 3 ਸਾਲ",
+            "ai.intent.historicalCompareSub": "ਉਹੀ ਘਟਨਾ ਦੀ ਕਿਸਮ, ਉਹੀ ਖੇਤਰ - ਪਿਛਲੇ 3 ਸਾਲ",
             "ui.selectDistrict": "ਆਪਣਾ ਜ਼ਿਲ੍ਹਾ ਚੁਣੋ",
             "ui.searchState": "ਰਾਜ ਖੋਜੋ...",
             "ui.back": "ਪਿੱਛੇ",
@@ -329,7 +329,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "ಇದು ಹರಡುತ್ತಿದೆಯೇ?",
             "ai.intent.spreadingSub": "ಈ ಘಟನೆಯ 7-ದಿನಗಳ ಪ್ರಕರಣದ ಪಥ",
             "ai.intent.historicalCompare": "ಐತಿಹಾಸಿಕ ಹೋಲಿಕೆ",
-            "ai.intent.historicalCompareSub": "ಅದೇ ಘಟನೆಯ ಪ್ರಕಾರ, ಅದೇ ಪ್ರದೇಶ — ಕಳೆದ 3 ವರ್ಷಗಳು",
+            "ai.intent.historicalCompareSub": "ಅದೇ ಘಟನೆಯ ಪ್ರಕಾರ, ಅದೇ ಪ್ರದೇಶ - ಕಳೆದ 3 ವರ್ಷಗಳು",
             "ui.selectDistrict": "ನಿಮ್ಮ ಜಿಲ್ಲೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
             "ui.searchState": "ರಾಜ್ಯವನ್ನು ಹುಡುಕಿ...",
             "ui.back": "ಹಿಂದೆ",
@@ -385,7 +385,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "এটি কি ছড়াচ্ছে?",
             "ai.intent.spreadingSub": "এই ঘটনার জন্য ৭ দিনের কেস ট্র্যাজেক্টরি",
             "ai.intent.historicalCompare": "ঐতিহাসিক তুলনা",
-            "ai.intent.historicalCompareSub": "একই ধরণের ঘটনা, একই অঞ্চল — গত ৩ বছর",
+            "ai.intent.historicalCompareSub": "একই ধরণের ঘটনা, একই অঞ্চল - গত ৩ বছর",
             "ui.selectDistrict": "আপনার জেলা নির্বাচন করুন",
             "ui.searchState": "রাজ্য খুঁজুন...",
             "ui.back": "ফিরে যান",
@@ -441,7 +441,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "இது பரவுகிறதா?",
             "ai.intent.spreadingSub": "இந்த நிகழ்விற்கான 7 நாள் வழக்கு பாதை",
             "ai.intent.historicalCompare": "வரலாற்று ஒப்பீடு",
-            "ai.intent.historicalCompareSub": "ஒரே நிகழ்வு வகை, ஒரே பகுதி — கடந்த 3 ஆண்டுகள்",
+            "ai.intent.historicalCompareSub": "ஒரே நிகழ்வு வகை, ஒரே பகுதி - கடந்த 3 ஆண்டுகள்",
             "ui.selectDistrict": "உங்கள் மாவட்டத்தைத் தேர்ந்தெடுக்கவும்",
             "ui.searchState": "மாநிலத்தைத் தேடுங்கள்...",
             "ui.back": "பின்னால்",
@@ -497,7 +497,7 @@ export const MOCK_TRANSLATIONS = [
             "ai.intent.spreading": "ଏହା ବ୍ୟାପୁଛି କି?",
             "ai.intent.spreadingSub": "ଏହି ଘଟଣା ପାଇଁ ୭ ଦିନର କେସ୍ ଟ୍ରାଜେକ୍ଟୋରୀ",
             "ai.intent.historicalCompare": "ଐତିହାସିକ ତୁଳନା",
-            "ai.intent.historicalCompareSub": "ସମାନ ଘଟଣା ପ୍ରକାର, ସମାନ ଅଞ୍ଚଳ — ବିଗତ ୩ ବର୍ଷ",
+            "ai.intent.historicalCompareSub": "ସମାନ ଘଟଣା ପ୍ରକାର, ସମାନ ଅଞ୍ଚଳ - ବିଗତ ୩ ବର୍ଷ",
             "ui.selectDistrict": "ଆପଣଙ୍କ ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ",
             "ui.searchState": "ରାଜ୍ୟ ଖୋଜନ୍ତୁ...",
             "ui.back": "ପଛକୁ",
