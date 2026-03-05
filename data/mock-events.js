@@ -1,5 +1,6 @@
 // ─── EVENTS — OpenDistricts V4 ────────────────────────────────────────────────
 // Data contract: id, stateId, districtId, regionId, category,
+//   impactScale, renderAs, displayPriority,
 //   title, summary, timestamp, expiresAt, geoPoint, source,
 //   verified, verifiedAt, location, meta, [translations]
 //
@@ -9,6 +10,22 @@
 //
 // regionId must exactly match a properties.id in the district's .geojson file,
 // or be null if the location cannot be confidently mapped to a sub-region.
+//
+// impactScale: POINT | LOCAL | WIDE | STATE  (geographic scope)
+// renderAs:    marker | multi_marker | radial | diffusion | hotspot | corridor | polygon_fill
+//              (optional — inferred from impactScale + meta if omitted)
+// displayPriority: 1–6 integer (optional — overrides category default for map layering)
+//   Default order: 1=emergency, 2=safety, 3=weather, 4=health, 5=mobility, 6=infrastructure
+//
+// meta sub-schemas (per renderAs):
+//   multi_marker:  multiPoints: [{ lat, lng, label? }]
+//   radial:        radiusMetres, radiusConfidence ("confirmed"|"estimated"), cordonActive
+//   diffusion:     radiusMetres, diffusionProfile ("linear"|"gaussian"|"exponential"),
+//                  windBearing (0-359°), windSpeedKmh, concentrationPpm
+//   hotspot:       heatPoints: [{ lat, lng, intensity }], heatRadius, heatUnit, heatMax
+//   corridor:      pathCoords: [{ lat, lng }], pathWidthMetres, pathLabel
+//   polygon_fill:  fillOpacity, strokeWeight (optional overrides)
+//   NOTE: clusterPoints is retired — use multiPoints with renderAs: "multi_marker"
 //
 // TRANSLATIONS (optional): events may include a `translations` object to support
 // localized titles and summaries. Schema:
@@ -73,13 +90,14 @@ export const MOCK_EVENTS = [
     location: { block: "Surat District Health Centers" },
     source: "Indian Express",
     verified: true,
+    renderAs: "multi_marker",
     meta: {
       targetGroup: "Teenage girls",
       vaccineType: "HPV",
-      clusterPoints: [
-        { lat: 21.1702, lng: 72.8311 },
-        { lat: 21.1965, lng: 72.7989 },
-        { lat: 21.1411, lng: 72.7758 }
+      multiPoints: [
+        { lat: 21.1702, lng: 72.8311, label: "Surat Urban PHC North" },
+        { lat: 21.1965, lng: 72.7989, label: "Adajan Health Centre" },
+        { lat: 21.1411, lng: 72.7758, label: "Udhna Sub-Centre" }
       ]
     }
   },

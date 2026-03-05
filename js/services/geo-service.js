@@ -178,6 +178,98 @@ export function districtBoundaryStyle() {
     };
 }
 
+// ── Category display priority ─────────────────────────────────────────────────
+// Lower number = higher rendering priority. Drives arbitration + layer ordering.
+// Each event may carry `displayPriority` to override this default.
+
+const CATEGORY_DISPLAY_PRIORITY = {
+    emergency:      1,
+    safety:         2,
+    weather:        3,
+    health:         4,
+    mobility:       5,
+    infrastructure: 6,
+};
+
+/**
+ * Return the display priority for an event's category.
+ * If the event carries an explicit `displayPriority` number, that wins.
+ * @param {string} category
+ * @param {number|undefined} override  event.displayPriority
+ * @returns {number}  1 (highest) – 6 (lowest)
+ */
+export function getCategoryDisplayPriority(category, override) {
+    if (typeof override === 'number' && override >= 1) return override;
+    return CATEGORY_DISPLAY_PRIORITY[category] ?? 6;
+}
+
+/**
+ * Return the hex color string for a category.
+ * @param {string} category
+ * @returns {string}  e.g. '#A81626'
+ */
+export function getCategoryColor(category) {
+    return (CAT_HUES[category] ?? CAT_HUES.safety).hex;
+}
+
+// ── Category SVG icon templates ───────────────────────────────────────────────
+// All icons are 16×16 on a 20×20 viewBox, designed for a 30px circular host.
+
+function _flameSvg(color) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path d="M10 2C8 5 6.5 7.5 6.5 10.2c0 .9.2 1.8.6 2.6-.6-.8-1-1.9-1-3-1.3 1.2-2 3-2 4.8C4.1 17.4 6.8 20 10 20s5.9-2.6 5.9-5.7c0-3.5-3.4-7-5.9-12.3zm0 15.2a3.2 3.2 0 01-3.2-3.2c0-.6.17-1.2.48-1.7.5.7 1.3 1 1.3 2 .3-1.1 1-1.9 2.2-2.3-.4.7-.1 1.8.7 2.5.2.2.5.6.5 1A1.5 1.5 0 0110 17.2z" fill="${color}"/></svg>`;
+}
+
+function _warningSvg(color) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path d="M10 2.5L1.5 17h17L10 2.5z" fill="none" stroke="${color}" stroke-width="1.7" stroke-linejoin="round"/><rect x="9.25" y="8" width="1.5" height="5" rx="0.75" fill="${color}"/><circle cx="10" cy="14.75" r="0.9" fill="${color}"/></svg>`;
+}
+
+function _crossSvg(color) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><rect x="8.5" y="3" width="3" height="14" rx="1.5" fill="${color}"/><rect x="3" y="8.5" width="14" height="3" rx="1.5" fill="${color}"/></svg>`;
+}
+
+function _wrenchSvg(color) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path d="M15 4a4 4 0 00-5.5 4.9L3.7 14.7a1 1 0 000 1.4l.2.2a1 1 0 001.4 0L11 10.5A4 4 0 0015 4zm0 3.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="${color}"/></svg>`;
+}
+
+function _carSvg(color) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path d="M4.5 11L6 7.5h8L15.5 11" fill="none" stroke="${color}" stroke-width="1.4" stroke-linejoin="round"/><rect x="3" y="10.5" width="14" height="4" rx="1.5" fill="${color}"/><rect x="2" y="12.5" width="2" height="2" rx="0.5" fill="${color}"/><rect x="16" y="12.5" width="2" height="2" rx="0.5" fill="${color}"/><circle cx="5.5" cy="15.5" r="1.5" fill="${color}"/><circle cx="14.5" cy="15.5" r="1.5" fill="${color}"/><rect x="8.5" y="11.2" width="3" height="1.8" rx="0.5" fill="rgba(255,255,255,0.35)"/></svg>`;
+}
+
+function _cloudSvg(color) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="16" height="16"><path d="M14 10H6a3 3 0 110-6 3.5 3.5 0 016.8 1A2.5 2.5 0 0114 10z" fill="${color}"/><line x1="8.5" y1="13" x2="7" y2="17" stroke="${color}" stroke-width="1.4" stroke-linecap="round"/><line x1="12" y1="13" x2="10.5" y2="17" stroke="${color}" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+}
+
+const CATEGORY_SVG_FNS = {
+    emergency:      _flameSvg,
+    safety:         _warningSvg,
+    health:         _crossSvg,
+    infrastructure: _wrenchSvg,
+    mobility:       _carSvg,
+    weather:        _cloudSvg,
+};
+
+/**
+ * Build the HTML inner string for a Leaflet DivIcon marker.
+ *
+ * Usage in map-controller:
+ *   L.divIcon({ html: buildMarkerIconHtml(ev), className: '',
+ *               iconSize: [30, 30], iconAnchor: [15, 15] })
+ *
+ * @param {object}  event   Event object — must have `.category`
+ * @param {boolean} dimmed  True when the marker is unfocused / dimmed
+ * @returns {string} HTML string (self-contained, no external CSS dependency)
+ */
+export function buildMarkerIconHtml(event, dimmed = false) {
+    const h = CAT_HUES[event.category] ?? CAT_HUES.safety;
+    const color  = dimmed ? `rgba(${h.r},${h.g},${h.b},0.22)` : h.hex;
+    const bg     = `rgba(${h.r},${h.g},${h.b},${dimmed ? 0.04 : 0.13})`;
+    const border = `rgba(${h.r},${h.g},${h.b},${dimmed ? 0.12 : 0.5})`;
+    const shadow = dimmed ? 'none' : '0 1px 4px rgba(0,0,0,0.22)';
+    const pe     = dimmed ? 'none' : 'auto';
+    const svgFn  = CATEGORY_SVG_FNS[event.category] ?? _warningSvg;
+    return `<div style="width:30px;height:30px;background:${bg};border:1.5px solid ${border};border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:${shadow};pointer-events:${pe}">${svgFn(color)}</div>`;
+}
+
 // ── MOCK GEOMETRY FALLBACK ────────────────────────────────────────────────────
 // Used in dev when the /data/geo/ path is not served.
 // Returns a plausible GeoJSON polygon for the district from path parsing.

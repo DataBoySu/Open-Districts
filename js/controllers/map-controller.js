@@ -5,7 +5,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import {
-    boundingBoxToLeaflet, categoryMarkerOptions, categoryPolygonStyle, districtBoundaryStyle, categoryTier
+    boundingBoxToLeaflet, categoryMarkerOptions, categoryPolygonStyle, districtBoundaryStyle, categoryTier,
+    getCategoryDisplayPriority, getCategoryColor, buildMarkerIconHtml
 } from '../services/geo-service.js';
 import { fuzzyMatch } from '../utils/string-matcher.js';
 
@@ -40,6 +41,17 @@ function _initLeaflet() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19,
     }).addTo(_map);
+
+    // ── Layer z-order panes (lowest → highest render order) ───────────────────
+    // polygon_fill (401) < hotspot (402) < diffusion (403) < radial (404)
+    //   < corridor (450) < eventMarkerPane (460) < default markerPane (600)
+    const _pane = (name, z) => { _map.createPane(name).style.zIndex = String(z); };
+    _pane('polygonFillPane', 401);
+    _pane('hotspotPane',     402);
+    _pane('diffusionPane',   403);
+    _pane('radialPane',      404);
+    _pane('corridorPane',    450);
+    _pane('eventMarkerPane', 460);
 
     // Custom zoom buttons (Continuous zooming on hold)
     const setupSmoothZoom = (id, delta) => {
@@ -309,44 +321,199 @@ export async function loadDistrictGeo(district, events) {
         runArbitration();
     }, 120);
 
-    // Point markers
+    // Point markers — renderAs-aware ──────────────────────────────────────────
     const group = L.featureGroup();
-    events.forEach(ev => {
-        const opts = categoryMarkerOptions(ev.category);
 
-        const createMarker = (latLng, isCluster = false) => {
-            let marker;
-            if (ev.impactScale === "LOCAL" && ev.meta?.radiusMetres && !isCluster) {
-                // Draw a precise data-driven circle for local events
-                marker = L.circle(latLng, {
-                    color: opts.color,
-                    fillColor: opts.fillColor,
-                    fillOpacity: opts.fillOpacity * 0.5,
-                    weight: opts.weight,
-                    radius: ev.meta.radiusMetres
-                });
-            } else {
-                // Point, Wide, or Cluster uses a standard circleMarker
-                marker = L.circleMarker(latLng, opts);
+    /** Infer renderAs from schema fields when the field is absent. */
+    const _inferRenderAs = (ev) => {
+        if (ev.renderAs) return ev.renderAs;
+        switch (ev.impactScale) {
+            case 'POINT': return 'marker';
+            case 'LOCAL': return ev.meta?.radiusMetres ? 'radial' : 'marker';
+            case 'WIDE':  return ev.regionId ? 'polygon_fill' : 'marker';
+            case 'STATE': return ev.meta?.heatPoints ? 'hotspot' : 'polygon_fill';
+            default:      return 'marker';
+        }
+    };
+
+    /** Build a DivIcon L.Marker and register all shared event handlers. */
+    const _makeIconMarker = (ev, latLng, tooltipText, dimmed = false) => {
+        const m = L.marker(latLng, {
+            icon: L.divIcon({
+                html: buildMarkerIconHtml(ev, dimmed),
+                className: '',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+                tooltipAnchor: [15, -15],
+            }),
+            pane: 'eventMarkerPane',
+        });
+        m.bindTooltip(tooltipText ?? ev.title, { sticky: true });
+        m.on('click', () => _ctx.emit('map:regionClick', { eventId: ev.id }));
+        m.eventId = ev.id;
+        m.category = ev.category;
+        m.impactScale = ev.impactScale;
+        m.renderAs = ev.renderAs ?? _inferRenderAs(ev);
+        return m;
+    };
+
+    events.forEach(ev => {
+        const renderAs = _inferRenderAs(ev);
+        const color = getCategoryColor(ev.category);
+        const h = { hex: color };  // lightweight accessor used for circle layers
+
+        switch (renderAs) {
+
+            case 'marker': {
+                if (!ev.geoPoint) break;
+                group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                break;
             }
 
-            marker.bindTooltip(ev.title, { sticky: true });
-            marker.on("click", () => _ctx.emit("map:regionClick", { eventId: ev.id }));
+            case 'multi_marker': {
+                const pts = ev.meta?.multiPoints ?? ev.meta?.clusterPoints;  // legacy alias
+                if (!pts?.length) {
+                    if (ev.geoPoint) group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                    break;
+                }
+                // One DivIcon per site
+                pts.forEach(pt => {
+                    const label = pt.label ? `${ev.title} — ${pt.label}` : ev.title;
+                    group.addLayer(_makeIconMarker(ev, [pt.lat, pt.lng], label));
+                });
+                // Dashed bounding circle around the cluster
+                const llBounds = L.latLngBounds(pts.map(p => [p.lat, p.lng]));
+                const center = llBounds.getCenter();
+                let maxDist = 0;
+                pts.forEach(p => { const d = center.distanceTo(L.latLng(p.lat, p.lng)); if (d > maxDist) maxDist = d; });
+                const boundCircle = L.circle(center, {
+                    radius: Math.max(maxDist * 1.25, 250),
+                    color, fillColor: 'transparent', fillOpacity: 0,
+                    weight: 1.5, opacity: 0.4, dashArray: '4 6',
+                    pane: 'radialPane', interactive: false,
+                });
+                boundCircle.eventId = ev.id;
+                group.addLayer(boundCircle);
+                break;
+            }
 
-            // Attach properties for animation arbitration
-            marker.eventId = ev.id;
-            marker.category = ev.category;
-            marker.impactScale = ev.impactScale;
-            marker.isClusterPoint = isCluster;
+            case 'radial': {
+                if (!ev.geoPoint || !ev.meta?.radiusMetres) {
+                    if (ev.geoPoint) group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                    break;
+                }
+                const isEst = ev.meta.radiusConfidence === 'estimated';
+                const circle = L.circle([ev.geoPoint.lat, ev.geoPoint.lng], {
+                    color, fillColor: color,
+                    fillOpacity: 0.08,
+                    weight: ev.meta.cordonActive ? 3 : (isEst ? 1.5 : 2),
+                    opacity: ev.meta.cordonActive ? 0.9 : 0.7,
+                    dashArray: isEst ? '6 4' : null,
+                    radius: ev.meta.radiusMetres,
+                    pane: 'radialPane',
+                });
+                circle.bindTooltip(ev.title, { sticky: true });
+                circle.on('click', () => _ctx.emit('map:regionClick', { eventId: ev.id }));
+                circle.eventId = ev.id; circle.category = ev.category;
+                circle.impactScale = ev.impactScale; circle.renderAs = renderAs;
+                group.addLayer(circle);
+                group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                break;
+            }
 
-            group.addLayer(marker);
-        };
+            case 'diffusion': {
+                if (!ev.geoPoint || !ev.meta?.radiusMetres) {
+                    if (ev.geoPoint) group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                    break;
+                }
+                const r = ev.meta.radiusMetres;
+                // Three concentric translucent circles simulate a gradient plume
+                [[r, 0.10], [r * 0.6, 0.17], [r * 0.3, 0.24]].forEach(([radius, fillOpacity]) => {
+                    const c = L.circle([ev.geoPoint.lat, ev.geoPoint.lng], {
+                        color: 'transparent', fillColor: color, fillOpacity,
+                        weight: 0, radius, pane: 'diffusionPane', interactive: false,
+                    });
+                    c.eventId = ev.id;
+                    group.addLayer(c);
+                });
+                // Outer dashed boundary ring (clickable / tooltip)
+                const outerRing = L.circle([ev.geoPoint.lat, ev.geoPoint.lng], {
+                    color, fillColor: 'transparent', fillOpacity: 0,
+                    weight: 1, opacity: 0.4, dashArray: '4 5',
+                    radius: r, pane: 'diffusionPane',
+                });
+                outerRing.bindTooltip(ev.title, { sticky: true });
+                outerRing.on('click', () => _ctx.emit('map:regionClick', { eventId: ev.id }));
+                outerRing.eventId = ev.id; outerRing.category = ev.category;
+                outerRing.impactScale = ev.impactScale; outerRing.renderAs = renderAs;
+                group.addLayer(outerRing);
+                group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                break;
+            }
 
-        // Render clusters if present, otherwise render the single event center
-        if (ev.meta?.clusterPoints && ev.meta.clusterPoints.length > 0) {
-            ev.meta.clusterPoints.forEach(pt => createMarker([pt.lat, pt.lng], true));
-        } else if (ev.geoPoint) {
-            createMarker([ev.geoPoint.lat, ev.geoPoint.lng], false);
+            case 'corridor': {
+                const coords = ev.meta?.pathCoords;
+                if (!coords?.length) {
+                    if (ev.geoPoint) group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                    break;
+                }
+                const latLngs = coords.map(c => [c.lat, c.lng]);
+                const line = L.polyline(latLngs, {
+                    color, weight: 5, opacity: 0.6, pane: 'corridorPane',
+                });
+                line.bindTooltip(ev.title, { sticky: true });
+                line.on('click', () => _ctx.emit('map:regionClick', { eventId: ev.id }));
+                line.eventId = ev.id; line.category = ev.category;
+                line.impactScale = ev.impactScale; line.renderAs = renderAs;
+                group.addLayer(line);
+                if (ev.meta.pathWidthMetres) {
+                    coords.forEach(c => {
+                        const buf = L.circle([c.lat, c.lng], {
+                            radius: ev.meta.pathWidthMetres / 2,
+                            color, fillColor: color, fillOpacity: 0.05,
+                            weight: 0, pane: 'corridorPane', interactive: false,
+                        });
+                        buf.eventId = ev.id;
+                        group.addLayer(buf);
+                    });
+                }
+                // Icon at path start
+                group.addLayer(_makeIconMarker(ev, latLngs[0]));
+                break;
+            }
+
+            case 'hotspot': {
+                const pts = ev.meta?.heatPoints;
+                if (!pts?.length) {
+                    if (ev.geoPoint) group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                    break;
+                }
+                const radius = ev.meta?.heatRadius ?? 1000;
+                pts.forEach(pt => {
+                    const intensity = pt.intensity ?? 0.5;
+                    const c = L.circle([pt.lat, pt.lng], {
+                        radius, color: 'transparent', fillColor: color,
+                        fillOpacity: intensity * 0.35,
+                        weight: 0, pane: 'hotspotPane', interactive: false,
+                    });
+                    c.eventId = ev.id;
+                    group.addLayer(c);
+                });
+                if (ev.geoPoint) group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                break;
+            }
+
+            case 'polygon_fill':
+                // Handled by _regionsLayer. Add fallback pin if no regionId.
+                if (!ev.regionId && ev.geoPoint) {
+                    group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                }
+                break;
+
+            default: {
+                if (ev.geoPoint) group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
+                break;
+            }
         }
     });
     _markersLayer = group.addTo(_map);
@@ -369,9 +536,11 @@ export function syncFocus(focusedEventId, events) {
         if (_markersLayer) {
             _markersLayer.eachLayer(layer => {
                 const markerEv = events.find(e => e.id === layer.eventId);
-                if (markerEv) {
-                    const opts = categoryMarkerOptions(markerEv.category, false);
-                    layer.setStyle(opts);
+                if (!markerEv) return;
+                if (layer instanceof L.Marker) {
+                    layer.setIcon(L.divIcon({ html: buildMarkerIconHtml(markerEv, false), className: '', iconSize: [30, 30], iconAnchor: [15, 15] }));
+                } else {
+                    layer.setStyle(categoryMarkerOptions(markerEv.category, false));
                 }
             });
         }
@@ -390,9 +559,11 @@ export function syncFocus(focusedEventId, events) {
         if (_markersLayer) {
             _markersLayer.eachLayer(layer => {
                 const markerEv = events.find(e => e.id === layer.eventId);
-                if (markerEv) {
-                    const opts = categoryMarkerOptions(markerEv.category, false);
-                    layer.setStyle(opts);
+                if (!markerEv) return;
+                if (layer instanceof L.Marker) {
+                    layer.setIcon(L.divIcon({ html: buildMarkerIconHtml(markerEv, false), className: '', iconSize: [30, 30], iconAnchor: [15, 15] }));
+                } else {
+                    layer.setStyle(categoryMarkerOptions(markerEv.category, false));
                 }
             });
         }
@@ -403,7 +574,12 @@ export function syncFocus(focusedEventId, events) {
     // Fly to event
     const targetLayer = ev.regionId ? _regionLayerMap.get(ev.regionId) : null;
 
-    if (ev.meta?.clusterPoints && ev.meta.clusterPoints.length > 0) {
+    if (ev.meta?.multiPoints && ev.meta.multiPoints.length > 0) {
+        const bounds = L.latLngBounds(ev.meta.multiPoints.map(pt => [pt.lat, pt.lng]));
+        _map.fitBounds(bounds, { padding: [60, 60], maxZoom: 14 });
+    }
+    else if (ev.meta?.clusterPoints && ev.meta.clusterPoints.length > 0) {
+        // Legacy clusterPoints support
         const bounds = L.latLngBounds(ev.meta.clusterPoints.map(pt => [pt.lat, pt.lng]));
         _map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
     }
@@ -440,7 +616,10 @@ export function syncFocus(focusedEventId, events) {
         _markersLayer.eachLayer(layer => {
             const isFocused = layer.eventId === focusedEventId;
             const markerEv = events.find(e => e.id === layer.eventId);
-            if (markerEv) {
+            if (!markerEv) return;
+            if (layer instanceof L.Marker) {
+                layer.setIcon(L.divIcon({ html: buildMarkerIconHtml(markerEv, !isFocused), className: '', iconSize: [30, 30], iconAnchor: [15, 15] }));
+            } else {
                 const opts = categoryMarkerOptions(markerEv.category, !isFocused);
                 layer.setStyle(opts);
             }
@@ -511,20 +690,26 @@ export function applyHistoricalSnapshot(bucketIndex, timeBuckets, events) {
     if (_markersLayer) {
         _markersLayer.eachLayer(layer => {
             const ev = events.find(e => e.id === layer.eventId);
-            if (!ev || !layer._path) return;
+            if (!ev) return;
 
             const evTs = new Date(ev.timestamp);
-            if (evTs > endTs) {
-                // Future — hide
+            const show = evTs <= endTs;
+            const isCurrent = startTs ? evTs >= startTs : false;
+            const opacity = show ? (isCurrent ? '1' : '0.25') : null;
+
+            // DivIcon L.Marker — use getElement() for visibility
+            if (layer instanceof L.Marker) {
+                const el = layer.getElement?.();
+                if (el) el.style.opacity = show ? (isCurrent ? '1' : '0.25') : '0';
+                return;
+            }
+
+            if (!layer._path) return;
+            if (!show) {
                 layer._path.style.display = "none";
-            } else if (startTs && evTs >= startTs) {
-                // Current bucket — full display
-                layer._path.style.display = "";
-                layer._path.style.opacity = "1";
             } else {
-                // Past — dim
                 layer._path.style.display = "";
-                layer._path.style.opacity = "0.25";
+                layer._path.style.opacity = isCurrent ? "1" : "0.25";
             }
         });
     }
@@ -555,6 +740,11 @@ export function clearHistoricalSnapshot(events) {
     // Markers
     if (_markersLayer) {
         _markersLayer.eachLayer(layer => {
+            if (layer instanceof L.Marker) {
+                const el = layer.getElement?.();
+                if (el) el.style.opacity = '1';
+                return;
+            }
             if (layer._path) {
                 layer._path.style.display = "";
                 layer._path.style.opacity = "1";
@@ -583,20 +773,24 @@ export function runArbitration() {
         if (!center || !mapBounds.contains(center)) return;
         const entry = categoryMap[regionId];
         if (entry && entry.impactScale === "WIDE") {
-            const tier = categoryTier(entry.category);
-            visibleItems.push({ layer, category: entry.category, tier, timestamp: entry.timestamp });
+            const priority = getCategoryDisplayPriority(entry.category, entry.displayPriority);
+            visibleItems.push({ layer, category: entry.category, priority, timestamp: entry.timestamp });
         }
     });
 
-    // 2. LOCAL and POINT events (Markers/Circles)
+    // 2. LOCAL and POINT events (Markers/Circles/Polylines)
     if (_markersLayer) {
         _markersLayer.eachLayer(layer => {
+            // L.Polyline (corridor) — use bounds intersection, no path animation
+            if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) {
+                return; // corridors don't participate in CSS pulse arbitration
+            }
             const latLng = layer.getLatLng?.();
             if (!latLng || !mapBounds.contains(latLng)) return;
             const ev = events.find(e => e.id === layer.eventId);
             if (ev && (ev.impactScale === "POINT" || ev.impactScale === "LOCAL")) {
-                const tier = categoryTier(ev.category);
-                visibleItems.push({ layer, category: ev.category, tier, timestamp: ev.timestamp });
+                const priority = getCategoryDisplayPriority(ev.category, ev.displayPriority);
+                visibleItems.push({ layer, category: ev.category, priority, timestamp: ev.timestamp });
             }
             // Ensure the correct CSS class is present for animation styles
             if (layer._path && ev) {
@@ -610,9 +804,9 @@ export function runArbitration() {
         });
     }
 
-    // Sort: tier asc (tier-1 first), then timestamp desc
+    // Sort: priority asc (1 = emergency wins), ties broken by newest timestamp
     visibleItems.sort((a, b) => {
-        if (a.tier !== b.tier) return a.tier - b.tier;
+        if (a.priority !== b.priority) return a.priority - b.priority;
         return new Date(b.timestamp) - new Date(a.timestamp);
     });
 
@@ -620,7 +814,9 @@ export function runArbitration() {
     _updatePerfCounter(elapsed);
     const maxTier = _effectiveTierCeiling(elapsed);
 
-    visibleItems.forEach(({ layer, category, tier, eventId }, index) => {
+    visibleItems.forEach(({ layer, category, priority }, index) => {
+        // DivIcon L.Marker — no SVG path, skip path-based animation
+        if (layer instanceof L.Marker) return;
         if (!layer._path) return;
         const path = layer._path;
 
@@ -632,8 +828,10 @@ export function runArbitration() {
         }
 
         if (isLive) {
-            const isTier1Slot = tier === 1 && index === 0 && maxTier >= 1;
-            const isTier2Slot = tier === 2 && index >= 1 && index <= 2 && maxTier >= 2;
+            // priority 1-2 (emergency, safety) → tier-1 animation slot
+            // priority 3-4 (weather, health)   → tier-2 animation slot
+            const isTier1Slot = priority <= 2 && index === 0 && maxTier >= 1;
+            const isTier2Slot = priority >= 3 && priority <= 4 && index >= 1 && index <= 2 && maxTier >= 2;
 
             if (isTier1Slot || isTier2Slot) {
                 path.style.animationPlayState = "running";
@@ -652,21 +850,22 @@ export function runArbitration() {
 // ═══════════════════════════════════════════════════════════════════
 
 /** Build a per-region category map: picks the category from the most-recent event per region.
- *  If a region has multiple event types, the one with the lowest tier (most urgent) wins.
+ *  If a region has multiple event types, the one with the lowest displayPriority wins.
+ *  displayPriority from the event overrides the category default.
  */
 function _buildCategoryByRegion(events) {
     const result = {};
     events.forEach(ev => {
         if (!ev.regionId) return;
         const existing = result[ev.regionId];
-        const evTier = categoryTier(ev.category);
-        const exTier = existing ? categoryTier(existing.category) : 99;
-        // Lower tier wins; ties broken by most-recent timestamp
-        if (!existing || evTier < exTier || (evTier === exTier && ev.timestamp > existing.timestamp)) {
+        const evPri = getCategoryDisplayPriority(ev.category, ev.displayPriority);
+        const exPri = existing ? getCategoryDisplayPriority(existing.category, existing.displayPriority) : 99;
+        if (!existing || evPri < exPri || (evPri === exPri && ev.timestamp > existing.timestamp)) {
             result[ev.regionId] = {
                 category: ev.category,
                 timestamp: ev.timestamp,
                 impactScale: ev.impactScale,
+                displayPriority: ev.displayPriority,
                 eventId: ev.id
             };
         }
@@ -674,13 +873,14 @@ function _buildCategoryByRegion(events) {
     return result;
 }
 
-/** Top event for region — picks lowest tier (most urgent), then most recent. */
+/** Top event for region — picks lowest displayPriority (most urgent), then most recent. */
 function _topEventForRegion(regionId, events) {
     return events
         .filter(e => e.regionId === regionId)
         .sort((a, b) => {
-            const td = categoryTier(a.category) - categoryTier(b.category);
-            if (td !== 0) return td;
+            const pa = getCategoryDisplayPriority(a.category, a.displayPriority);
+            const pb = getCategoryDisplayPriority(b.category, b.displayPriority);
+            if (pa !== pb) return pa - pb;
             return b.timestamp.localeCompare(a.timestamp);
         })[0] ?? null;
 }
