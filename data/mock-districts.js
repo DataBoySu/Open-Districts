@@ -126,8 +126,7 @@ const _rawDistricts = [
         geoJsonUrl: "./data/geo/HR/gurugram.geojson?v=2",
         boundingBox: { north: 28.54135, south: 28.19905, east: 77.22411, west: 76.65111 },
         population: 1514432,
-        dataPoints: 20,
-        dataPoints: 5
+        dataPoints: 20
     },
 
     // Gujarat
