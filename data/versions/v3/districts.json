@@ -337,5 +337,12 @@
       "west": 78.5
     },
     "population": 3936331
+  },
+  {
+    "id": "south_delhi",
+    "stateId": "DL",
+    "name": "South Delhi",
+    "geoJsonUrl": "./data/geo/DL/south_delhi.geojson",
+    "population": 0
   }
 ]

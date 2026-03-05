@@ -253,7 +253,7 @@ const _rawDistricts = [
         nameLocal: "नई दिल्ली",
         geoJsonUrl: "./data/geo/DL/new_delhi.geojson?v=2",
         boundingBox: { north: 28.6376, south: 28.5273, east: 77.2566, west: 77.1682 },
-        population: 257803
+        population: 142004
     },
     {
         id: "central",
@@ -325,7 +325,7 @@ const _rawDistricts = [
         nameLocal: "दक्षिण-पूर्वी दिल्ली",
         geoJsonUrl: "./data/geo/DL/south_east.geojson?v=2",
         boundingBox: { north: 28.6082, south: 28.4836, east: 77.3476, west: 77.2059 },
-        population: 637775
+        population: 1500636
     },
     {
         id: "south_west",
