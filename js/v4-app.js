@@ -63,6 +63,7 @@ const AppState = {
         layers: 0,
         degradedReason: null,
     },
+    showFxDebugInfo: false,
     districtScopeLocked: true, // Default to limiting events to district boundary
     timelineRange: null,  // { from: ISO string, to: ISO string } or null for live mode
 };
@@ -108,6 +109,15 @@ function _wireEvents() {
             AppState.districtScopeLocked = !e.target.checked;
             // Reload the district to rebuild events and timeline with new scope
             loadDistrict(AppState.currentDistrictId, AppState.currentStateId);
+        });
+    }
+
+    const fxDebugToggle = document.getElementById("show-fx-debug");
+    if (fxDebugToggle) {
+        fxDebugToggle.checked = false;
+        fxDebugToggle.addEventListener("change", (e) => {
+            AppState.showFxDebugInfo = !!e.target.checked;
+            EffectsCtrl.setDebugVisibility(AppState.showFxDebugInfo);
         });
     }
 
@@ -983,6 +993,7 @@ async function startApp() {
 
     // Wire cross-controller event routing
     _wireEvents();
+    EffectsCtrl.setDebugVisibility(false);
     _applyPermanentTranslations();
     AICtrl.updatePanelText();
     HierarchyCtrl.updateLabels();
