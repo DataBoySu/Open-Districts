@@ -309,10 +309,10 @@
     "nameLocal": "ಮೈಸೂರು",
     "geoJsonUrl": "./data/geo/KA/mysuru.geojson?v=1",
     "boundingBox": {
-      "north": 12.55,
-      "south": 11.9,
-      "east": 77,
-      "west": 76.1
+      "north": 12.577,
+      "south": 12.1878,
+      "east": 76.2395,
+      "west": 75.9087
     },
     "population": 3001127,
     "dataPoints": 5

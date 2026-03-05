@@ -124,7 +124,7 @@ const _rawDistricts = [
         aliases: ["Gurgaon"],
         nameLocal: "गुरुग्राम",
         geoJsonUrl: "./data/geo/HR/gurugram.geojson?v=2",
-        boundingBox: { north: 28.55, south: 28.22, east: 77.20, west: 76.75 },
+        boundingBox: { north: 28.56, south: 28.17, east: 77.26, west: 76.61 },
         population: 1514432,
         dataPoints: 5
     },
@@ -211,7 +211,7 @@ const _rawDistricts = [
         name: "Mysuru",
         nameLocal: "ಮೈಸೂರು",
         geoJsonUrl: "./data/geo/KA/mysuru.geojson?v=2",
-        boundingBox: { north: 12.66, south: 11.74, east: 77.13, west: 75.91 },
+        boundingBox: { north: 12.577, south: 12.1878, east: 76.2395, west: 75.9087 },
         population: 3001127
     },
     // West Bengal - Batch 2
