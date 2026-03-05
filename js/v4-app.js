@@ -133,11 +133,7 @@ function _wireEvents() {
 
     // Map region click → focus event
     on("map:regionClick", ({ eventId }) => {
-        if (_isFocusSuppressed()) {
-            console.log(`[V4] map:regionClick suppressed (focus suppressed until ${new Date(AppState.suppressFocusUntilTs).toISOString()}), eventId: ${eventId}`);
-            return;
-        }
-        console.log(`[V4] map:regionClick allowed, setting focus to eventId: ${eventId}`);
+        if (_isFocusSuppressed()) return;
         setFocusedEvent(eventId);
     });
 
@@ -149,7 +145,6 @@ function _wireEvents() {
 
     // Hierarchy: district selected → reload + SAVE to localStorage (Option C)
     on("hierarchy:districtSelected", ({ districtId, stateId }) => {
-        console.log(`[V4] hierarchy:districtSelected: ${districtId} (${stateId}) - suppressing focus and clearing`);
         _suppressFocusFor();
         setFocusedEvent(null);
         AICtrl.close();
@@ -419,11 +414,9 @@ async function loadDistrict(districtId, stateId) {
     // Load geo (async - non-blocking to timeline)
     await MapCtrl.loadDistrictGeo(district, events);
     // Defensive reset: clear any latent focus style and force district framing.
-    console.log(`[V4] Post-load reset for ${district.name}: clearingFocus + recentering to bounds [${district.boundingBox.north}, ${district.boundingBox.south}, ${district.boundingBox.east}, ${district.boundingBox.west}]`);
     MapCtrl.syncFocus(null, events);
     MapCtrl.recenterToDistrict(district);
     _suppressFocusFor(600);
-    console.log(`[V4] Focus suppressed until ${new Date(AppState.suppressFocusUntilTs).toISOString()}`);
 
     EffectsCtrl.setMap(MapCtrl.getMapInstance());
     EffectsCtrl.syncMode({
