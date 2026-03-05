@@ -17,6 +17,9 @@ import { loadGeoJSON } from "./geo-service.js";
 
 let _liveDataCache = null;
 
+const VALID_RENDER_AS = new Set(["marker", "multi_marker", "radial", "diffusion", "hotspot", "corridor", "polygon_fill"]);
+const VALID_ADVANCED_PROFILES = new Set(["auto", "desktop", "kiosk"]);
+
 async function _loadLiveData() {
     if (_liveDataCache) return _liveDataCache;
 
@@ -31,7 +34,8 @@ async function _loadLiveData() {
             fetch('./data/live/regions.json')
         ]);
 
-        const events = await eventsRes.json();
+        const eventsRaw = await eventsRes.json();
+        const events = eventsRaw.map(_normalizeEvent);
         const districts = await districtsRes.json();
         const states = await statesRes.json();
         const regions = await regionsRes.json();
@@ -43,6 +47,58 @@ async function _loadLiveData() {
         console.error('[DataService] Failed to load live data:', err);
         throw new Error('Could not load live dataset from /data/live/');
     }
+}
+
+function _normalizeEvent(event) {
+    const ev = { ...event };
+    ev.meta = ev.meta || {};
+
+    if (ev.meta.clusterPoints && !ev.meta.multiPoints) {
+        ev.meta.multiPoints = ev.meta.clusterPoints;
+    }
+
+    if (!Array.isArray(ev.regionIds) && ev.regionId) {
+        ev.regionIds = [ev.regionId];
+    } else if (Array.isArray(ev.regionIds)) {
+        ev.regionIds = ev.regionIds.filter(Boolean);
+    }
+
+    if (!VALID_RENDER_AS.has(ev.renderAs)) {
+        ev.renderAs = _inferRenderAs(ev);
+    }
+
+    if (!VALID_ADVANCED_PROFILES.has(ev.advancedProfile)) {
+        ev.advancedProfile = "auto";
+    }
+
+    if (!Array.isArray(ev.advancedEffects)) {
+        ev.advancedEffects = [];
+    }
+
+    return ev;
+}
+
+function _inferRenderAs(ev) {
+    const hasRegion = !!ev.regionId || (Array.isArray(ev.regionIds) && ev.regionIds.length > 0);
+    if (ev.impactScale === "POINT") return "marker";
+    if (ev.impactScale === "LOCAL") {
+        if (ev.meta?.multiPoints?.length) return "multi_marker";
+        if (ev.meta?.radiusMetres) return "radial";
+        if (ev.meta?.heatPoints?.length) return "hotspot";
+        return "marker";
+    }
+    if (ev.impactScale === "WIDE") {
+        if (ev.meta?.pathCoords?.length) return "corridor";
+        if (ev.meta?.heatPoints?.length) return "hotspot";
+        if (hasRegion) return "polygon_fill";
+        if (ev.meta?.multiPoints?.length) return "multi_marker";
+        return "marker";
+    }
+    if (ev.impactScale === "STATE") {
+        if (ev.meta?.heatPoints?.length) return "hotspot";
+        return hasRegion ? "polygon_fill" : "hotspot";
+    }
+    return "marker";
 }
 
 // ── INTERNAL HELPERS ──────────────────────────────────────────────────────────

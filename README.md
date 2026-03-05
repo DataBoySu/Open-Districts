@@ -1,8 +1,8 @@
 # Open-Districts
 
-### *Fixing the local information blind spot.*
+### A *Know-Your-Neighbourhood* initiative.
 
-[![Status: Proof of Concept](https://img.shields.io/badge/Status-Proof%20of%20Concept-orange?style=for-the-badge)](https://github.com/OpenDistricts/Open-Districts)
+[![Status: Proof of Concept v4](https://img.shields.io/badge/Status-Proof%20of%20Concept%20v4-orange?style=for-the-badge)](https://github.com/OpenDistricts/Open-Districts)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue?style=for-the-badge)](LICENSE)
 [![Built With: Vanilla JS + D3](https://img.shields.io/badge/Built%20With-Vanilla%20JS%20%2B%20D3-yellow?style=for-the-badge)](#)
 
@@ -13,7 +13,7 @@
 
 ---
 
-## The Problem - The Blind Spot
+## The Problem
 
 We live in an age of information abundance, but that abundance is a lie at the local level.
 
@@ -32,7 +32,7 @@ This is the local information blind spot. **Open-Districts is built to fix it**.
 ---
 <details><summary>
 
-## The Philosophy - Why a Kiosk?
+## Why a Kiosk?
 </summary>
 When I first approached this problem, the obvious answer was a mobile app. Everyone has a phone, right?
 
@@ -75,7 +75,7 @@ This is a **kiosk-first** design philosophy. The web app you see in this repo is
 
 <details><summary>
 
-## The Journey - Project Evolution
+## Project Evolution
 
 </summary>
 This project didn't start as Open-Districts. It went through several phases of scope expansion, competition pressure, and a gradual shift in thinking.
@@ -106,8 +106,11 @@ That's Open-Districts.
 </details>
 
 ---
+<details><summary>
 
 ## Deployment - GitHub Pages (PoC)
+
+</summary>
 
 This PoC is deployed as a 100% static site on GitHub Pages. That's not an architectural philosophy - it's the most frictionless way to get a prototype in front of anyone, anywhere, with zero setup on their end. There's no server to spin up, no credentials to share, no `npm install` wall to climb before someone can evaluate the idea.
 
@@ -145,9 +148,15 @@ flowchart TD
 - **For contributors:** Fork the repo, drop your district's JSON into `/data/live/`, push to your own GitHub Pages URL, and the kiosk renders your data.
 - **For production:** GitHub Pages is not the target deployment environment. A real kiosk would run this as a local static bundle served from an embedded device or an intranet server - the client-side architecture stays identical.
 
+</details>
+
 ---
 
+<details><summary>
+
 ## Screenshots
+
+</summary>
 
 ### Interactive District Map
 ![Main Map](asset/main_map_clean.png)
@@ -169,62 +178,7 @@ flowchart TD
 ![Event Details](asset/event_details.png)
 *Weekly event logs, local advisories, and historical pattern data.*
 
----
-
-## Navigating This Repository
-
-The files in this repo tell a story. They are an evolutionary log, not a cleaned-up product release.
-
-| File | What it is |
-|---|---|
-| `moswasthya-sathi-v1.html` | The original SIH prototype - a health bot for Odisha |
-| `moswasthya-sathi-v2.html` | Early UI iteration, map integration begins |
-| `moswasthya-sathi-v3.html` | MoSathi generalization, expanded data categories |
-| `OpenDistricts-v4.html` | **← Start here.** The current PoC - full map, events, AI panel |
-| `data/` | All GeoJSON boundaries and mock event/district data |
-| `js/` | App controllers, services, and utility modules |
-| `docs/` | Data schema reference, agent prompts, ingestion workflows |
-| `scripts/` | Data processing, GeoJSON auditing, and build utilities |
-
-**If you're a first-time visitor:** Open `OpenDistricts-v4.html` in your browser or hit the [Live Demo](https://opendistricts.github.io/Open-Districts/OpenDistricts-v4.html). Everything else is context for contributors.
-
-### Complete User Interaction Flow
-
-This diagram shows the full lifecycle from a first-time visitor opening the app to a community data contributor deploying their own instance.
-
-```mermaid
-flowchart TD
-    subgraph VISITOR["👤 First-Time Visitor (Citizen / Researcher)"]
-        V1["Opens Live Demo URL"] --> V2["App boots, loads default district\n(Khordha, Odisha)"]
-        V2 --> V3["Sees interactive map\nwith event overlays"]
-        V3 --> V4{"User action?"}
-        V4 -->|"Clicks 'Change Area'"| V5["HierarchyCtrl opens\nIndia SVG map selector"]
-        V5 --> V6["Selects state → drills to district list"]
-        V6 --> V7["Clicks district → loadDistrict() fires\nMap + sidebar refresh for new district"]
-        V4 -->|"Clicks map marker"| V8["Event focused:\nMap highlights polygon\nSidebar scrolls to event card"]
-        V4 -->|"Drags time scrubber"| V9["Historical mode activated\nMap shows snapshot of events\nat that point in time"]
-        V4 -->|"Opens AI panel"| V10["AICtrl panel opens\n⚠️ Intelligence integration\npending - contribution opportunity"]
-    end
-
-    subgraph CONTRIBUTOR_DEV["🧑‍💻 Developer Contributor"]
-        D1["Forks repository"] --> D2["Reads docs/DATA_SCHEMA_REFERENCE.md"]
-        D2 --> D3["Creates data/live/ files:\nevents.json · districts.json\nstates.json · regions.json"]
-        D3 --> D4["Adds district GeoJSON\nto data/geo/{STATE}.geojson"]
-        D4 --> D5["Enables GitHub Pages\non their fork"]
-        D5 --> D6["District kiosk live\nat their GitHub Pages URL"]
-    end
-
-    subgraph CONTRIBUTOR_DATA["📋 Data Contributor (No code required)"]
-        N1["Identifies local events\n(incidents, health, infrastructure)"]
-        N1 --> N2["Formats to event schema:\nid, category, title, timestamp,\ngeoPoint, impactScale, source"]
-        N2 --> N3["Opens Pull Request\nwith events.json additions"]
-        N3 --> N4["Merged → immediately\nvisible in the live dataset"]
-    end
-
-    style VISITOR fill:#1a2e2e,stroke:#44bbbb,color:#aaffff
-    style CONTRIBUTOR_DEV fill:#1a1a2e,stroke:#4444bb,color:#bbbbff
-    style CONTRIBUTOR_DATA fill:#2e2a1a,stroke:#bbaa44,color:#ffeebb
-```
+</details>
 
 ---
 

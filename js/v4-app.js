@@ -19,6 +19,7 @@ import * as MapCtrl from "./controllers/map-controller.js";
 import * as AICtrl from "./controllers/ai-controller.js";
 import * as TimeCtrl from "./controllers/time-controller.js";
 import * as HierarchyCtrl from "./controllers/hierarchy-controller.js";
+import * as EffectsCtrl from "./controllers/effects-controller.js";
 import { formatCardTime } from "./services/time-processor.js";
 
 // ── Local storage key for saved district selection ─────────────────────────────
@@ -55,6 +56,7 @@ const AppState = {
     autoPlayBucketIndex: 0,
     consecutiveSlowFrames: 0,
     envOverlaysEnabled: true,
+    advancedEffectsStatus: { active: false, layers: 0, quality: "high" },
     districtScopeLocked: true, // Default to limiting events to district boundary
     timelineRange: null,  // { from: ISO string, to: ISO string } or null for live mode
 };
@@ -149,6 +151,13 @@ function _wireEvents() {
             AppState.timelineRange = null; // Return to live mode
             MapCtrl.clearHistoricalSnapshot(AppState.events);
             TimelineCtrl.clearHistoricalSnapshot();
+            EffectsCtrl.syncMode({
+                mode: AppState.mode,
+                isHistorical: false,
+                connectionStatus: AppState.connectionStatus,
+                envEnabled: AppState.envOverlaysEnabled,
+            });
+            EffectsCtrl.renderForEvents(AppState.events);
             _syncHierarchyWithTimeline(); // Refresh hierarchy counts
             _renderSyncDot(); // Reset top bar to LIVE
             return;
@@ -179,6 +188,7 @@ function _wireEvents() {
         _renderSyncDot(labelText);
         MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
         TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
+        EffectsCtrl.suspendForHistorical();
         _syncHierarchyWithTimeline(); // Refresh hierarchy counts for scrub position
     });
 
@@ -206,6 +216,7 @@ function _wireEvents() {
         _renderSyncDot(labelText);
         MapCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
         TimelineCtrl.applyHistoricalSnapshot(bucketIndex, AppState.timeBuckets, AppState.events);
+        EffectsCtrl.suspendForHistorical();
         _syncHierarchyWithTimeline(); // Refresh hierarchy counts during autoplay
     });
 
@@ -213,6 +224,12 @@ function _wireEvents() {
     on("perf:envDisabled", () => {
         AppState.envOverlaysEnabled = false;
         MapCtrl.syncModeClass(AppState.mode, AppState.isHistorical, AppState.connectionStatus, false);
+        EffectsCtrl.syncMode({
+            mode: AppState.mode,
+            isHistorical: AppState.isHistorical,
+            connectionStatus: AppState.connectionStatus,
+            envEnabled: false,
+        });
     });
 
     // Timeline collapse: update AppState + allow map to re-show
@@ -238,6 +255,12 @@ function setMode(newMode) {
     _renderModeToggle();
     document.body.classList.toggle("live-active", newMode === "live");
     MapCtrl.syncModeClass(newMode, AppState.isHistorical, AppState.connectionStatus, AppState.envOverlaysEnabled);
+    EffectsCtrl.syncMode({
+        mode: newMode,
+        isHistorical: AppState.isHistorical,
+        connectionStatus: AppState.connectionStatus,
+        envEnabled: AppState.envOverlaysEnabled,
+    });
     MapCtrl.runArbitration();
 }
 
@@ -254,6 +277,12 @@ function setHistoricalMode(isHistorical) {
     _renderSyncDot();
     // TimeCtrl.renderBadge is handled directly by the timeline playhead itself dynamically
     MapCtrl.syncModeClass(AppState.mode, isHistorical, AppState.connectionStatus, AppState.envOverlaysEnabled);
+    EffectsCtrl.syncMode({
+        mode: AppState.mode,
+        isHistorical,
+        connectionStatus: AppState.connectionStatus,
+        envEnabled: AppState.envOverlaysEnabled,
+    });
     MapCtrl.runArbitration();
 }
 
@@ -339,6 +368,14 @@ async function loadDistrict(districtId, stateId) {
 
     // Load geo (async - non-blocking to timeline)
     await MapCtrl.loadDistrictGeo(district, events);
+    EffectsCtrl.setMap(MapCtrl.getMapInstance());
+    EffectsCtrl.syncMode({
+        mode: AppState.mode,
+        isHistorical: AppState.isHistorical,
+        connectionStatus: AppState.connectionStatus,
+        envEnabled: AppState.envOverlaysEnabled,
+    });
+    EffectsCtrl.renderForEvents(events);
 
     // ── Restore temporal snapshot if user had a time filter active ─────────────
     // After loading a new district we have fresh timeBuckets. If a timelineRange
@@ -402,6 +439,7 @@ function _onLiveUpdate({ type, event }) {
     }
     TimelineCtrl.renderTimeline(AppState.events);
     if (AppState.focusedEventId) TimelineCtrl.renderFocusState(AppState.focusedEventId);
+    EffectsCtrl.renderForEvents(AppState.events);
     MapCtrl.runArbitration();
 }
 
@@ -923,6 +961,7 @@ async function startApp() {
 
     // Init all controllers
     MapCtrl.init(ctx);
+    EffectsCtrl.init(ctx);
     TimelineCtrl.init(ctx);
     AICtrl.init(ctx);
     TimeCtrl.init(ctx);

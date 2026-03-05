@@ -329,9 +329,18 @@ export async function loadDistrictGeo(district, events) {
         if (ev.renderAs) return ev.renderAs;
         switch (ev.impactScale) {
             case 'POINT': return 'marker';
-            case 'LOCAL': return ev.meta?.radiusMetres ? 'radial' : 'marker';
-            case 'WIDE':  return ev.regionId ? 'polygon_fill' : 'marker';
-            case 'STATE': return ev.meta?.heatPoints ? 'hotspot' : 'polygon_fill';
+            case 'LOCAL':
+                if (ev.meta?.multiPoints?.length || ev.meta?.clusterPoints?.length) return 'multi_marker';
+                if (ev.meta?.radiusMetres) return 'radial';
+                if (ev.meta?.heatPoints?.length) return 'hotspot';
+                return 'marker';
+            case 'WIDE':
+                if (ev.meta?.pathCoords?.length) return 'corridor';
+                if (ev.meta?.heatPoints?.length) return 'hotspot';
+                if (ev.regionId || ev.regionIds?.length) return 'polygon_fill';
+                if (ev.meta?.multiPoints?.length || ev.meta?.clusterPoints?.length) return 'multi_marker';
+                return 'marker';
+            case 'STATE': return ev.meta?.heatPoints ? 'hotspot' : ((ev.regionId || ev.regionIds?.length) ? 'polygon_fill' : 'hotspot');
             default:      return 'marker';
         }
     };
@@ -504,8 +513,8 @@ export async function loadDistrictGeo(district, events) {
             }
 
             case 'polygon_fill':
-                // Handled by _regionsLayer. Add fallback pin if no regionId.
-                if (!ev.regionId && ev.geoPoint) {
+                // Handled by _regionsLayer when regionId/regionIds are available.
+                if (!ev.regionId && !ev.regionIds?.length && ev.geoPoint) {
                     group.addLayer(_makeIconMarker(ev, [ev.geoPoint.lat, ev.geoPoint.lng]));
                 }
                 break;
@@ -638,6 +647,10 @@ export function syncModeClass(mode, isHistorical, connectionStatus, envEnabled) 
 
     const envActive = mode === "live" && !isHistorical && connectionStatus === "live" && envEnabled;
     mapEl.classList.toggle("env-active", envActive);
+}
+
+export function getMapInstance() {
+    return _map;
 }
 
 /** Update map layers to reflect a historical snapshot up to bucketIndex. */
@@ -856,19 +869,24 @@ export function runArbitration() {
 function _buildCategoryByRegion(events) {
     const result = {};
     events.forEach(ev => {
-        if (!ev.regionId) return;
-        const existing = result[ev.regionId];
-        const evPri = getCategoryDisplayPriority(ev.category, ev.displayPriority);
-        const exPri = existing ? getCategoryDisplayPriority(existing.category, existing.displayPriority) : 99;
-        if (!existing || evPri < exPri || (evPri === exPri && ev.timestamp > existing.timestamp)) {
-            result[ev.regionId] = {
-                category: ev.category,
-                timestamp: ev.timestamp,
-                impactScale: ev.impactScale,
-                displayPriority: ev.displayPriority,
-                eventId: ev.id
-            };
-        }
+        const regionIds = Array.isArray(ev.regionIds) && ev.regionIds.length
+            ? ev.regionIds
+            : (ev.regionId ? [ev.regionId] : []);
+        if (!regionIds.length) return;
+        regionIds.forEach((regionId) => {
+            const existing = result[regionId];
+            const evPri = getCategoryDisplayPriority(ev.category, ev.displayPriority);
+            const exPri = existing ? getCategoryDisplayPriority(existing.category, existing.displayPriority) : 99;
+            if (!existing || evPri < exPri || (evPri === exPri && ev.timestamp > existing.timestamp)) {
+                result[regionId] = {
+                    category: ev.category,
+                    timestamp: ev.timestamp,
+                    impactScale: ev.impactScale,
+                    displayPriority: ev.displayPriority,
+                    eventId: ev.id
+                };
+            }
+        });
     });
     return result;
 }
@@ -876,7 +894,7 @@ function _buildCategoryByRegion(events) {
 /** Top event for region - picks lowest displayPriority (most urgent), then most recent. */
 function _topEventForRegion(regionId, events) {
     return events
-        .filter(e => e.regionId === regionId)
+        .filter(e => e.regionId === regionId || (Array.isArray(e.regionIds) && e.regionIds.includes(regionId)))
         .sort((a, b) => {
             const pa = getCategoryDisplayPriority(a.category, a.displayPriority);
             const pb = getCategoryDisplayPriority(b.category, b.displayPriority);
