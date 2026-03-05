@@ -1,0 +1,180 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "raipur",
+        "name": "Raipur City",
+        "districtId": "raipur"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.62316,
+              24.52233
+            ],
+            [
+              85.06564,
+              24.52233
+            ],
+            [
+              85.06564,
+              24.75816
+            ],
+            [
+              84.62316,
+              24.75816
+            ],
+            [
+              84.62316,
+              24.52233
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "naya-raipur",
+        "name": "Naya Raipur",
+        "districtId": "raipur"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.95502,
+              24.44372
+            ],
+            [
+              85.3975,
+              24.44372
+            ],
+            [
+              85.3975,
+              24.83677
+            ],
+            [
+              84.95502,
+              24.83677
+            ],
+            [
+              84.95502,
+              24.44372
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "tilda-neora",
+        "name": "Tilda Neora",
+        "districtId": "raipur"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.51254,
+              24.75816
+            ],
+            [
+              85.17626,
+              24.75816
+            ],
+            [
+              85.17626,
+              25.0726
+            ],
+            [
+              84.51254,
+              25.0726
+            ],
+            [
+              84.51254,
+              24.75816
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "abhanpur",
+        "name": "Abhanpur",
+        "districtId": "raipur"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.2913,
+              24.2865
+            ],
+            [
+              84.73378,
+              24.2865
+            ],
+            [
+              84.73378,
+              24.75816
+            ],
+            [
+              84.2913,
+              24.75816
+            ],
+            [
+              84.2913,
+              24.2865
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "arany",
+        "name": "Arang",
+        "districtId": "raipur"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.2913,
+              24.2865
+            ],
+            [
+              85.3975,
+              24.2865
+            ],
+            [
+              85.3975,
+              24.52233
+            ],
+            [
+              84.2913,
+              24.52233
+            ],
+            [
+              84.2913,
+              24.2865
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
