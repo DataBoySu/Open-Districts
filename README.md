@@ -83,22 +83,24 @@ This project didn't start as Open-Districts. It went through several phases of s
 ```mermaid
 timeline
     title The Road to Open-Districts
-    2024 - SIH Prep : Built MoSwasthya Sathi
+    2025 - SIH Prep : Built MoSwasthya Sathi
                     : Odisha health-focused chatbot
-                    : First time combining GeoJSON + local health data
+
     2025 - Generalised : Rebranded to MoSathi (My Companion)
                        : Expanded beyond health to all civic data types
+                       
+                       : First time considered Kiosk Systems
+
     2025 - NES Awards : Entered NES Innovation Awards
-                      : Survived 4 rigorous elimination rounds
+                      : Iterated through 4 rounds
                       : Reached Top 50 nationally
     2025 - The Pivot : Gradual realization over months of observation
-                     : Same road stretches crash again and again
+                     : Same road stretches floods again and again
                      : No historical record. Community forgets. Cycle repeats.
-                     : A chatbot answers questions. This needs to prevent them.
                      : Open-Districts was born
 ```
 
-The NES Innovation Awards acted as a crucible. Four rounds of rigorous judging forced me to defend every design decision, stress-test the concept, and sharpen the vision. I made the Top 50 nationally before stepping back from the final round due to prior commitments.
+The NES Innovation Awards acted as a crucible. Four rounds of self-evaluation forced me to defend every design decision, stress-test the concept, and sharpen the vision. I made the Top 50 nationally before stepping back from the final round.
 
 The pivot wasn't a single dramatic moment. It was a slow accumulation of observations: the same road junction causing accidents every monsoon season because travelers lack historical context and the municipality has no record. News cycles move on, the community forgets, and the same preventable thing happens again the following year. A companion app that *answers questions* wasn't the right abstraction. The right abstraction was a system that ensures the *information is never lost in the first place*.
 
@@ -112,35 +114,7 @@ That's Open-Districts.
 
 </summary>
 
-This PoC is deployed as a 100% static site on GitHub Pages. That's not an architectural philosophy - it's the most frictionless way to get a prototype in front of anyone, anywhere, with zero setup on their end. There's no server to spin up, no credentials to share, no `npm install` wall to climb before someone can evaluate the idea.
-
-```mermaid
-flowchart TD
-    A["🌐 GitHub Pages\nFree static hosting for the PoC"] -->|"serves HTML, CSS, JS modules"| B
-
-    subgraph CLIENT["Client Browser / Kiosk Display"]
-        B["OpenDistricts-v4.html\nHTML shell + module entry point"]
-        B --> C["Leaflet.js\nTile map + GeoJSON layer host"]
-        B --> D["v4-app.js\nOrchestrator - AppState, event bus, loadDistrict()"]
-        B --> E["Tailwind CSS\nUtility-class UI styling"]
-    end
-
-    subgraph DATA["Static Data Layer  ·  /data/live/"]
-        F["events.json\nAll local events for the active district"]
-        G["districts.json + states.json\nMetadata, names, geoJsonUrl pointers"]
-        H["data/geo/*.geojson\nDistrict & sub-district boundary polygons"]
-        I["state-locales.js\nMultilingual label maps"]
-    end
-
-    D -->|"fetch() on boot"| F
-    D -->|"fetch() on boot"| G
-    C -->|"fetch() on district load"| H
-    D -->|"import"| I
-
-    style A fill:#1a1a2e,stroke:#4444ff,color:#aaaaff
-    style CLIENT fill:#1a2e1a,stroke:#44bb44,color:#aaffaa
-    style DATA fill:#2e1a1a,stroke:#bb4444,color:#ffaaaa
-```
+This PoC is deployed as a static site on GitHub Pages. Feel free to evaluate the idea.
 
 **What this means in practice:**
 
@@ -190,10 +164,9 @@ This repository is an open invitation.
 
 ### For Developers
 
-The V4 PoC proves the visual and data layers work. What's **missing** is the intelligence layer:
+The V4 PoC shows how the visual and data layers work. What's **missing** is the intelligence layer:
 
 - **AI Companion Integration:** Build the conversational panel that answers "What happened in my area this week?" using local event data as context.
-- **Offline-First PWA:** Wrap the kiosk UI in a Progressive Web App with service workers for true offline resilience.
 - **Real Data Ingestion:** Build scraper pipelines that pull from local government portals, civic APIs, or Nominatim/OSM and conform to the event schema.
 - **Multilingual NLP:** The `data/state-locales.js` scaffolding is there. Build the translation pipeline to make it truly local.
 - **Notification Layer:** Alert community members via SMS/WhatsApp when a high-severity event is logged in their district.
@@ -220,7 +193,7 @@ This PoC proves the concept is viable and the data model is sound. The next phas
 | **Research** | Rigorous system design for multi-region, multi-tenant kiosk deployment at scale |
 | **Architecture** | Secure AI integration - local inference or privacy-preserving API calls - so the intelligence panel works without leaking community data |
 | **Infrastructure** | Explore IPFS / P2P data replication to make the memory truly decentralized |
-| **Pilot** | Deploy a real kiosk in a real panchayat or community center and measure actual utility |
+| **Pilot** | Deploy a real kiosk in a real community center and measure actual utility |
 
 The long-term vision is a world where every district, town, and ward has its own persistent, searchable, community-owned information layer - not controlled by a platform, not dependent on a vendor, not silenced by an algorithm.
 
