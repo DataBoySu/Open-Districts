@@ -11,103 +11,301 @@
         href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Outfit:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="./css/tailwind.css">
+    <style>
+        .globe-bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            display: block;
+        }
+
+        @keyframes shimmer-sweep {
+            0% {
+                background-position: -200% 0;
+            }
+
+            65% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .shimmering-text {
+            background-image: linear-gradient(110deg, rgba(226, 232, 240, .65) 30%, rgba(255, 255, 255, .98) 50%, rgba(226, 232, 240, .65) 70%);
+            background-size: 220% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmer-sweep 7.5s ease-in-out infinite;
+        }
+    </style>
 </head>
 
-<body class="m-0 box-border min-h-screen overflow-x-hidden bg-[#020204] px-5 py-12 text-[#E5E7EB] [font-family:'Atkinson_Hyperlegible',sans-serif] sm:py-14">
-    <div class="blackhole-bg" aria-hidden="true">
-        <div class="blackhole-noise"></div>
-        <div class="blackhole-disc"></div>
-        <div class="blackhole-core"></div>
-        <div class="blackhole-vignette"></div>
-    </div>
+<body
+    class="m-0 box-border min-h-screen overflow-x-hidden bg-[#020204] px-5 py-12 text-[#E5E7EB] [font-family:'Atkinson_Hyperlegible',sans-serif] sm:py-14">
+    <canvas id="globe-canvas" class="globe-bg" aria-hidden="true"></canvas>
 
-    <main class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1040px] flex-col items-center justify-start pt-6">
-    <header class="mb-10 text-center sm:mb-12">
-        <h1
-            class="shimmering-text mb-3 text-4xl font-semibold tracking-tight [font-family:'Outfit',sans-serif] sm:text-6xl">Open Districts</h1>
-        <p class="mx-auto max-w-[640px] text-center text-lg leading-relaxed text-slate-300/95 sm:text-xl">Browse the latest
-            interface and earlier iterations.</p>
-        <div class="mt-6 flex justify-center">
-            <div class="group relative">
-                <a id="github-stars-link" href="https://github.com/OpenDistricts/Open-Districts" target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#93C5FD]"
-                    aria-describedby="github-stars-tooltip" data-repo="OpenDistricts/Open-Districts">
-                    <svg class="size-4 -translate-y-px" viewBox="0 0 24 24" aria-hidden="true">
-                        <path
-                            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-                            fill="currentColor" />
-                    </svg>
-                    <span id="github-stars-count" class="tabular-nums text-[0.8125rem] text-slate-400">...</span>
-                </a>
-                <div id="github-stars-tooltip" role="tooltip"
-                    class="pointer-events-none absolute left-1/2 top-full z-50 mt-2 hidden -translate-x-1/2 rounded-md bg-slate-100 px-3 py-1.5 text-xs text-[#111827] shadow-md group-hover:block group-focus-within:block">
-                    Loading stars...
+    <main
+        class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1040px] flex-col items-center justify-start pt-6">
+        <header class="mb-10 text-center sm:mb-12">
+            <h1
+                class="shimmering-text mb-3 text-4xl font-semibold tracking-tight [font-family:'Outfit',sans-serif] sm:text-6xl">
+                Open Districts</h1>
+            <p class="mx-auto max-w-[640px] text-center text-lg leading-relaxed text-slate-300/95 sm:text-xl">Browse the
+                latest
+                interface and earlier iterations.</p>
+            <div class="mt-6 flex justify-center">
+                <div class="group relative">
+                    <a id="github-stars-link" href="https://github.com/OpenDistricts/Open-Districts" target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#93C5FD]"
+                        aria-describedby="github-stars-tooltip" data-repo="OpenDistricts/Open-Districts">
+                        <svg class="size-4 -translate-y-px" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                                fill="currentColor" />
+                        </svg>
+                        <span id="github-stars-count" class="tabular-nums text-[0.8125rem] text-slate-400">...</span>
+                    </a>
+                    <div id="github-stars-tooltip" role="tooltip"
+                        class="pointer-events-none absolute left-1/2 top-full z-50 mt-2 hidden -translate-x-1/2 rounded-md bg-slate-100 px-3 py-1.5 text-xs text-[#111827] shadow-md group-hover:block group-focus-within:block">
+                        Loading stars...
+                    </div>
                 </div>
             </div>
+        </header>
+
+        <div class="grid w-full max-w-[1000px] grid-cols-1 gap-6 md:grid-cols-2">
+            <!-- Archive Card -->
+            <a href="Archive/index.html"
+                class="group flex min-h-[320px] cursor-pointer flex-col rounded-3xl border border-white/18 bg-white/9 p-6 text-inherit no-underline backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-[#60A5FA]/70 hover:bg-white/13 hover:shadow-[0_20px_70px_rgba(2,6,23,0.58)] sm:p-7">
+                <div class="mb-3 flex items-center justify-between">
+                    <h2 class="m-0 text-[2rem] font-semibold text-slate-100/95 [font-family:'Outfit',sans-serif]">
+                        Archive</h2>
+                </div>
+                <p class="mt-0 mb-8 grow text-[1.05rem] leading-relaxed text-slate-200/85">Contains V1 to V3 snapshots
+                    for
+                    historical reference.</p>
+                <span
+                    class="inline-block w-fit rounded-xl border border-[#60A5FA] bg-[#60A5FA]/8 px-5 py-2.5 text-center font-semibold text-[#93C5FD] transition-colors duration-200 [font-family:'Outfit',sans-serif] group-hover:bg-[#60A5FA]/22 group-hover:text-white">View
+                    Archive</span>
+            </a>
+
+            <!-- V4 Card -->
+            <a href="OpenDistricts-v4.html"
+                class="group flex min-h-[320px] cursor-pointer flex-col rounded-3xl border border-white/18 bg-white/9 p-6 text-inherit no-underline backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-[#60A5FA]/70 hover:bg-white/13 hover:shadow-[0_20px_70px_rgba(2,6,23,0.58)] sm:p-7">
+                <div class="mb-3 flex items-center justify-between">
+                    <h2 class="m-0 text-[2rem] font-semibold text-slate-100/95 [font-family:'Outfit',sans-serif]">
+                        Version 4</h2>
+                </div>
+                <p class="mt-0 mb-8 grow text-[1.05rem] leading-relaxed text-slate-200/85">Advanced community health and
+                    civic
+                    intelligence kiosk with guidance, dynamic temporal analysis, and seamless district-level geospatial
+                    intelligence.</p>
+                <span
+                    class="inline-block w-fit rounded-xl border border-[#60A5FA] bg-[#60A5FA]/8 px-5 py-2.5 text-center font-semibold text-[#93C5FD] transition-colors duration-200 [font-family:'Outfit',sans-serif] group-hover:bg-[#60A5FA]/22 group-hover:text-white">View
+                    V4</span>
+            </a>
         </div>
-    </header>
 
-    <div class="grid w-full max-w-[1000px] grid-cols-1 gap-6 md:grid-cols-2">
-        <!-- Archive Card -->
-        <a href="Archive/index.html"
-            class="group flex min-h-[320px] cursor-pointer flex-col rounded-3xl border border-white/18 bg-white/9 p-6 text-inherit no-underline backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-[#60A5FA]/70 hover:bg-white/13 hover:shadow-[0_20px_70px_rgba(2,6,23,0.58)] sm:p-7">
-            <div class="mb-3 flex items-center justify-between">
-                <h2 class="m-0 text-[2rem] font-semibold text-slate-100/95 [font-family:'Outfit',sans-serif]">Archive</h2>
-            </div>
-            <p class="mt-0 mb-8 grow text-[1.05rem] leading-relaxed text-slate-200/85">Contains V1 to V3 snapshots for
-                historical reference.</p>
-            <span
-                class="inline-block w-fit rounded-xl border border-[#60A5FA] bg-[#60A5FA]/8 px-5 py-2.5 text-center font-semibold text-[#93C5FD] transition-colors duration-200 [font-family:'Outfit',sans-serif] group-hover:bg-[#60A5FA]/22 group-hover:text-white">View
-                Archive</span>
-        </a>
+        <script>
+            (async function initGithubStars() {
+                const link = document.getElementById("github-stars-link");
+                const countEl = document.getElementById("github-stars-count");
+                const tooltipEl = document.getElementById("github-stars-tooltip");
+                if (!link || !countEl || !tooltipEl) return;
 
-        <!-- V4 Card -->
-        <a href="OpenDistricts-v4.html"
-            class="group flex min-h-[320px] cursor-pointer flex-col rounded-3xl border border-white/18 bg-white/9 p-6 text-inherit no-underline backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-[#60A5FA]/70 hover:bg-white/13 hover:shadow-[0_20px_70px_rgba(2,6,23,0.58)] sm:p-7">
-            <div class="mb-3 flex items-center justify-between">
-                <h2 class="m-0 text-[2rem] font-semibold text-slate-100/95 [font-family:'Outfit',sans-serif]">Version 4</h2>
-            </div>
-            <p class="mt-0 mb-8 grow text-[1.05rem] leading-relaxed text-slate-200/85">Advanced community health and civic
-                intelligence kiosk with guidance, dynamic temporal analysis, and seamless district-level geospatial
-                intelligence.</p>
-            <span
-                class="inline-block w-fit rounded-xl border border-[#60A5FA] bg-[#60A5FA]/8 px-5 py-2.5 text-center font-semibold text-[#93C5FD] transition-colors duration-200 [font-family:'Outfit',sans-serif] group-hover:bg-[#60A5FA]/22 group-hover:text-white">View
-                V4</span>
-        </a>
-    </div>
+                const repo = link.dataset.repo;
+                if (!repo) return;
 
-    <script>
-        (async function initGithubStars() {
-            const link = document.getElementById("github-stars-link");
-            const countEl = document.getElementById("github-stars-count");
-            const tooltipEl = document.getElementById("github-stars-tooltip");
-            if (!link || !countEl || !tooltipEl) return;
+                const compactFmt = new Intl.NumberFormat("en-US", { notation: "compact", compactDisplay: "short" });
+                const fullFmt = new Intl.NumberFormat("en-US");
 
-            const repo = link.dataset.repo;
-            if (!repo) return;
+                try {
+                    const res = await fetch(`https://api.github.com/repos/${repo}`);
+                    if (!res.ok) throw new Error("GitHub API request failed");
+                    const data = await res.json();
+                    const stars = Number(data.stargazers_count);
+                    if (!Number.isFinite(stars)) throw new Error("Invalid star count");
 
-            const compactFmt = new Intl.NumberFormat("en-US", { notation: "compact", compactDisplay: "short" });
-            const fullFmt = new Intl.NumberFormat("en-US");
-
-            try {
-                const res = await fetch(`https://api.github.com/repos/${repo}`);
-                if (!res.ok) throw new Error("GitHub API request failed");
-                const data = await res.json();
-                const stars = Number(data.stargazers_count);
-                if (!Number.isFinite(stars)) throw new Error("Invalid star count");
-
-                countEl.textContent = compactFmt.format(stars).toLowerCase();
-                tooltipEl.textContent = `${fullFmt.format(stars)} stars`;
-                link.href = `https://github.com/${repo}`;
-            } catch (err) {
-                countEl.textContent = "n/a";
-                tooltipEl.textContent = "Unable to load stars";
-            }
-        })();
-    </script>
+                    countEl.textContent = compactFmt.format(stars).toLowerCase();
+                    tooltipEl.textContent = `${fullFmt.format(stars)} stars`;
+                    link.href = `https://github.com/${repo}`;
+                } catch (err) {
+                    countEl.textContent = "n/a";
+                    tooltipEl.textContent = "Unable to load stars";
+                }
+            })();
+        </script>
     </main>
 
+    <script>
+        /* ──────────────────────────────────────────────────────────────
+           Globe background renderer
+           – Orthographic projection of a wireframe sphere with
+             latitude / longitude grid lines and 7,000+ random dots.
+           – Rotates continuously around its vertical (Y) axis.
+        ────────────────────────────────────────────────────────────── */
+        (function initGlobe() {
+            const canvas = document.getElementById('globe-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            /* ── config ── */
+            const CFG = {
+                rotSpeed: 0.0018,   // radians per frame
+                tiltX: 0.30,     // static tilt toward viewer (radians)
+                dotCount: 6000,
+                dotR: 1.0,
+                gridLat: 18,       // latitude bands
+                gridLon: 24,       // longitude bands
+                glowColor: '#00d4e8',
+                lineAlpha: 0.28,
+                dotAlpha: 0.50,
+                bgGlow: 'rgba(0, 180, 200, 0.06)',
+                vignette: true,
+            };
+
+            let W, H, R, cx, cy, angle = 0, raf;
+
+            /* ── random surface dots (lat/lon) ── */
+            const dots = Array.from({ length: CFG.dotCount }, () => {
+                const lat = (Math.random() - 0.5) * Math.PI;
+                const lon = Math.random() * Math.PI * 2;
+                return { lat, lon };
+            });
+
+            /* ── lat/lon grid points ── */
+            function latlonTo3D(lat, lon) {
+                return {
+                    x: Math.cos(lat) * Math.sin(lon),
+                    y: Math.sin(lat),
+                    z: Math.cos(lat) * Math.cos(lon),
+                };
+            }
+
+            /* ── project 3D point with Y-axis rotation + X tilt ── */
+            function project(p3, yRot, radius) {
+                // rotate around Y axis
+                const cosY = Math.cos(yRot), sinY = Math.sin(yRot);
+                const rx = p3.x * cosY + p3.z * sinY;
+                const rz = -p3.x * sinY + p3.z * cosY;
+                const ry = p3.y;
+
+                // tilt around X axis
+                const cosX = Math.cos(CFG.tiltX), sinX = Math.sin(CFG.tiltX);
+                const tx = rx;
+                const ty = ry * cosX - rz * sinX;
+                const tz = ry * sinX + rz * cosX;
+
+                return {
+                    sx: cx + tx * radius,
+                    sy: cy - ty * radius,
+                    visible: tz >= 0,  // front hemisphere
+                    depth: tz,
+                };
+            }
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+                cx = W / 2;
+                cy = H / 2;
+                R = Math.min(W, H) * 0.38;
+            }
+
+            function drawGlobe(yr) {
+                ctx.clearRect(0, 0, W, H);
+
+                /* subtle off-center ambient glow */
+                const grd = ctx.createRadialGradient(cx * 0.92, cy * 0.88, R * 0.05,
+                    cx * 0.92, cy * 0.88, R * 1.55);
+                grd.addColorStop(0, CFG.bgGlow);
+                grd.addColorStop(1, 'transparent');
+                ctx.fillStyle = grd;
+                ctx.fillRect(0, 0, W, H);
+
+                /* ── latitude lines ── */
+                for (let i = 1; i < CFG.gridLat; i++) {
+                    const lat = -Math.PI / 2 + (i / CFG.gridLat) * Math.PI;
+                    const segments = 120;
+                    let first = true;
+
+                    ctx.beginPath();
+                    for (let s = 0; s <= segments; s++) {
+                        const lon = (s / segments) * Math.PI * 2;
+                        const p3 = latlonTo3D(lat, lon);
+                        const p2 = project(p3, yr, R);
+                        if (!p2.visible) { first = true; continue; }
+                        if (first) { ctx.moveTo(p2.sx, p2.sy); first = false; }
+                        else ctx.lineTo(p2.sx, p2.sy);
+                    }
+                    ctx.strokeStyle = `rgba(0,212,232,${CFG.lineAlpha})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+
+                /* ── longitude lines ── */
+                for (let j = 0; j < CFG.gridLon; j++) {
+                    const lon = (j / CFG.gridLon) * Math.PI * 2;
+                    const segments = 60;
+                    let first = true;
+
+                    ctx.beginPath();
+                    for (let s = 0; s <= segments; s++) {
+                        const lat = -Math.PI / 2 + (s / segments) * Math.PI;
+                        const p3 = latlonTo3D(lat, lon);
+                        const p2 = project(p3, yr, R);
+                        if (!p2.visible) { first = true; continue; }
+                        if (first) { ctx.moveTo(p2.sx, p2.sy); first = false; }
+                        else ctx.lineTo(p2.sx, p2.sy);
+                    }
+                    ctx.strokeStyle = `rgba(0,212,232,${CFG.lineAlpha})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+
+                /* ── surface dots ── */
+                for (const d of dots) {
+                    const p3 = latlonTo3D(d.lat, d.lon);
+                    const p2 = project(p3, yr, R);
+                    if (!p2.visible) continue;
+                    /* fade near limb */
+                    const edgeFade = Math.min(p2.depth * 3, 1);
+                    ctx.beginPath();
+                    ctx.arc(p2.sx, p2.sy, CFG.dotR, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0,212,232,${CFG.dotAlpha * edgeFade})`;
+                    ctx.fill();
+                }
+
+                /* ── vignette overlay ── */
+                if (CFG.vignette) {
+                    const vig = ctx.createRadialGradient(cx, cy, R * 0.5, cx, cy, R * 2.2);
+                    vig.addColorStop(0.0, 'transparent');
+                    vig.addColorStop(0.7, 'rgba(2,2,4,0.45)');
+                    vig.addColorStop(1.0, 'rgba(2,2,4,0.95)');
+                    ctx.fillStyle = vig;
+                    ctx.fillRect(0, 0, W, H);
+                }
+            }
+
+            function tick() {
+                angle += CFG.rotSpeed;
+                drawGlobe(angle);
+                raf = requestAnimationFrame(tick);
+            }
+
+            window.addEventListener('resize', () => { resize(); drawGlobe(angle); });
+            resize();
+            tick();
+        })();
+    </script>
 </body>
 
 </html>

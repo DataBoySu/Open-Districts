@@ -98,106 +98,15 @@
   animation: shimmer-sweep 7.5s ease-in-out infinite;
 }
 
-@keyframes blackhole-spin {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-@keyframes blackhole-pulse {
-  0%,
-  100% {
-    opacity: 0.78;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.03);
-  }
-}
-
-@keyframes blackhole-drift {
-  0%,
-  100% {
-    transform: translate3d(-2%, -2%, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(2%, 2%, 0) scale(1.03);
-  }
-}
-
-.blackhole-bg {
+/* Globe canvas background */
+.globe-bg {
   position: fixed;
   inset: 0;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(1200px 900px at 44% 48%, rgba(67, 71, 88, 0.18), transparent 56%),
-    radial-gradient(1000px 820px at 58% 42%, rgba(16, 20, 36, 0.55), transparent 64%),
-    #020204;
-}
-
-.blackhole-noise {
-  position: absolute;
-  inset: -8%;
-  background:
-    radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px),
-    radial-gradient(circle at 70% 65%, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px);
-  background-size: 240px 240px, 180px 180px;
-  filter: blur(0.4px);
-  opacity: 0.32;
-  animation: blackhole-drift 16s ease-in-out infinite;
-}
-
-.blackhole-disc {
-  position: absolute;
-  left: 50%;
-  top: 48%;
-  width: min(108vmin, 1200px);
-  aspect-ratio: 1 / 1;
-  border-radius: 9999px;
-  background:
-    radial-gradient(closest-side, transparent 30%, rgba(255, 255, 255, 0.23) 42%, rgba(255, 255, 255, 0.04) 56%, transparent 72%),
-    conic-gradient(from 210deg, rgba(250, 252, 255, 0.08), rgba(169, 184, 214, 0.24), rgba(250, 252, 255, 0.05), rgba(133, 149, 183, 0.22), rgba(250, 252, 255, 0.08));
-  transform: translate(-50%, -50%);
-  filter: blur(1px) contrast(120%);
-  animation: blackhole-spin 20s linear infinite;
-}
-
-.blackhole-disc::before {
-  content: "";
-  position: absolute;
-  inset: 9%;
-  border-radius: inherit;
-  background:
-    conic-gradient(from 35deg, transparent 10%, rgba(255, 255, 255, 0.22) 26%, transparent 44%, rgba(255, 255, 255, 0.15) 68%, transparent 82%);
-  filter: blur(7px);
-  animation: blackhole-spin 14s linear infinite reverse;
-}
-
-.blackhole-core {
-  position: absolute;
-  left: 50%;
-  top: 48%;
-  width: min(45vmin, 520px);
-  aspect-ratio: 1 / 1;
-  border-radius: 9999px;
-  background:
-    radial-gradient(circle at 38% 28%, rgba(255, 255, 255, 0.16) 0 5%, transparent 28%),
-    radial-gradient(circle, rgba(0, 0, 0, 1) 58%, rgba(7, 10, 19, 0.95) 70%, rgba(171, 192, 220, 0.25) 74%, rgba(255, 255, 255, 0.1) 80%, transparent 92%);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 66px rgba(215, 227, 255, 0.26), 0 0 130px rgba(255, 255, 255, 0.18);
-  animation: blackhole-pulse 8s ease-in-out infinite;
-}
-
-.blackhole-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 36%, rgba(0, 0, 0, 0.7) 88%);
+  display: block;
 }
 
 @property --top-mask-height {
