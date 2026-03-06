@@ -41,6 +41,9 @@ components.json
 jsconfig.json
 docs/*
 !docs/DATA_SCHEMA_REFERENCE.md
+!docs/old/intro.txt
+!docs/LANGUAGE_DISTRIBUTION.md
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.

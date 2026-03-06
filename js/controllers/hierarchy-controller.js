@@ -224,6 +224,14 @@ export async function syncWithTimeline(timelineRange) {
 let _stateClickTimer = null;
 let _lastClickedStateId = null;
 
+function _formatPopulation(value) {
+    const population = Number(value);
+    if (!Number.isFinite(population) || population <= 0) {
+        return t("ui.noData");
+    }
+    return population.toLocaleString("en-IN");
+}
+
 async function _renderIndiaMinimap(states) {
     const svg = document.getElementById("hs-india-svg");
     if (svg.children.length > 0) return; // avoid re-rendering entire D3 map if already done
@@ -364,23 +372,16 @@ function _showStateStats(state) {
     document.getElementById("hs-state-stats-name").textContent = state.name;
     const alertsEl = document.getElementById("hs-state-stats-alerts");
     const popEl = document.getElementById("hs-state-stats-pop");
-    const hasData = state.dataPoints > 0;
 
-    if (hasData) {
-        popEl.textContent = Math.floor(100 + (state.name.length * 15)) + " Lakh";
-        alertsEl.textContent = state.dataPoints || 0;
-        if (!state.dataPoints || state.dataPoints === 0) {
-            alertsEl.classList.remove("danger-text");
-            alertsEl.style.color = "var(--ok)";
-        } else {
-            alertsEl.classList.add("danger-text");
-            alertsEl.style.color = "";
-        }
-    } else {
-        popEl.textContent = t("ui.noData");
+    popEl.textContent = _formatPopulation(state.population);
+    if (!state.dataPoints || state.dataPoints === 0) {
         alertsEl.textContent = t("ui.noData");
         alertsEl.classList.remove("danger-text");
         alertsEl.style.color = "rgba(255,255,255,0.4)";
+    } else {
+        alertsEl.textContent = state.dataPoints;
+        alertsEl.classList.add("danger-text");
+        alertsEl.style.color = "";
     }
 
     // Setup button for explicit navigation
@@ -683,8 +684,7 @@ function _showStatsPanel(district) {
 
     // Populate data
     nameEl.textContent = district.name;
-    // Generate pseudo-population based on name string length for demo realism
-    popEl.textContent = Math.floor(10 + (district.name.length * 2.3)) + " Lakh";
+    popEl.textContent = _formatPopulation(district.population);
 
     if (!district.dataPoints || district.dataPoints === 0) {
         alertsEl.textContent = t("ui.noData");

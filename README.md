@@ -1,4 +1,4 @@
-# Open-Districts
+# Open Districts
 
 ### A *Know-Your-Neighbourhood* initiative.
 
@@ -91,7 +91,7 @@ timeline
                        
                        : First time considered Kiosk Systems
 
-    2025 - NES Awards : Entered NES Innovation Awards
+    2025 - NES Awards : Entered NES Innovation Awards 2026
                       : Iterated through 4 rounds
                       : Reached Top 50 nationally
     2025 - The Pivot : Gradual realization over months of observation
@@ -137,16 +137,12 @@ This PoC is deployed as a static site on GitHub Pages. Feel free to evaluate the
 *D3.js-powered map rendering with district-level GeoJSON boundaries.*
 
 ### State & District Navigator
-![State Selector](asset/state_selector.png)
+![State Selector](asset/state_selector1.png)
 *Drill down from state to district to sub-district, with live data filtering.*
 
 ### Live Mode - Real-Time Status
 ![Live Mode](asset/live_mode_active.png)
 *Live monitoring view with active event overlays and severity indicators.*
-
-### Guided Intelligence Panel
-![AI Panel](asset/ai_panel.png)
-*The AI-assisted insight panel - designed for the kiosk's conversational interface.*
 
 ### Event Detail Reports
 ![Event Details](asset/event_details.png)
@@ -166,6 +162,7 @@ This repository is an open invitation.
 
 The V4 PoC shows how the visual and data layers work. What's **missing** is the intelligence layer:
 
+- **Map & GeoJSON Update:** Current Indian Map is based on a 2011 design. GeoJSON and Coord repos from repos like [Datameet](https://github.com/datameet) and [Indian-Shapefiles](https://github.com/datta07/INDIAN-SHAPEFILES) were used. Additions of new maps and updating existing ones would be the next step.
 - **AI Companion Integration:** Build the conversational panel that answers "What happened in my area this week?" using local event data as context.
 - **Real Data Ingestion:** Build scraper pipelines that pull from local government portals, civic APIs, or Nominatim/OSM and conform to the event schema.
 - **Multilingual NLP:** The `data/state-locales.js` scaffolding is there. Build the translation pipeline to make it truly local.
@@ -181,6 +178,30 @@ You don't need to write a single line of code to contribute. If you know your ci
 4. Open a Pull Request. Describe your region and data sources.
 
 **Your city deserves a memory. Help build it.**
+
+---
+
+## Acknowledgements
+
+This project stands on the shoulders of talented open-source communities. We're deeply grateful to:
+
+### Libraries & Frameworks
+
+- **[Pixi.js](https://pixijs.com/)** - WebGL rendering engine powering advanced visual effects, particle systems, and high-performance overlay rendering
+- **[Leaflet](https://leafletjs.com/)** - Lightweight, open-source mapping library for interactive base maps and district boundary visualization
+- **[D3.js](https://d3js.org/)** - Geospatial parsing, geographic projections, and minimap rendering for district geometries
+- **[Turf.js](https://turfjs.org/)** - Geospatial analysis library for boundary detection, polygon merging, and point-in-polygon queries
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework for responsive UI design
+
+### Data Sources
+
+- **[Datameet](https://github.com/datameet)** - Open Geographic and GeoJSON data for India
+- **[Indian-Shapefiles](https://github.com/datta07/INDIAN-SHAPEFILES)** - Boundary and administrative data for Indian districts and states
+
+### Inspiration & Community
+
+- The civic tech community pushing for transparent, local information systems
+- All contributors and early testers who shaped this vision
 
 ---
 
